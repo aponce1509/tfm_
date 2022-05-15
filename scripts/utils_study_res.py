@@ -329,7 +329,7 @@ def efficiency_purity(con_mat):
     true_elec = con_mat.iloc[0, 0]
     false_photon = con_mat.iloc[0, 1]
     false_elec = con_mat.iloc[1, 0]
-    efficiency = true_elec / (false_elec + true_elec + false_photon)
+    efficiency = true_elec / (true_elec + false_photon)
     purity = true_elec / (false_elec + true_elec)
     return efficiency, purity
 
