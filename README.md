@@ -1,5 +1,5 @@
 # Versión 0.1
-a
+
 Incluye:
 
 * Gráficas (vistas y 3d) de los eventos
