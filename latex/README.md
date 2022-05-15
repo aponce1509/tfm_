@@ -1,0 +1,3 @@
+He hecho una distribución del contenido muy muy inicial sobre todo para saber que poner en lo que me dijiste que escribiera (que cosas tengo que explicar antes y todo eso. Lo que he escrito es una idea primera que tengo que depurar y cambiar donde las cosas en rojo son comentarios de cosas que faltan o notas para acordarme luego.
+
+Al final explico un poco como paso de los datos a las imagenes que no creo que al final vaya ahí pero lo tenía fresco y quería escribir la idea.

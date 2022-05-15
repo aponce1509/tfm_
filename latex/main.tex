@@ -1,0 +1,629 @@
+\documentclass[a4paper,12pt,twoside,titlepage]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{fixltx2e}
+\usepackage{siunitx}
+\usepackage[shortlabels]{enumitem}
+\usepackage{csquotes}
+\usepackage{graphicx}
+\usepackage{appendix} 
+\usepackage{longtable}
+%\usepackage[ddmmyyyy]{datetime}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage{tabu}
+\usepackage{hyperref}
+\graphicspath{ {./img/} }
+\tolerance=1000
+\usepackage[spanish,es-tabla,es-nodecimaldot]{babel}
+\usepackage{a4wide}
+\usepackage{gensymb}
+\usepackage{wasysym}
+\usepackage{subcaption}
+\usepackage{braket}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage[backend=biber,sorting=none]{biblatex}
+% \usepackage[backend=biber]{biblatex}
+% \usepackage{minted}
+\renewcommand{\appendixname}{Anexos}
+\renewcommand{\appendixtocname}{Anexos}
+\renewcommand{\appendixpagename}{Anexos}
+
+\addbibresource{texto.bib}
+\DeclareFieldFormat[article]{citetitle}{#1}
+\DeclareFieldFormat[article]{title}{#1}
+
+% \newcommand{\inline}[1]{\mintinline{Python}{#1}}
+
+\newcommand{\rcor}{\right\rbrace}
+\newcommand{\lcor}{\left\lbrace }
+\newcommand{\comen}{\textbf{Comentarios:}}
+\author{Alejandro Ponce Miguela}
+\date{}
+\title{\textbf{Borrador TFM}}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Alejandro Ponce Miguela}}
+\newtheorem{teor}{Teorema}
+\newtheorem{defi}{Definición}
+\newtheorem{lema}{Lema}
+\newtheorem{ejem}{Ejemplo}[subsection]
+\usepackage{tcolorbox}
+\usepackage{etoolbox}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\BeforeBeginEnvironment{minted}{\begin{tcolorbox}}%
+\AfterEndEnvironment{minted}{\end{tcolorbox}}%
+
+\renewcommand\qedsymbol{$\blacksquare$}
+\usepackage{setspace}
+\setstretch{1.25}
+\setlength{\parskip}{1em}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section*{Abstract}
+
+\newpage
+
+\section{Introducción y objetivos}
+
+% \begin{itemize}
+%   \item Uso de Deep Learning en otro ámbitos. Gran desarrollo actual permite hacer uso en otras ramas donde limitación del número de datos cada vez es menor. Ejemplo de uso (solo mencionar)
+%   \item Hablar de este trabajo, colaboración, tiene algo de física, vamos a estudiar neutrinos
+%   \item SBN y DUNE
+%   \item hacer un resumen del problema
+%   \item Uso de técnicas DevOps/control de versiones
+%     \item Objetivos
+% \end{itemize}
+
+En los últimos años hemos visto como el Deep Learning se ha convertido en el estado del arte en distintos problemas de Machine Learning. Como ejemplos tenemos los problemas de clasificación, segmentación y detección de objetos con el uso de redes neuronales convolucionales o en los problemas de procesamiento de lenguaje natural con el uso de los transformers. En este trabajo vamos a abordar un problema de ciencia de datos en el ámbito de la física de partículas usando el Deep Learning.
+
+La física, al ser una ciencia experimental siempre a necesitado estudiar los datos obtenidos de los experimentos. Por este motivo, la física desde siempre a empleado herramientas de ciencia de datos. Un ejemplo es la regresión que permite que dado una ley física, como puede ser la segunda ley de Newton, ver si los datos experimentales siguen dicha ley. En la actualidad, tenemos modelos de ciencia de datos mucho más complejos así como problemas físicos muy complejos donde la herramientas clásicas de ciencia de datos no son suficientes.
+
+Actualmente se tienen experimentos donde tanto la complejidad como el volumen de datos hacen que la física sea un perfecto laboratorio para probar modelos de ciencia de datos así como para el desarrollo de nuevos algoritmos. Como ejemplo se tiene el CERN donde se generan muchos datos (entorno al petabyte por segundo \cite{ml_phy}) y además se tienen problemas muy complejos donde se han estado usando métodos clásicos como arboles de decisión. Sin embargo, se esta poniendo en manifiesto como el uso del Deep Learning puede mejorar mucho los resultados \cite{ml_phy}.
+
+No obstante, la aplicación del Deep Learning en física supone una serie de dificultades, que también se encuentran al aplicar estos modelos en otros ámbitos. Estos modelos son cajas negras, es decir, que dada una entrada no se puede entender que hace el modelo para obtener el resultado dado por lo que dificultan la interpretación de los modelos. El aumento del uso de estos modelos en muchos ámbitos han puesto en manifiesto los problemas éticos y morales que surgen de la falta de interpretabilidad. En física este problema no surge por problemas éticos pero lo que ocurre es que no nos basta con saber que algo esta ocurriendo, queremos también entender el motivo de por que esta ocurriendo.
+
+Este trabajo consiste en una colaboración con el departamento de Física Teórica y del Cosmos de la Universidad de Granada donde vamos a trabajar con un detector de neutrinos del programa Short Baseline Neutrino (SBN). Nuestro objetivo consite en clasificar dos tipos de eventos que pueden tener lugar en el interior de estos detectores. Los datos con los que vamos a trabajar son imágenes tridimensionales que reconstruyen la trayectoria de las partículas en el detector.     
+
+Al ser una colaboración una parte del trabajo consistirá en aprender los fundamentos y principios necesarios para el desarrollo correcto del objetivo final. Estos principios los desarrollaremos de manera simple para que se entienda bien y sobre todo entienda la necesidad de llevar a cabo este trabajo.
+
+Como ya hemos dicho, enfocaremos la resolución del problema con el uso de modelos de Deep Learning. Para ello, vamos a partir de cero donde vamos a tener que crear las imágenes, procesarlas y probar distintos modelos para tratar de resolver el problema. Una vez resuelto, lo que haremos es estudiar los resultados obtenidos usando distintas técnicas que nos interpretar los modelos de caja negra.
+
+Todo el trabajo lo haremos en Python y para los modelos de Deep Learning usaremos la librería Pytorch. Por otro lado, con la intención de que este modelo pueda usarse en un futuro, así como por buenas praxis de programación vamos a hacer uso de prácticas MLOps a la hora de tratar los datos y desarrollar los modelos. Una parte de este trabajo consiste en aprender y emplear estas herramientas y técnicas.
+
+\subsection{Objetivos}
+Veamos a hora cuales son los objetivos que se pretenden alcanzar con este trabajo. El objetivo fundamental es conseguir la clasificación de los datos, problema que actualmente no esta cerrado y es fundamental para el objetivo del programa SNB. También será necesario aprender sobre la física del problema y, por otro lado, también es necesario aprender sobre aspectos de desarrollo de aplicaciones que como físico serán herramientas nuevas pero fundamentales:
+\begin{itemize}
+  \item Aprender la física necesaria para comprender y abordar el problema.
+  \item Proponer y desarrollar métodos para realizar la clasificación de los datos. Tanto en el modelo empleado como en el procesamiento de los datos.
+  \item Aprender sobre las prácticas de desarrollo basadas en MLOps así como herramientas que faciliten su implementación, como puede ser MLFlow o Git para el control de versiones.
+\end{itemize}
+
+
+\section{Fundamentación: estado del arte y conceptos}
+
+\subsection{Motivación física}
+
+Los neutrinos $\nu$ son partículas elementales predichas de manera teórica por Wolfgang Pauli en 1930 \cite{neutrino_his} como explicación de una serie de medidas experimentales anómalas en el decaimiento $\beta$\footnote{El decaimiento $\beta$ es una reacción donde un núcleo convierte un neutrón en un protón, un electrón y un antineutrino. Inicialmente se pensaba que únicamente se emitían el protón y el electrón. Fue Enrico Fermi quién con la idea de W. Pauli formuló la teoría del del decaimiento $\beta$. El antineutrino es la antipartícula del neutrino y es posterior a E. Fermi \cite{particle_griff}.}. En concreto, se observaba que los electrones emitidos tenían un espectro continuo de energías, sin embargo, la conservación de la energía establecía que para esta reacción la energía debería ser constante \cite{particle_griff}. La única explicación que se encontró es que en la reacción tendría que haber una tercera partícula neutra cuya interacción con la materia fuera muy poco probable que recibió el nombre de neutrino. La detección de estas partículas resultó ser muy compleja y evidencias experimentales de esta partícula llegaron en 1956 donde se buscaban evidencias de la reacción inversa.
+
+El neutrino es lo que se denomina una partícula elemental, que son aquellas que no están formadas por otras partículas. Por ejemplo, un átomo de hidrógeno ($\text{H}^1_1$) está formado por un protón y por un electrón, y a su vez el protón esta formado por quarks. Sin embargo, el electrón no esta formado por otras partículas. El Modelo Estándar es el marco teórico en el que se fundamenta la física de partículas y estructura las partículas fundamentales conocidas en tres grupos: quarks, leptones y bosones. Los quarks son las partículas que forman los protones y neutrones, en los leptones, tenemos los electrones y neutrinos. Y por último, los bosones, donde se tienen partículas como los fotones. 
+% Las dos primeras familias son las partículas que construyen la materia mientras que la tercera son las partículas encargadas de mediar las interacciones entre partículas
+Dentro de los leptones tenemos tres generaciones de partículas que se diferencian fundamentalmente en su masa: electrones $e^-$, muones $\mu^-$ y tauones $\tau^-$. Cada una de estas partículas tiene asociada un neutrino, es decir, tenemos tres tipos de neutrinos que se denominan neutrino electrónico $\nu_e$, muónico $\nu_\mu$ y tauónico $\nu_\tau$.
+
+En este trabajo estudiaremos los neutrinos que, como ya hemos dicho, son partículas elementales neutras. La masa de estas partículas no está determinada a día de hoy, lo que se sabe es que es distinta de cero y que sus masas son muy pequeñas (a día de hoy lo que se tiene son cotas superiores en la masa \cite{neutrino_mass}). La detección de los neutrinos no es sencilla debido a que la probabilidad que hay de que interaccionen con el medio es muy baja, lo que hace que sean capaces de ``atravesar'' la materia sin perder energía.
+
+Para su detección inicial se emplearon fuentes muy intensas (partículas por unidad de tiempo) para compensar la baja probabilidad de interacción. El primer detector consistía en un tanque de agua donde se buscaba la reacción $\beta$ inversa y los neutrinos procedían de una central nuclear \cite{particle_griff}. Otros detectores son por ejemplo el Super Kamiokande \cite{kamiokande} que se basan en la radiación de Cherenkov\footnote{Luz emitida por una partícula cargada al moverse por un medio dieléctrico a una velocidad superior a la de la luz en dicho medio \cite{jackson}.} o las cámaras de proyección temporal (TPC) que se usa en experimentos como SBN \cite{sbnd} o DUNE \cite{dune}. Los datos que vamos a usar en este trabajo proceden de simulaciones realizadas sobre el experimento SNB que actualmente esta en proceso de construcción y en secciones posteriores describiremos cómo funciona exactamente.
+
+Las fuentes de neutrinos son diversas y pueden ser producidos de manera artificial en reactores nucleares o en aceleradores de partículas. También pueden ser producidos de forma natural en el proceso de fusión del hidrógeno en el Sol. De hecho, en muchos eventos cósmicos, como supernovas, se producen neutrinos \cite{supernova}, que gracias a su débil interacción con la materia son capaces de recorrer grandes distancias de manera que muchísimos neutrinos llegan a la superficie terrestre cada segundo \red{pongo algun número?}.
+
+Hasta ahora hemos hablado de los distintos tipos de neutrinos que se han observado y son los que el Modelo Estándar recoge. Un hecho importante es que, a medida que estos neutrinos se desplazan, estos cambian de un tipo a otro que es lo que se conoce como oscilación de neutrinos de lo que hay muchas evidencias experimentales \cite{oscilation}. No obstante, hay una serie de medidas anómalas al contar el número de neutrinos en ciertos experimentos donde se observa un exceso de los que se predicen de manera teórica. Estas anomalías podrían explicarse introduciendo un nuevo neutrino que no siente la interacción débil \cite{sbnd} estando, por tanto, trabajando más allá en física más allá del Modelo Estándar.
+
+Tanto SNB como DUNE son detectores que han sido diseñados con la intención de obtener la evidencia suficiente ($5\sigma$) de las anomalías detectadas ya sea para probarlas o refutarlas. Ambos detectores están en construcción ahora mismo pero se puede trabajar con simulaciones para poder ir desarrollando el software necesario para el tratamiento de los datos. Nosotros vamos a trabajar con SNB que se espera que se ponga en funcionamiento en 2023 \cite{sbnd_page}.
+
+Ambos detectores son TPC que usan como medio argón líquido (LArTPC) y en resumen la idea es que los neutrinos interaccionen con el Ar. Hay dos mecanismos fundamentales por los que se puede dar la interacción débil que es la única interacción que sienten los neutrinos. Estos mecanismos son las corrientes corriente neutra y corriente cargada. A nosotros nos interesan la corriente cargada ya que es la única que nos permite saber que tipo de neutrino ha llegado al detetor. En esta interacción se emite un leptón y son las partículas que vamos a buscar en el detector para la detección de neutrinos:
+\begin{equation}
+  \label{eq:beta_inversa}
+  \nu_x + \text{n} \rightarrow x^- + p^+,
+\end{equation}
+donde $x = e,~\mu,~\tau$. Sin embargo, surgen una serie de dificultades. Por un lado, cualquiera de los leptones da lugar a lo que se conoce como una cascada electromagnética, que es lo que vamos a usar para determinar si tenemos un neutrino. El problema es que un fotón da lugar también a estas cascadas por lo que tenemos que ser capaz de distinguir las cascadas producidas por un leptón y las producidas por un fotón. Por otro lado, tenemos que tener en cuenta que la reacción descrita en la ecuación \ref{eq:beta_inversa} no es la única posible, pueden existir partículas adicionales en el estado final que resulte en dos fotones y por tanto dé lugar a una cascada. 
+
+Por lo tanto pueden darse cascadas electromagnéticas por tres motivos distintos. La primera opción es que la cascada la genere un leptón producido por neutrino incidente al darse \ref{eq:beta_inversa}. Otra opción es que que la reacción final tenga partículas adicionales que decaigan en pares de fotones (puede darse tanto para las corrientes neutras como para las cargadas). La última opción es que la cascada se produzca por un fotón que se tenga en el detector por cualquier motivo. Por lo que si queremos saber el número de neutrinos que llegan al detector tenemos que saber distinguir estos casos. Además, vamos a tener las corrientes neutras que vamos a ser capaces de identificar pero al ser conocido cual es el porcentaje de neutrinos que van a interaccionar siguiendo \ref{eq:beta_inversa}, nos bastaría con contabilizar las cascadas producidas por un electrón. El objetivo por tanto será distinguir cascadas electromagnéticas producidas por electrones de las producidas por fotones, que es fundamental para contabilizar el número de neutrinos que llegan al detector y poder determinar si realmente se tienen medidas anómalas.
+
+\subsection{Conceptos}
+\label{sec:conceptos}
+
+En esta sección vamos a recoger algunos conceptos físicos que son necesarios delimitar el problema con el que estamos tratando, así como otros conceptos que es conveniente desarrollar.
+
+Mostraremos primero que es exactamente lo que vamos a estudiar, las cascadas electromagnéticas, y como es el detector que nos va a proporcionar los datos. También recogeremos información sobre algunos aspectos fundamentales en nuestro trabajo: el Deep Learning, técnicas MLOps y la explicabilidad del algoritmos de Machine Learning.
+
+\subsubsection*{Cascada electromagnética}
+
+Las cascadas electromagnéticas son una sucesión de reacciones originadas por un electrón o por un fotón en el interior de un material. Estas partículas interaccionan con el medio generando electrones, fotones y positrones (antipartícula del electrón) que a su vez interaccionan con el medio generando nuevos electrones, fotones y positrones mediante una reacción en cadena.
+
+De manera muy simplificada, estos eventos tienen lugar cuando tenemos electrones y fotones con altas energías (del orden de varios MeV). A estas energías, los electrones interaccionan con la materia principalmente con el mecanismo que se conoce como radiación de bremsstrahlung que consiste en que un electrón (o un positrón) emite un fóton.
+% \footnote{La forma clásica de interpretar esta interacción es considerando que el electrón se mueve por el medio y es desviado por un núcleo atómico y al desviarse el electrón radia emitiendo un fotón}.
+Los fotones de alta energía principalmente interaccionan con la materia mediante la producción de pares, es decir, un fotón se desintegra creando un electrón y un positrón. Hay otros mecanismos de interacción posible, pero a estas energías son despreciables.
+
+Supongamos entonces que inicialmente tenemos un electrón de alta energía en un medio. El electrón se va a desintegrar generando un electrón y fotón. Mientras que la energía siga siendo alta, este electrón volverá a crear un electrón y un fotón, mientras que el fotón creara otro electrón y un positrón. En este punto tenemos ya cuatro partículas, y a su vez cada una de estas generará otras dos y así sucesivamente hasta que las partículas no tengan energía para crear otro par de partículas. En el caso de que la partícula inicial fuera un fotón lo que cambiaría es simplemente el primer paso donde inicialmente tenemos un fotón que crea un electrón y un positrón iniciando así la cascada. En la Fig. \ref{fig:cascada} se muestra este evento mediante diagramas de Feynman donde las lineas onduladas representan fotones, las flechas hacia la derecha representan electrones y las flechas hacia la izquierda positrones.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.85]{Schematic_of_a_particle_shower.pdf}
+  \caption{Esquema de una cascada electromagnética originada por un fotón.}
+  \label{fig:cascada}
+\end{figure}
+
+Como se mencionó en la motivación física del problema, para detectar los neutrinos necesitamos detectar las cascadas producidas por los electrones. Según como se han definido las cascadas parece un problema difícil ya que en los detectores solo podemos ver a los electrones por lo que no podemos simplemente determinar qué partícula origina la cascada. Por lo tanto, si tuviésemos justo lo que acabamos de explicar resultaría prácticamente imposible distinguir las cascadas.
+
+Sin embargo, sí existen diferencias entre las cascadas. La diferencia principal es que, para cascadas originadas por electrones al comienzo de la cascada se observa que el electrón recorre una distancia que podemos ver en el detector. Además, estos electrones que recorren una mayor distancia antes de desintegrarse también pueden tenerse en puntos posteriores de la cascada y son más probables para las cascadas originadas por electrones.
+
+El hecho de saber la diferencia no hace que sea un proceso simple, en la Fig. \ref{} mostramos dos eventos del problema que vamos a estudiar en este trabajo donde vemos una cascada originada por un fotón y otra originada por un electrón. \red{Tengo que elegir las imágenes bien}
+
+\subsection*{Detector LArTPC}
+
+
+Como se ha mencionado, los datos con los que vamos a trabajar proceden de simulaciones realizadas sobre un detector LArTPC, que se empleará en programas como SBN y DUNE. Veamos detalladamente cómo funciona y cuál es la salida \cite{sbnd}. En la Fig. \ref{fig:sensado} se muestra el esquema de funcionamiento de este detector.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.65]{planos_sensado.PNG}
+  \caption{Esquema de funcionamiento de un TPC \cite{sbnd}. La partículas cargadas en el interior del detector arrancan electrones que son dirigidos hacia los planos de hilos donde se recogen su energía, posición en dicho plano y tiempo de llegada. Con esta información junto con el instante de tiempo inicial del evento se reconstruye la trayectoria de las partículas cargadas.}
+  \label{fig:sensado}
+\end{figure}
+
+Estos detectores consisten en argón líquido (LAr) donde tiene lugar las interacciones y una cámara de proyección temporal (TPC) que nos permite trazar la trayectoria de partículas cargadas. El hecho que se use argón líquido es debido a que es un gas noble y por tanto es un gas inerte \red{que nos permite mantener el medio lo más puro posible}. Además, el Ar pose un potencial de ionización bajo de manera que es sencillo que una partícula cargada ionice el medio dejando electrones libre en el medio. A todo esto el Ar es el gas noble más abundante \cite{lar_review} lo que lo hace más accesible. 
+
+
+El detector consiste en un criostato, dispositivo que nos permite mantener bajas temperaturas, que contiene el argón y está dividido en dos partes por un plano que va actuar como cátodo. Paralelo a este plano, en los extremos del criostato, vamos a tener planos de hilos que nos permiten registrar la señal dejada por un electrón (Fig. \ref{fig:estructura_detector}). Cada plano consiste en tres planos de cables y son el ánodo del circuito que van a recorre los electrones libres. Estos detectores nos permiten trazar la trayectoria de partículas cargadas que se desplacen en su interior.
+
+En la Fig. \ref{fig:estructura_detector} mostramos un esquema de la estructura del detector, donde vamos a tomar como eje $x$ la dirección del campo eléctrico, es la dirección en la que se van a desplazar los electrones libres y se denomina dirección de deriva. Como eje $z$, se considera el lado más largo del volumen del detector y esta sera la dirección por donde entran los neutrinos. Finalmente, como eje $y$ tomaremos la dirección restante. Los planos de hilos se encuentran en los extremos del volumen en el plano YZ.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.45]{estructura_detector.PNG}
+  \caption{Esquema de la estructura del detector LArTPC del programa SNB \cite{sbnd}. En el eje $x$, la dirección de deriva, se observa el campo eléctrico aplicado para dirigir los electrones libres hacia los planos de hilos. El eje $z$ es el que contiene el lado más largo del detector y es la dirección con la que inciden los neutrinos. El eje $y$ es el eje restante. Vemos que perpendicular a la dirección de deriva tenemos un plano que parte el detector en dos regiones y actúa como cátodo. En los extremos se tienen los planos hilos que actúan como ánodos.}
+  \label{fig:estructura_detector}
+\end{figure}
+
+Lo primero que vamos a mostrar es cómo dada una partícula cargada vamos a poder trazar su trayectoria. Para esto, tenemos que entender que cuando una partícula cargada se mueve por un medio neutro, si tiene energía suficiente, puede darse que por fuerza coulombiana se arranquen los electrones ligados al Ar teniendo electrones libres. De forma que al moverse una partícula cargada por un medio neutro lo que vamos a tener es una traza de electrones libres. En la Fig. \ref{fig:sensado} se puede ver representado gráficamente esto.
+
+Al aplicar un campo eléctrico, los electrones libres son dirigidos hacía los planos de hilos que al llegar al plano son recogidos emitiendo un pulso eléctrico. Hay muchos detectores que usan este principio, como puede ser un contador Geiger. Sin embargo, con el LArTPC se pretende es reconstruir la trayectoria seguida por las partículas y para ello lo que se hace es lo siguiente. Por un lado, se usan fotodetectores para determinar el instante tiempo $t_0$ en el comienza la trayectoria. Este punto es el lugar donde el neutrino interacciona con el medio y por tanto el tiempo en el que comienza la trayectoria de las partículas que queremos estudiar. 
+
+
+Cuando se origina la partícula cargada, esta se desplaza arrancando electrones que, con un campo eléctrico perpendicular al plano YX, dirigimos hasta los planos de hilos en los extremos. Cada plano de hilos consiste en tres planos de cables que se pueden observar en la Fig. \ref{fig:sensado}, donde en cada plano de cables, estos cables son paralelos y los tres planos tienen orientaciones distintas. La clave es que con dos de estos planos podemos determinar la posición  del electrón libre en dicho plano.
+
+
+Para entender esto, simplifiquemos el problema. Supongamos que tenemos solo dos planos de hilos, uno vertical y otro horizontal, de manera que son perpendiculares entre sí, es decir tenemos una rejilla. Cuando llegue uno de los electrones libres al plano se producirá una pulso eléctrico en uno de los cables del plano vertical y en uno del horizontal por lo que sabiendo la posición de estos cables podemos determinar la posición del electrón arrancando en dicho plano. A estos pulsos les denominamos \textit{hits} y también recogemos información de la energía del electrón, ya que en el cable se recogerá una carga, proporcional a la energía, que es lo que se denomina carga del \textit{hit}. Además también sabremos cuándo llegan estos electrones al plano.
+
+La situación real es que los planos no son horizontales y verticales y el tercer plano está para deshacer ambigüedades que se pueden dar al realizar la reconstrucción. De forma que, con los planos de hilos vamos a obtener la posición en el plano YZ de los electrones que hayan sido arrancados por la partícula cargada. Lo que es lo mismo, obtenemos la trayectoria de dicha partícula proyectada en el plano YZ. Para obtener información de la dimensión restante lo que hacemos es usar $t_0$ y el tiempo de llegada de los electrones al plano, ya que al saber la velocidad de deriva del electrón en el medio, podemos obtener la distancia al plano YZ.
+
+En resumen, inicialmente llega un neutrino, que interacciona con el Ar, obteniendo un protón y un electrón (recordar que esta es una de las opciones posibles). Con los fotodetectores obtenemos el instante en el que tiene lugar esta interacción. Al ser ambas partículas cargadas, vamos a tener un rastro de electrones libres por cada partícula, que debido al campo eléctrico en el eje $x$ se desplazan hacía el plano de hilos. Obteniendo la posición de los electrones libres en el plano YZ y, de esta forma, tenemos la proyección de las trayectorias en dicho plano. La información de la trayectoria en el eje $x$ la obtenemos usando el tiempo de origen así como el tiempo en el que llegan los electrones al plano de hilos.
+
+En definitiva, vamos a poder obtener la trayectoria completa de una partícula cargada ya que trazamos la trayectoria en distintos momentos gracias a los electrones arrancados. La forma de los datos una vez procesados se asemejan mucho a una imagen, ya que tendremos las coordenadas de los puntos de la trayectoria. Una analogía a las imágenes que vamos a usar es la estela dejada por un avión en el cielo marcando su trayectoria.
+
+Nosotros vamos a centrarnos en el estudio de las cascadas electromagnéticas que se van a producir en el interior del detector. Una de las situaciones que podemos tener es que el neutrino llegue, produzca un electrón y un protón, este electrón va a desplazarse por el medio creando electrones libres (y por tanto lo observamos) hasta que se desintegré generando un electrón y un fotón iniciándose la cascada electromagnética. La otro opción posible, es que un fotón origine la cascada. Nuestro objetivo fundamental en este trabajo es conseguir distinguir ambos tipos de sucesos.
+
+\subsubsection*{MLOps}
+
+Un problema de ciencia de datos, es un proceso que puede llegar a ser muy complejo y depender de varias partes e incluso de varios equipos. Por ejemplo, primero tenemos que procesar los datos, analizarlos y entrenar un modelo. Una vez obtenido el modelo, este tiene que ponerse en funcionamiento y realizar la tarea para la que ha sido entrenado. En el momento que el proyecto crece, cada una de estas partes crece llegando a un punto en el que cualquier modificación que se quiera realizar puede ralentizarse mucho debido a la complejidad del sistema.
+
+DevOps es un conjunto de prácticas para hacer el ciclo de desarrollo, implementación y ejecución de aplicaciones de forma eficiente \cite{mlops_nvidea}. MLOps, no es más que la aplicación de estas prácticas en una aplicación de Machine Learing. La filosofía de estos métodos de desarrollo es que los ciclos de versiones sean los más rápidos posibles con la idea de aprender del funcionamiento de la aplicación y de la opinión de los usuarios.
+
+Si entrar en mucho detalle, veamos algunas de estas prácticas. El primer paso suele ser la integración y entrega continua que consiste en probar de forma automática el software introducido así como diseñar entorno a estas pruebas. Por otro lado, también se busca que el despliegue se realice de manera automática \cite{mlops_practical}. El empleo de sistemas de control de versiones como git es fundamental, al permitir tener un seguimiento de la evolución del proyecto así como la colaboración entre personas. 
+
+En MLOps además se tiene que integrar integrar la parte de ciencia de datos donde tenemos por un lado el procesamiento de estos datos y por otro lado se tiene el modelo final que es lo que nos interesa monitorizar y mejorar. Con estas técnicas se pretende automatizar el tratamiento de los datos así como el despliegue y control sobre el modelo. En la Fig. \ref{fig:mlops} se muestra un esquema de un flujo de trabajo basado en MLOps donde tenemos primero la parte de ciencia de datos donde tenemos los datos y el modelo. Luego se tiene la parte de desarrollo donde de manera automática se verifica que todo funcione y se despliega. Tras el despliegue, entra en juego la parte de operaciones donde se hace uso de la aplicación y se aprende de su funcionamiento. Con esta información se modifican las etapas anteriores.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.50]{mlops.PNG}
+  \caption{Esquema del flujo de trabajo basado en MLOps \cite{mlops_neal}. En el centro tenemos el flujo de desarrollo donde tenemos primero la planificación y la creación de la aplicación. Luego, entramos en el flujo de ML donde se procesan los datos y se crea el modelo. Con esto volvemos al flujo de desarrollo donde se verifica y despliega la aplicación. Finalmente entra en juego el flujo de operación donde se monitoriza el modelo y la aplicación para que en función de su funcionamiento se vuelva a comenzar el ciclo.}
+  \label{fig:mlops}
+\end{figure}
+
+Nosotros con este trabajo nos vamos a centrar sobre todo en implementar muy bien la estructura de automatización de los datos y modelos ya que nos va a permitir trabajar de manera mucho más ordenada y mantener un control de trabajo que vayamos realizando y de los modelos obtenidos. En \cite{mlops_begin} se muestran tres niveles de implementación de MLOps: un primero donde todo se hace de manera manual, un segundo donde hay una estructura de flujo donde con el uso de tuberías se automatizan la mayoría de elementos y un tercero donde se introduce la integración continua con el uso de test automatizados y el código se empaqueta y despliega automáticamente. Nosotros nos vamos a quedar en el segundo nivel donde tenemos un proceso completamente automático en el flujo de datos y del modelo pero no vamos a entrar en el uso de test automáticos así como en el despliegue automático del código al ser un proceso complejo, sobre todo para alguien sin experiencia previa, y alejarnos mucho del objetivo final de este trabajo. 
+
+\subsection{Deep Learning}
+\label{sec:dl}
+
+El Deep Learning (DP) es un conjunto de técnicas y modelos que están dentro del ámbito del Machine Learning (ML) y que en los últimos años a experimentado unos enormes avances en muchos problemas de ciencia de datos que se habían resistido a los métodos clásicos \cite{dl_nature}. Entre estos problemas se encuentran la clasificación de imágenes, donde el uso de redes neuronales convolucionales (CNN) se han convertido en el estado del arte y han conseguido obtener mejores resultados que los propios humanos. Otros ejemplos se tiene en el procesamiento de lenguaje natural con los transformers o en el reconocimiento del habla \cite{korean_dl}.
+
+El DL tiene la ventaja de que es capaz de trabajar con los datos en bruto, de hecho se definen como aquellos modelos que son capaces de obtener las características directamente de los datos \cite{dl_book}. Estos rápidos avances se deben en gran medida a que se disponen de una gran cantidad de datos (gracias al desarrollo del Big Data) que pueden ser procesados automáticamente así como de distintos avances tecnológicos \cite{korean_dl,dl_nature}. De hecho, los avances son tales que hemos pasado de ser capaces de ser capaces de realizar clasificación de imágenes a generar imágenes nuevas dados un texto donde se combinan distintos modelos de DL \cite{hier} o modelos que son capaces de escribir código dadas las instrucciones de lo que se quiere realizar \cite{codex}.
+
+Con todo esto veamos los fundamentos necesarios para entender que es una CNN, sus elementos, su complejidad y mostraremos algunos ejemplos de esta arquitectura de red neuronal. No se entrará en mucho detalle pero en esta sección lo que se pretende es que entienda bien que es el DL y una CNN y cuales son los principios básicos. 
+
+\subsubsection*{Fundamentos}
+
+Las redes neuronales (NN) surgen con los perceptrones multicapa (MLP) que consisten en la composición de funciones paramétricas para formar una función más compleja. Este modelo está inspirado en el funcionamiento del cerebro, mediante las conexiones entre neurona y la activación de las mismas. Esta representación se puede observar en la Fig. \ref{fig:mlp} pero no es más que una representación de una serie de operaciones matemáticas, donde los nodos representan las entradas y salidas de funciones y los enlaces el valor de los coeficientes de la aplicación, que se denominan pesos. 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.29]{MultiLayerPerceptron.png}
+  \caption{Esquema de un modelo MLP con una capa de entrada, una capa oculta y una capa de salida \cite{mlp}.}
+  \label{fig:mlp}
+\end{figure}
+
+De hecho el paso de una capa a otra en un MLP no es más que una aplicación lineal:
+\begin{equation}
+  \label{eq:mlp_1}
+  \mathbf{y} = W\mathbf{x},
+\end{equation}
+a la que se le aplica una función no lineal. Donde $\mathbf{x} \in \mathbb{R}^n $ es la entrada y son los nodos iniciales, $\mathbf{y} \in \mathbb{R}^m$ son los nodos de salida y la matriz $W$ se representa por los enlaces. Notar que las dimensiones de entrada y de salida no tienen por que ser las mismas. La función no lineal se aplica que el modelo sea capaz de aprender relaciones más complejas y hay muchas opciones normalmente se usa la sigmoide o la RELU entre otras muchas \cite{dl_book}.
+
+En la ecuación \ref{eq:mlp_1} lo que hemos mostrado es la función matemática de una MLP donde solo tenemos una capa de entrada y otra de salida y donde no se aplica ninguna función no lineal, por lo que es un ejemplo que es idéntico a un modelo de regresión. Se puede añadir más complejidad añadiendo más capas y estas funciones no lineales. Un ejemplo de la formulación de una MPL con una capa oculta es:
+\begin{equation}
+  \mathbf{y} = \sigma(W\mathbf{x}), \quad \mathbf{z} = \sigma(V\mathbf{y}),
+\end{equation}
+donde $\sigma$ representa la función sigmoide, $\mathbf{x}$ es el vector de entrada, $\mathbf{y}$ es el de salida de la capa inicial y $\mathbf{z}$ el vector de salida. W y V son matrices que representan los enlaces entre capas.
+
+Una cosa importante sobre estos modelos es que se puede demostrar que son aproximadores universales, es decir, que una toda función puede aproximarse usando una MLP, el problema surge con la cantidad de capas y neuronas necesarias así como en el proceso de aprendizaje de los pesos correctos para representar dicha función.
+
+El punto más importante de los modelos de DL en general y lo que los define es que son capaces de aprender las características (variables) para resolver el problema. Hasta entonces, si se quería estudiar una imagen lo que se hacía era aplicar distintos algoritmos como LBP para obtener las características que nos permitan realizar una cierta tarea. El problema es que el diseño de estos algoritmos requiere de un esfuerzo muy grande y los resultados no son los mejores. Como ya hemos dicho, esto es posiblemente uno de factores que han hecho posible que se tengan grandes avances ya que no tenemos que perder tanto tiempo en la extracción de características \cite{dl_nature}. Estos modelos no solo agilizan el proceso, si no que además son capaces de detectar patrones que nosotros no.
+
+Las MLP establece las bases de todos los modelos actuales de Deep Learning. Con el tiempo han ido surgiendo distintos tipos de NN como las CNN, las RNN, los autoencoder o los transformers. En las MLP el paso de una capa a otra no es más que la aplicar una función no lineal tras realizar una aplicación lineal sobre un vector de entrada. Estas nuevas arquitecturas lo que hacen es cambiar esta representación y por tanto cambiando la función realizada. Como se definan las redes influirá en los tipos de datos con los que la red podrá trabajar. 
+
+Un aspecto importante es que si nos fijamos, las NN, por definición, no son más que la composición de distintas funciones donde cada función la podemos entender como una capa o incluso un conjunto de capas (la composición de funciones es una función). Esto simplifica la construcción de redes en el sentido conceptual ya que simplemente hay que pensar en la combinación de distintos bloques. Por ejemplo, a las capas que forman una MLP se le denominan densas (todos los nodos están unidos) y un MLP no es más que el uso de varias de estas capas. En las CNN se usan lo que se denominan capas de convolución, que son un conjunto de capas que realizan la operación de convolución. Hay otros muchos bloques y el diseño de una NN consiste en la aplicación de sucesivos bloques que dependerán del objetivo final que se tenga.
+
+La dificultad reside en construir bloques que sirvan para el tipo de datos que se este usando y como combinar los bloques para obtener los resultados deseados pero nos en la construcción del modelo una vez sabemos cual es su forma.
+
+\subsubsection*{CNN}
+
+Las CNN son un tipo de NN donde la función matemática que se realiza es la de convolución. Antes de entrar en la parte matemática, mostremos la idea detrás de esta capa de convolución. Para ello supongamos que tenemos una imagen, que se representa como una matriz donde cada elemento describe al píxel.
+
+Sobre esta imagen podemos ir aplicando un filtro pequeño, i.e un bloque $3\times 3$ e ir recorriendo la imagen y recogiendo el resultado de aplicar el filtro. Entiéndase aplicar el el filtro como sumar los píxeles de la imagen que pase por un patrón fijo, por ejemplo podría se una linea diagonal. Esto matemáticamente lo podemos ver como tenemos una matriz $I$, la imagen, y una $K$, el filtro, donde las dimensiones de $I$ son mayores que las de $K$. La matriz $K$ se fija definiendo el filtro (en el caso de tener la linea diagonal tendríamos nulo) y lo que se hace es ir recorriendo $I$ en bloques y hacer un producto elemento a elemento y sumarlo de manera que si recogemos todos los resultados en una matriz el resultado de aplicar el filtro sería otra matriz.
+
+Sea $I$ una matriz de dimensiones $p\times q$ y $K$ una matriz de dimensiones $r\times s$ tal que $p>r$ y $q>s$. Definimos aplicar un filtro como:
+\begin{equation}
+  \label{ec:def_filtro}
+  S_{i, j} = \sum_{n=1}^{r}\sum_{m=1}^{s}I_{i + n, j + m}K_{n,m}
+\end{equation}
+con $i\in\{1,\dots, p -1 \}$ y $j\in\{1,\dots, 1 -1\}$. La matriz $S$ tiene dimensiones $p-1\times q-1$. Sin entrar en mucho más detalle, hay distintas definiciones según como tratemos los bordes de la imagen, por ejemplo, podríamos considerar que cuando nos saliésemos de la imagen se vuelva al otro extremo de manera que la matriz resultante tendría las mismas dimensiones que la imagen original. Otra cosa que podemos notar es que en la definición solo se contempla que el filtro se aplique sobre todos los bloques posibles. Sin embargo, también se puede hacer de manera que el desplazamiento realizado al desplazar el filtro no sea un píxel.
+
+Este enfoque nos permite determinar que regiones de la imagen tienen unos patrones que nos pueden interesar. Con las CNN lo que se consigue es que la forma de estos filtros son aprendidos por la red. 
+
+Esta aplicación que acabamos de describir es lo que se denomina convolución. Matemáticamente la convolución entre dos funciones $(x * w)(t)$ se puede escribir, en el caso de una dimensión, como:
+\begin{equation}
+  (x * w)(t):=\int_{-\infty}^{\infty} x(a) w(t-a) d a,
+\end{equation}
+donde $x$ y $w$ son funciones que dependen de una variable. En el ámbito del DL a $x$ se le denomina entrada y a $w$ el kernel \cite{dl_book}. La expresión en el caso discreto:
+\begin{equation}
+  (x * w)(t)=\sum_{a=-\infty}^{\infty} x[a] w[t-a].
+  \end{equation}
+Esta definición se puede generalizar para varias dimensiones simplemente añadiendo tantas integrales como dimensiones. En el caso de las imágenes tenemos que el espacio es discreto y que tenemos dos dimensiones, entonces, la operación de convolución quedaría:
+\begin{equation}
+  s[i, j]=(I * K)[i, j]=\sum_{m} \sum_{n} I[m, n] K[i-m, j-n],
+\end{equation}
+donde $I$ es una matriz de dimensiones $p\times q$, la entrada, y $K$ es una matriz de dimensiones $k\times l$, el kernel. Los límites de los sumatorios realmente serían de menos infinito a infinito pero en nuestro caso está determinado por las dimensiones de K (podemos definir $K = 0$ si los indices superan las dimensiones). Notar la gran similitud con \ref{ec:def_filtro}
+
+% Veamos esta expresión con el ejemplo que pusimos antes. $I$ es una matriz dada por la imagen, $K$ es el filtro y $s$ es la matriz final tras aplicar el filtro. Notar que la ecuación esta definida para los elementos de las matrices. La expresión anterior lo que nos dice es que el elemento $i$, $j$ de la matriz $s$ esta dado por hacer el producto elemento a elemento de la matriz $K$ con una parte de la matriz $I$ en un entorno del elemento $i$, $j$. Tras hacer el producto lo que se hace es sumar. Esto lo hacemos para todos los $i$, $j$ posibles y es lo que antes decíamos de aplicar el filtro a la imagen.
+
+La capa de convolución consiste en aplicar el filtro y luego (en la mayoría de casos) aplicar una capa de pooling que consiste en reducir las dimensiones de la salida mediante la agregación de varios elementos en uno solo. Por ejemplo, una imagen la podemos reducir si fragmentamos la imagen en bloques $2\times 2$ y le hacemos la media a estos bloques. Esta operación ayuda a que el resultado de la aplicación del filtro sea invariante a pequeños desplazamientos, que es fundamental a la hora de estudiar imágenes ya que queremos que imágenes que se distingan solo por desplazamientos se clasifiquen igual (pensar que la imagen puede estar tomada en puntos distintos pero contener lo mismo).
+
+Esto que acabamos de describir son los elementos más básicos de una CNN y es el punto de partida a la hora de construirlas. Las CNN no son más que un tipo de arquitectura de NN donde cada tipo de arquitectura tiene unas características que hacen que sean útiles para un tipo de problema. Las CNN son muy buenas para a la hora de estudiar imágenes ya que permiten estudiar una región de la imagen y determinar que elementos se tienen en la imagen.
+
+\subsubsection*{Aprendizaje}
+
+Hasta ahora hemos hablado de como es una NN. Sin embargo, no hemos entrado en como se determinan los pesos para que sean capaces de resolver un problema determinado. Sin entrar en mucho detalle, lo que se hace es emplear lo que se conoce como el descenso del gradiente y la \textit{backpropagation}.
+
+Con los modelos de ciencia de datos lo que se suele querer es que dados unos datos, el modelo sea capaz de realizar una determinada tarea. En el caso del aprendizaje supervisado, se parte de que se tienen unos datos que sabemos su clase/valor y con estos datos se entrena el modelo para que realice la tarea concreta. Para la NN lo que se hace es aprender los distintos pesos de la red.
+
+El descenso del gradiente consiste en definir una función perdida que tome la salida de manera que se penaliza los caso donde el modelo se equivoca y no se penaliza en casos contrarios. Esta función toma como argumento la salida de la red y su valor real que normalmente se define tal que a peor funcione la red se tengan valores más bajos. Por otro lado, el valor de esta función dependerá del valor de los pesos ya que influyen en la salida de la red, por lo que si queremos mejorar el modelo tenemos que encontrar los pesos que hagan que el error cometido sea el menor posible para todos los ejemplos.
+
+Matemáticamente hablando el problema consiste en la optimización de una función de varias variables, los pesos de red. Para obtenerlos lo que se hace es calcular el gradiente y cambiar los parámetros en función del valor obtenido. El cambio se hace poco a poco y se regula con lo que se conoce como ritmo de aprendizaje (lr). Hay distintos algoritmos para este problema como puede ser SGD o Adam.
+
+El proceso de aprendizaje suele realizarse dando un pequeño conjunto de datos obteniendo el valor de la función perdida para cada dato, promediando y finalmente ajustar los pesos calculando el gradiente. Esto se repite para todos las instancias y, normalmente, este procedimiento se repite de manera que durante el aprendizaje el modelo estudia cada dato varias veces. A el conjunto de datos pequeños se le conoce como \textit{batch size} y al número de veces que se recorre el conjunto de datos como número de épocas.
+
+Uno de los problemas fundamentales que se tienen con el DL es que a medida que se tienen redes complejas el número de pesos aumenta y esto da problemas de sobre ajuste. De hecho una de las limitaciones del DL es la gran cantidad de datos que se necesitan para entrenar los modelos. Este problema ha hecho que hayan surgido métodos de regulación como el dropout que tratan de lidiar con este problema. El dropout no es más que eliminar aleatóriamente un porcentaje de los enlaces entre dos capas que a mostrado buenos resultados para lidiar con este problema.
+
+\subsubsection*{Elementos}
+
+A modo de resumen final, vamos a recoger lo distintos bloques que pueden formar una CNN.
+
+Un elemento necesario es el optimizador que se va a usar y el lr. En este punto lo que se hace es construir la NN usando distintas capas. Las capas más simples son las que hemos ido mencionado. Se tiene el bloque de convolución que esta formado por la aplicación de los filtros así como de la capa de pooling. El otro elemento que hemos visto son las capas densas. Una CNN muy simple la podemos construir como la aplicación de varias capas de convolución y tras esto usar una MLP que clasifique los resultados.
+
+Esto son los bloques más simples pero con el tiempo han ido surgiendo nuevos bloques y modificaciones sobre estos con la idea de mejorar la optimización o los resultados. También hay distintas forma de unir todos estos elementos para construir la red. No vamos a entrar en estos bloques ya que los avances en los últimos años a sido muy grande y una revisión de estos elementos es un trabajo en si. En el caso de hacer uso de alguna de estas arquitecturas o elementos lo describiremos cuando se describa dicha arquitectura.
+
+\subsection{Estado del arte}
+
+En los últimos años distintos laboratorios como el CERN han aplicado técnicas de DL \cite{ml_phy} con la idea de mejorar la capacidad de análisis de los datos qe se obtienen. Algunas de la aplicaciones que se pueden encontrar son en seguimiento de partículas, identificación de eventos, identificación de \textit{Jets} o simulaciones aplicando redes generativas \cite{dl_phy, dl_lhc}. De hecho en microBooNE, un detector similar al nuestro, hace uso de las CNN para la clasificación de las cascadas \cite{ml_phy}.
+
+Los neutrinos estériles surgen como una explicación teórica fuera del Modelo Estándar de una serie de resultados anómalos en distintos detectores de neutrinos. En los detectores LSND \cite{lsnd}, MiniBooNE \cite{miniboo} se han observado exceso del número de neutrinos esperados y que son compatibles con la existencia del cuarto neutrino \cite{sbnd}. Además se han observado otras anomalías conocidas como la anomalía del reactor o la anomalía de Galio que también podrían explicarse con la presencia del neutrino estéril. Los programas SNB y DUNE tiene como objetivo realizar experimentos de seguimiento que traten de confirmar que efectivamente se tienen esas anomalías \cite{sbnd, dune}. El detector microBooNE \cite{microboo} tenía un objetivo similar y ha publicado resultados recientemente, que son inconsistentes con los resultados de MiniBooNE  \cite{micro_res}. Sin embargo, no dejan de ser unos resultados iniciales y siguen teniendo incertidumbres tales que no descartan completamente los resultados previos. Una de las incertidumbres principales proviene de la selección de los eventos que provienen de neutrinos y por tanto para reducir la incertidumbre una de las cosas que hay que mejorar es la detección de cascadas electromagnéticas. 
+
+Con respecto a la clasificación de imágenes, los mejores resultados en los últimos años vienen dados por CNN con arquitecturas cada vez más complejas y más profundas. El rendimiento de estos modelos se suele evaluar en una competición anual con el conjunto de datos de ImageNet, que tiene muchas imágenes con muchas clases. Los ganadores de de los últimos años han sido redes basadas en EfficientNet \cite{efficientnet}, que lo que hacen es introducir formas de escalar las redes (aumentar el número de capas y número de filtros) partiendo de un modelo base. Sin embargo, en los dos últimos años los ganadores no han sido modelos basados en CNN si no modelos que hacen uso de los transformers \cite{transformers} que son una nueva arquitectura de NN que han se han convertido en el estado del arte en procesamiento de lenguaje natural. Los modelos que aplican los transformers a la clasificación de imágenes se conocen como Visual Transformers (ViT) \cite{vit}, donde lo que hacen es proponer una forma de tratar las imágenes para que pueden ser usados por los transformers. Lo que proponen es segmentar la imagen en bloques ($16\times 16$) y, manteniendo un orden, se pasan estos bloques a la red como si fueran una frase.
+
+
+
+
+
+\section{Clasificación de cascadas electromagnética}
+
+% \red{En este punto se asume que se entiende que es una cascada, como funciona el detector y por tanto que trabajamos con algo muy parecido a imágenes. También se asume que se sabe a que nos referimos con hit. Realmente todo el aspecto físico debe estar explicado ene este punto}
+
+En esta sección se muestra como vamos a abordar el problema propuesto. Para ello, primero describiremos cuál es el problema y cuáles son los datos con los que partimos. Luego, mostraremos las formas que hemos planteado para resolver el problema tanto en los modelos como en el procesamiento de los datos.
+
+En ningún vamos a entrar en ningún momento en el código empleado más allá de un esquema del flujo que hemos empleado. Gran parte de este trabajo a consistido en la implementación del flujo completo ya que se ha partido desde cero. Además se ha dedicado una especial atención a realizar una implementación tratando de aplicar buenas prácticas de programación \cite{clean} así como mantener una estructura de MLOps, teniendo en cuenta que como físico no se tenía una formación previa de como abordar de manera correcta un proyecto de desarrollo software. Si bien es cierto que estas prácticas no son necesarias como tal, son muy buenas prácticas tanto como formación personal como para la realización de un proyecto que es posible que otras personas puedan continuar en un futuro.
+
+Ahora vamos a hacer una descripción del problema que vamos a tener que resolver, así como de los datos proporcionados. También se mostrarán los distintos enfoques que se pueden plantear para la resolución del problema junto con los modelos que se pueden emplear para realizar la clasificación.
+\subsection{Descripción del problema}
+
+Como ya se ha mencionado, nuestro problema consiste en la clasificación de un tipo de evento que puede darse en un detector LArTPC, este evento se conoce como cascada electromagnética y puede originarse por un electrón o por un fotón. Nuestro objetivo es conseguir saber si una cascada es de origen fotónico o electrónico. En la Sección \ref{sec:conceptos} se ha descrito de manera detallada cómo se producen dichas cascadas y cómo el detector transforma pulsos eléctricos en los datos con los que nosotros vamos a trabajar.
+
+En nuestro caso los datos están simplificados para contener únicamente cascadas electromagnéticas, por lo tanto, estos eventos son las trayectorias dejadas por las cascadas electromagnéticas observadas por el detector. Estos eventos los tenemos clasificados en función de que tipo de partícula origina el evento.
+
+% Lo primero que tenemos que entender es que para cada cascada vamos a tener muchos datos que nos van a permitir reconstruir tridimensionalmente la cascada. A cada una de las cascadas nos referiremos como eventos. Para cada uno de los eventos sabremos cual es la partícula que lo origina así como la energía de dicha partícula. Para la reconstrucción tenemos la posición tridimensional de donde se produce el \red{hit} y la carga depositada por dicho \red{hit}. 
+
+Los datos que se nos han proporcionado consisten en datos tabulares etiquetados por el tipo de cascada. Tenemos 7 columnas, tres de ellas hacen referencia a un identificador del evento, a su energía en GeV\footnote{Un eV se define como la energía que tiene un electrón al aplicarle un campo eléctrico con una diferencia de potencial de 1V.} y al tipo de partícula respectivamente\footnote{El Particle Data Group, con la idea de tener un identificador único y estandarizado para todas las partículas, asignó un número natural a cada única de las partículas para su identificación \cite{datagroup}. Las partículas que pueden originar los eventos que estamos estudiando son un electrón y el fotón cuyos identificadores son el 11 y 22 respectivamente.}.  También se tienen otras tres columnas que describen la posición tridimensional del hit dando las coordenadas $x$, $y$, $z$. La última recoge la cantidad de carga recogida del hit, por lo que es una magnitud proporcional a la energía depositada por la partícula cargada en ese punto de la trayectoria \red{unidades}. Es importante notar que en los datos no tenemos una única fila por evento, para cada evento tenemos varias filas con las que se describen la trayectoria completa del mismo.
+
+Los datos con los que trabajamos provienen de simulaciones de Montecarlo que simulan con mucha exactitud el comportamiento real del detector. El uso de simulaciones supone una serie de ventajas. Por un lado, tenemos una gran cantidad de datos y en caso de ser necesario un mayor volumen de datos podría conseguirse hasta cierto punto. Por otro lado, al tener control total de la simulación sabemos información privilegiada en el sentido de que es información que no se tiene en el detector real y se tiene que inferir. En concreto tenemos el valor de la energía del evento, que realmente se tiene que inferir de las medidas. Por esto mismo, a la hora de hacer la clasificación no vamos a hacer uso de esta variable pero si la usaremos para validar el modelo y saber así si nuestro modelo es mejor para un intervalo de energía concreto.
+
+Como hemos dicho los datos que tenemos están simplificados de manera que los eventos sean únicamente cascadas electromagnéticas. Realmente en cada evento tenemos distintas trayectorias dejadas por distintas partículas. Por lo que en la realidad sería necesario aplicar detección de objetos y quedarnos únicamente con las cascadas, sin embargo, para esto necesitamos un buen clasificador que es que abordamos aquí. En este trabajo no vamos a realizar la detección de objetos. 
+
+Los eventos con los que vamos a trabajar siguen una distribución uniforme en energía y en la Fig. \ref{fig:3d} se muestran una representación tridimensional de los datos tal cual se nos han proporcionado así como las tres vistas del evento en la Fig. \ref{fig:vistas}. \red{TODO: poner gráficas bonitas tamaño de letra y evento más bonito. recortar la imagen.}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.39]{3d_3.pdf}
+  \caption{Representación tridimensional de una cascada electromagnética originada por un fotón con los datos en bruto. El color de los puntos viene dado en función de la carga del \textit{hit}. Se muestran también las proyecciones sobre el plano XZ y sobre el plano XY con colores fijos.}
+  \label{fig:3d}
+\end{figure}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.39]{vistas_3.pdf}
+  \caption{Representación de las tres vistas de una cascada electromagnética originada por un fotón con los datos en bruto. El color de los puntos viene dado en función de la carga del \textit{hit}.}
+  \label{fig:vistas}
+\end{figure}
+
+
+Nuestro objetivo principal en este trabajo es logar distinguir las cascadas originadas por los fotones de las producidas por los electrones y tenemos que ver como abordar este problema desde el punto de vista de la ciencia de datos. Como ya hemos mencionado y visto en distintas gráficas, este detector nos permite reconstruir los eventos como imágenes tridimensionales por lo que podemos abordar este problema como un problema de clasificación de imágenes. Esta no es la única forma de abordar el problema pero es en la que nos vamos a centrar en este trabajo.
+
+Las redes convolucionales son el estado del arte en clasificación de imágenes por lo que todos los enfoques que vamos a desarrollar van a hacer uso de estas arquitecturas. Sin embargo, se pueden abordar mediante otros procedimientos como puede ser hacer la clasificación mediante la definición de nuevas variables a partir de las imágenes o el uso de métodos clásicos de extracción de características. Estos enfoques son más clásicos en el sentido que no se hace uso del Deep Learning y lo que hacemos es definir nosotros las características con la luego aplicar un clasificador.
+
+\subsection{Procesamiento de los datos}
+
+Antes de entrar en los modelo que vamos a usar para hacer la clasificación tenemos que ver cómo  se tratan los datos iniciales para que así podamos hacer uso de un modelo. Lo primero que tenemos que hacer es pasar los datos que tenemos al formato con el que se tratan las imágenes. Una imagen no es más que una matriz donde cada elemento es un píxel. En nuestro caso, al trabajar con imágenes tridimensionales, tendremos que trabajar con matrices con cuatro dimensiones, tres de posición y una para el canal de color. El color de la imagen lo asociaremos con la cantidad de carga depositada por el hit, por lo que, en principio, trabajamos con imágenes en blanco y negro.
+
+Una vez que hemos construido las imágenes vamos a plantear distintas formas de tratarlas que consideramos que pueden ayudar a la hora de discriminar los eventos. Estamos son los que enumeramos a continuación.
+
+\begin{itemize}
+  \item Trabajar directamente con las imágenes tridimensionales. Las CNN no están limitadas a trabajar con imágenes bidimensionales, estas pueden trabajar con imágenes de cualquier dimensión. En la Sección \ref{sec:dl} cuando las presentamos, vimos que la operación de convolución se puede generalizar a cualquier dimensión.
+  \item Trabajar con imágenes bidimensionales donde nos quedamos únicamente con una proyección. El problema con este enfoque es que se pierde mucha información.
+  \item Para solucionar esto lo que podemos hacer es agregar la información obtenida de las tres proyecciones o usando un ensemble o agregando las características obtenidas en los tres modelos.
+  \item Codificar la información perdida a la hora de hacer la proyección en forma de color de manera que mantenemos toda la información usando imágenes bidimensionales pero con tres canales de color.
+\end{itemize}
+
+Independientemente del modelo o enfoque empleado es necesario pasar los datos tabulares a imágenes pero surgen una serie de problemas al realizar esta conversión. El problema surge con la resolución de la imagen, la posición viene dada en centímetros y tenemos resolución en varias décimas de milímetro. Teniendo en cuenta que las dimensiones son 400x400x500 cm$^3$ tenemos imágenes con muchos píxeles. Notar por tanto que la precisión del detector esta relacionada con la resolución de la imagen, entendiendo resolución de la imagen como el número de píxeles que usamos para representar el volumen completo del detector.
+
+El problema surge si queremos mantener toda esta información, es decir, la resolución, ya que necesitaríamos muchos píxeles y a más píxeles mayor número de parámetros vamos a tener en el modelo. Otra cuestión a considerar es que tenemos un número considerable de filas por lo que tenemos que tener esto en mente a la hora de hacer el cambio, ya que podemos tener problemas de memoria, de hecho, otro punto que se debería considerar en este problema es hacer uso de técnicas de Big Data para abordar el problema, no obstante, nosotros no vamos a entrar en ello al alejarse del objetivo de este trabajo.
+
+Otro punto importante es que es necesario parametrizar cualquier cosa que influya en el procesamiento de las imágenes, no solo para hacer un seguimiento de los mismos, si no también para poder probar con distintas configuraciones. Sobre todo es importante tener como parámetro la resolución final así como el tamaño de la imagen ya que son parámetros que pueden influir mucho en los resultados y eficiencia del modelo.
+
+Veamos cómo vamos a tratar la imágenes. Mencionar que vamos a realizar todo el procedimiento desde cero. Se podría haber hecho uso de la librería matplotlib simplificando mucho el problema, pero esto solo serviría en caso de trabajar con la proyecciones ya que genera las imágenes directamente de los datos tabulares. Debido a que vamos a probar distintos enfoques, vamos a realizar la implementación desde el principio ya que los distintos procesamientos parten de la misma idea y son cambios muy pequeños de una implementación a otra. Además, de esta forma tenemos control total sobre las imágenes y todas van a compartir los parámetros.
+
+Los datos dados están en el sistema de referencia del detector donde el eje $z$ va de 0 cm a 500 cm y los ejes $x$ e $y$ van de -200 cm a 200 cm. Para regular la resolución y pasar los datos a una imagen lo que vamos a hacer es un es aplicar un cambio de sistema de referencia así como de unidades. Con estos cambios lo que pretendemos es regular la resolución así como facilitar la creación de las imágenes.
+
+Para entender la idea que hay detrás de esto pongamos el siguiente ejemplo, supongamos que se tiene una regla que solo tiene marcados los centímetros. Si se empleara para medir el lado de un cuadrado que mide 1.2 \si[]{cm}, al colocar la regla veríamos que el cuadrado acaba entre la marca con el 1 y con el 2, por lo que podemos decir que mide 1 \si[]{cm} con un cierto error al ver que el cuadrado acaba más cerca del 1 que del 2 pero se pasa un poco. Con las transformaciones que planteamos lo que queremos hacer es crear nuestra regla donde el punto más pequeño lo colocamos en el cero y lo que hacemos es aumentar el número de marcas entre el valor más pequeño posible y el valor más grande posible si queremos aumentar la resolución y reducir el número de marcas si queremos reducir la resolución.
+
+Para fijar ideas, supongamos que tenemos solo dos dimensiones y queremos acabar con imágenes 100x100. Para esto lo que hacemos primero es realizar un cambio de referencia de manera que el valor más chico en cada eje pase a ser cero. Ahora lo que hacemos es cambiar las unidades para que el valor más grande en los eje pase a valer 100. Si redondeamos el resultado obtenido para cada punto obtenemos la marca más cercana a dicho punto y que además nos sirve como índice para colocar el píxel en la matriz (la imagen).
+
+De manera formal lo que se tiene es lo siguiente. Sea ${r} = (r_x, r_y, r_z)$ un punto cualquiera de la trayectoria de un evento cualquiera, $t_{min} = (x_{min}, y_{min}, z_{min})$, $t_{min} = (x_{max}, y_{max}, z_{max})$ tuplas que recogen los valores más pequeños y más grande en cada eje respectivamente, que se obtienen de todos los eventos de entrenamiento, y $c = (c_x, c_y, c_z)$ una tupla con la resolución final de la imagen que contiene al detector completo y que verifican:
+\begin{equation}
+  c_x = c_y = \frac{5}{4}c_z,
+\end{equation}
+para que los tres ejes tengan las mismas unidades.
+
+Lo primero que hacemos es aplicar el cambio de referencia (sumar a cada eje una constante a todos los puntos de todos los eventos) con la idea que el punto más pequeño este en origen:
+\begin{equation}
+  {r}^\prime = {r} - t_{min}.
+\end{equation}
+Ahora aplicamos el cambio de unidades (multiplicar a cada eje por una constante):
+\begin{equation}
+  {r}^{\prime\prime} = \frac{{r}^\prime}{t_{max} - t_{min}} \cdot c.
+\end{equation}
+Finalmente redondeamos $r^{\prime\prime}$ a un entero. Aplicamos esto a todos los eventos y todos los puntos, con lo que finalmente para cada evento tenemos las posiciones dadas con números enteros cuyo mínimo es el cero y el máximo es $c$ obteniendo así los índices de la matriz que representa la imagen.
+
+Esta imagen que hemos obtenido es del detector completo, pero los eventos no ocupan todo el detector por lo que debemos dar una parte de este volumen para evitar tener regiones muy vacías, una venta. Además, estas ventanas tienen que ser iguales para todos los eventos. Para esto tenemos que ver dónde colocamos esta ventana. Una opción sería colocarla en el centro de masas de la cascada, otra opción posible sería situarla al comienzo de la cascada ya que sabemos que hay es donde más diferencias hay entre los dos tipos de cascadas. Otro parámetro que vamos a tener en nuestro modelo final es el tamaño de esta ventana, que no es más que el tamaño final de la imagen.
+
+Como comentario final, es posible que a la hora de hacer el paso de datos tabulares a imágenes, al estar cambiando la resolución, tengamos para el mismo punto del espacio dos valores distintos de carga por lo que tendremos que elegir un valor. Hay distintas opciones como puede ser tomar el máximo o la media, estas opciones también las introducimos como parámetros.
+
+A modo de resumen la creación de las imágenes consiste en primero obtener los máximos y mínimos de las coordenadas espaciales y de la carga. Con esto hacemos las transformaciones descritas obteniendo los índices para colocar los píxeles en la imagen. Tras la transformación lo que se hace es realizar la proyección correspondiente, que puede ser o quitarnos unos de los ejes, quedarnos con la imagen tridimensional o hacer la codificación de la 3º dimensión en forma de color. Una vez se tienen los indices colocamos la ventana que la situamos de manera que el origen del evento este situado en una esquina inferior de la imagen (en uno de los ejes se tiene que tener cuidado por que dependiendo de en que zona del detector ocurra tendremos que cambiar la esquina).
+
+\subsection{Modelos propuestos}
+
+Una vez se han procesado los datos y tenemos la imágenes tenemos que aplicar un modelo para realizar la clasificación. En esta sección simplemente vamos a enumerar los distintos modelos propuestos para realizar la clasificación:
+
+\begin{itemize}
+  \item Una CNN simple, con pocas capas que nos sirva de punto de partida.
+  % \item \red{Una CNN compleja hecha por nosotros????}
+  \item Una CNN más compleja, similar a la simple pero más densa, más filtros y neuronas, y más profundas, más capas.
+  \item Hacer uso de arquitectura del estado del arte como pueden ser ResNet, EfficieNet o Visual Transformers. Probaremos a entrenar con los pesos aprendidos con el conjunto de datos de ImageNet reentrenando las últimas capas.
+\end{itemize}
+
+Con todo esto proponemos distintos métodos tanto para el procesamiento de los datos así como el modelo empleado. En las siguientes secciones mostraremos tanto una descripción detallada de las arquitecturas de los modelos empleados así como los resultados obtenidos a la hora de hacer la clasificación.
+
+\subsection{Flujo de trabajo}
+
+Sin entrar en los detalles de la implementación, veamos el flujo de trabajo que vamos a seguir. En la Fig. \ref{fig:flujo} se muestra de manera esquemática este flujo de manera simplificada.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.49]{flujo_tem.PNG}
+  \caption{Esquema del flujo de trabajo implementado para resolver el problema de clasificación de cascadas electromagnéticas. Los cuadrados son bloques de código mientras que las elipses representan datos, parámetros y modelos. En rojo se índica que es forma parte del proceso de entrenamiento y validación mientras que en verde se recoge lo que se despliega tras el entrenamiento.}
+  \label{fig:flujo}
+\end{figure}
+
+Se parte de los datos proporcionados y de los parámetros del modelo así como para tratar las imágenes. Lo primero que hacemos es separar el conjunto de entrenamiento en entrenamiento y prueba de manera que nos aseguramos que nuestro modelo no hace uso del conjunto de prueba en ningún momento. En este punto lo que hacemos es pasar el conjunto de datos a imágenes que volvemos a separar en entrenamiento y validación. Con las imágenes de entrenamiento entrenamos un modelo haciendo uso de los parámetros dados y evaluamos el modelo usando el conjunto de validación. El modelo final es guardado junto con los parámetros para su uso futuro.
+
+Este flujo mencionado esta muy simplificado, veamos algunas cosas que son importantes mencionar. A la hora de entrenar el modelo, como estamos usando redes neuronales, en el entrenamiento damos varias vueltas por el conjunto de entrenamiento y validamos en cada vuelta hasta obtener el mejor modelo usando los resultados de validación para elegir el modelo final. Otra cosa que no se muestra en el flujo es que para el procesamiento de los datos necesitamos obtener el mínimo y máximo de varias magnitudes por lo que al aprenderlas con el conjunto de entrenamiento estas tienen que guardarse con el modelo para poder procesar imágenes futuras.
+
+Otro aspecto importante es que tenemos un conjunto de parámetros que vamos a tener explorar para obtener los mejores resultados. Para esto hacemos uso de la librería Optuna que nos permite hacer esta búsqueda de manera más eficiente que haciendo una búsqueda de rejilla, al tratar de optimizar una función objetivo. Para esto partimos del flujo descrito y lo que hacemos es una vez validado el modelo, en función del resultado obtenido por la función objetivo modificamos los parámetros de manera iterativa.
+
+Por otro lado, como ya se menciono al estar trabajando en un problema donde no se esta trabajando con un equipo que se mezclen el desarrollo y operaciones hay puntos donde no tiene sentido hacer uso de algunas técnicas de MLOps, sobre todo, una vez obtenido el modelo. En nuestro caso las prácticas que hemos llevado a cabo son:
+\begin{itemize}
+  \item Encapsulación de las distintas partes de flujo de manera que cualquier modificación realizada no afecte al flujo teniendo así un sistema de tuberías.
+  \item Todos los modelos entrenados, junto con sus resultados y los parámetros han sido guardados haciendo uso de MLFlow. Una herramienta que facilita mucho tanto el despliegue como el seguimiento de los resultados.
+  \item Para simular el despliegue lo que se ha hecho es simplemente construir un flujo que parta de datos nuevos (en nuestro caso el conjunto de prueba) y el modelo aprendido y clasifique los datos. 
+  \item Se ha realizado la implementación para que para hacer el entrenamiento solo sea necesario indicar los parámetros y para la evaluación de nuevos datos solo se requiera indicar el modelo que se quiere usar.
+\end{itemize} 
+\newpage
+\section{Análisis de los datos}
+En esta sección vamos a analizar los datos con la idea de poder entenderlos mejor y poder tomar decisiones sobre como procesar los datos y crear las imágenes. En concreto nos centraremos en estudiar el rango y distribución de distintas variables.
+
+Como ya he explicado, una de las variables que tenemos de cada evento es la energía de la partícula que origina dicho suceso. Recordemos que esta variables se tiene gracias a que trabajamos con simulaciones y solo se usará para hacer el estudio de los resultados obtenidos. Para este estudio es necesario conocer la distribución de esta variable, es decir, si tenemos rangos de energía donde tenemos más evento. En la Fig. se muestra un histograma de la distribución de energías de los distintos eventos donde vemos que efectivamente se tiene una distribución uniforme. En nuestro caso esto se tiene ya que estamos trabajando con simulaciones y se han generado los eventos de manera que los modelos se entrenen con la misma cantidad de eventos para todas las energías. En la realidad no se espera que los datos sigan esta distribución por lo que será necesario estudiar las métricas en función de la energía para saber si hay rangos de energía donde nuestro modelo es mejor o peor.
+
+Otra variable que resulta importante comprender es la posición sobre todo es importante hacernos una idea de la cantidad de volumen que ocupan los eventos ya que nos permite hacernos una idea de la resolución que podemos usar así como el tamaño de las imágenes. Para esto lo que vamos a hacer es agrupar por eventos y calcular el rango en los distintos ejes para cada evento. Con esto obtenemos un rango para cada evento y para cada eje y estas variables son las que vamos a estudiar. En la Fig. se muestran los histogramas para las tres variables espaciales y en la Tabla mostramos algunas medidas estadísticas como los cuariles o la media.
+
+Antes de entrar a discutir estas gráficas vamos a mostrar como afecta el parámetro $c$ que nos permite manejar la resolución. Supongamos que queremos tener una resolución de 0.1 cm, es decir, construir una imagen donde la distancia entre dos píxeles consecutivos equivale a 0.1cm. En este caso teniendo en cuenta las dimensiones del detector: $x \in [-200, 200]$ cm, $y \in [-200, 200]$ cm y $z \in [0, 500]$ cm el valor de $c$ tendría que ser $(4000, 4000, 5000)$. Básicamente lo que tenemos que hacer es establecer una resolución y dividir el rango de los ejes por esta resolución. Este valor de $c$ significa que representamos el volumen completo del detector con una malla de $4000\times 4000\times 5000$ un evento dentro de este volumen solo ocupa una parte y lo que hacemos es coger una ventana del volumen completo. Por ejemplo, si queremos una proyección de $128\times 128$ lo que hacemos es realizar la proyección y quedarnos con una región con estas dimensiones del volumen completo.
+
+En la Tabla se mostraban medidas de los rangos que tienen los distintos eventos. Si seguimos con el ejemplo anterior, supongamos que queremos asegurarnos que no se pierde nada de información al tomar la venta, para esto tenemos que ver cual son los rangos máximos que puede darse en un evento, que en el caso que la resolución sea de 0.1 cm tendríamos que usar imágenes de $2636\times 3123\times 4294$ que son imágenes muy grandes. Sin embargo si nos conformamos con mantener la información completa del 75\% de los eventos sería de $723\times 990\times 1701$ que siguen siendo imágenes muy grandes pero vemos como son bastante más pequeñas. A la hora de entrenar los modeles vamos a tener que jugar con los parámetros de resolución y de tamaño de la ventana para regular la cantidad de información que se mantiene al realizar las imágenes. Es importante mencionar que la información que se pierde es en general la parte final de cascada mientras que el origen se mantiene siempre ya que es donde se tienen las principales diferencias entre las cascadas de origen electrónico y de origen fotónico. 
+
+Por otro lado, la cantidad de hits que tenemos por evento depende de la energía del suceso en Fig. se muestra la relación que hay entre el número de hits de un evento y la energía del mismo donde vemos que se observa una tendencia positiva. El problema se tiene sobre todo cuando se tienen pocos hits donde un evento esta dado por 5-10 hits, es interesante ver como se comporta nuestros modelos a estos rangos de energía bajos.
+
+Por último tenemos que estudiar como se comporta la variable que nos dice la carga de cada uno de los hits. En la Fig. se muestra la distribución de la carga tras dividir por el máximo. En esta gráfica vemos que la mayoría de hits tienen energías pequeñas mientras que muy pocos hits tienen altas energías.
+
+Este comportamiento es importante tenerlo en mente ya que en algunos casos puede que los hits más energéticos tengan valores tan grandes que en comparación los menos energéticos no tengan nada de importancia. Una forma de solucionar este problema es realizar una transformación logarítmica en esta variable. En la Fig. se muestran tanto los datos sin realizar la transformación como los datos tras realizar la transformación mencionada donde vemos que el problema se soluciona. A la hora de entrenar los modelos vamos tener que considerar esta transformación ya que puede que mejore los resultados.
+
+Otra cosa que es interesante observar en esta variable es la distribución de la carga en función del tiempo, ya que es conocido que al comienzo del evnto se deben observar valores más altos para la carga. No se tiene una variable tiempo como tal pero los hits se nos han dados ordenados temporalmente. En la Fig. se muestran un histograma bidimensional donde en el eje $x$ se tiene el tiempo y en el eje $y$ se muestra el logaritmo de la carga. Ambas variables están normalizadas, el tiempo se ha normalizado para cada evento, es decir, un valor de tiempo igual a 0 equivale al comienzo del evento y un valor de 1 equivale al final. Sin embargo, la carga si la hemos normalizado usando el máximo total. Vemos que la distribución en el tiempo es uniforme mientras que parece que hay pequeños cambios en la distribución de la carga donde vemos que para tiempos bajos tenemos que la carga alcanza valores mayores que era justo lo que se esperaba.
+
+
+
+Que queiro contar:
+\begin{itemize}
+  \item Quiero que sirva para contar todo lo que hay detrás de la creación de las imágenes
+  \item Rangos
+  \item Energías
+  \item Eventos poco energéticos
+  \item distribución de carga.
+\end{itemize}
+
+\section{Experimentación}
+
+En esta sección vamos a recoger y desarrollar todos los aspectos de la experimentación de este trabajo. Primero haremos una descripción detalla de las distintas representaciones presentadas. Así mismo, mostraremos las arquitecturas de los distintos modelos que vamos a emplear así como las métricas que emplearemos para realizar el entrenamiento y validar el modelo. Finalmente, haremos un listado de todos los parámetros que tenemos en todo el proceso, desde el tratamiento de los datos hasta el entrenamiento del modelo.
+
+\subsection{Representaciones de los datos}
+
+Como ya hemos visto, hay muchas opciones a la hora de crear las imágenes desde los datos tabulares. En esta sección vamos a describir las representaciones que hemos propuesto. Todas estas representaciones parten de hacer el cambio de unidades y de sistema de referencia que hemos descrito en secciones anteriores. Lo que vamos a tratar aquí es ver como tratar con la tercera dimensión espacial. 
+
+\subsubsection*{Representación tridimensional}
+
+Una forma de abordar el problema es quedarnos con toda la información y no descartar ninguna dimensión ya que la operación de convolución, como ya hemos visto, no esta limitada a trabajar con dos dimensiones espaciales. Esta representación es conceptualmente muy simple pero surgen una serie de problemas como puede ser el tamaño de las imágenes y que no se tienen modelos preentrenados como se tiene para las imágenes bidimensionales.
+
+\subsubsection*{Representación bidimensional, una proyección}
+
+Otra alternativa simple es quedarnos únicamente con una de las proyecciones. De esta forma tenemos una imagen bidimensional. Si recordamos, el eje $x$ es el eje de deriva, el haz de neutrinos tiene el eje $z$ y eje $y$ es simplemente la altura. En el caso de tener que descartar una de las direcciones la mejor opción es quitar el eje $y$.
+
+La forma de hacer esto es simplemente quitar la columna del eje que se quiera proyectar y en caso de tener eventos repetidos nos quedamos con la media o con el máximo. Por lo demás es simplemente hacer los cambios de unidades y de sistema de referencia. Veamos el resultado para unos eventos. En la Fig. se muestra un evento que ha sido realizado usando los datos tabulares directamente y en la Fig. se muestran distintos eventos obtenidos tras realizar el tratamiento de datos descrito y de realizar la proyección en el eje $y$. Los parámetros que hemos usado para la creación de las imágenes es de $c_x = 1000$, de un tamaño de venta de $128\times 128$ y no hacer ninguna transformación logarítmica. 
+
+\subsubsection*{Representación bidimensional, codificación del color}
+
+Al realizar la proyección lo que hacemos es perder completamente la información que se tenía en uno de los ejes. Una forma de mantener esta información es codificarla de alguna forma en el color de la imagen.
+
+Hasta ahora hemos estado trabajando con imágenes de grises donde la imagen es una matriz con un solo canal. En el caso de trabajar con imágenes que tengan color es necesario trabajar con imágenes que tengan tres canales. Hay distintos espacios para recoger el color de una imagen, el más común es el RGB donde un canal dice la cantidad de rojo, otro la cantidad de verde y otro la cantidad de azul. Hay otros muchos pero nosotros a trabajar en el espacio de color HSL, donde la H hacer referencia al \textit{hue}, el color, la S a la saturación y la L a la luminosidad. 
+
+Si queremos mantener toda la información a la hora de hacer la proyección tenemos que codificar la posición de los hits en el eje proyectado así como agregar la carga de los distintos hits. Lo que hacemos es fijar la saturación, y codificar la posición en el color y la carga en la luminosidad. La idea es en caso que tengamos puntos que se superpongan en el eje a proyectar sumar los valores de la posición en dicho eje y de la carga. De esta forma tenemos las dos variables espaciales intactas, la suma de las posiciones en el eje proyectado y la suma de la carga.
+
+Veamos esto de manera formal. Tenemos los datos tabulares que denotamos con $X$. Cada instancia hace referencia a un hit, y tenemos las columnas $X_e$ que determina el evento del hit, $X_x$, $X_y$ y $X_z$ que indican la posición y $X_c$ que muestra la carga. Para fijar idea supongamos que queremos proyectar el eje $y$. Lo que hacemos es agrupar por evento, posición en $x$ y posición en $z$ y sumar tanto la carga como la posición en el eje $y$. Una vez hecho esto lo que hacemos es rescalar las nuevas variables obtenidas de manera que el máximo de la posición sea 180 al representar el \textit{hue} y el de la carga sea 1 al representar la luminosidad.
+
+Surgen un par de problemas. Por un lado si hacemos justo esto si tenemos dos eventos idénticos pero solo desplazados en el eje de proyección vamos a tener colores distintos y esto es algo que no queremos que ocurra. Para solucionar eso lo que hacemos es para cada evento cambiamos el sistema de referencia de manera que hacemos cero el mínimo valor del eje proyectado. 
+
+El otro problema esta relacionado con la distribución exponencial que se observaba en la carga que se agrava al realizar la suma. Esto hace que el valor de la luminosidad para la mayoría de eventos sea tan pequeño que al realizar la imagen se tenga que los hits no se observan. Para esto lo que hacemos es tomar logaritmo tras realizar la suma.
+
+En la Fig. se muestran el color en función del \textit{hue} vemos por tanto que si tenemos cascadas más dispersas en el eje $y$ vamos a ir desde el naranja hasta el rojo siendo el naranja la menos dispersa y el rojo la más. Por otro lado, la luminosidad de los píxeles serán mayor si tenemos más carga sumada y menor si la carga sumada es menor. En la Fig. mostramos algunos ejemplos del tratamiento de algunas de las imágenes.
+
+
+\subsubsection*{Representación para tranformers}
+
+En este trabajo nos vamos a centrar sobre todo en el tratamiento de imágenes y el estudio lo vamos a realizar sobre las imágenes. Sin embargo, también vamos a plantear una representación/tratamiento de los datos distinto como trabajo futuro. La idea es nuestros datos tienen un marcado carácter temporal donde tenemos que el origen de la trayectoria y esta va avanzando. Los transformers son un tipo de red que ha mostrado muy buenos resultados con texto que son datos donde el orden de las palabras es fundamental. 
+
+Estas redes se basan en hacer uso de mecanismos de atención y codificar la posición de las palabras. Estas redes se han convertido en el estado del arte del procesamiento de lenguaje natural y también se han aplicado en la clasificación de imágenes segmentando la imagen en bloques. La idea es probar a usar los datos tabulares directamente codificando las instancias por el tiempo.
+
+\subsection{Arquitecturas}
+
+En esta sección vamos a mostrar las distintas arquitecturas que vamos a emplear para realizar la clasificación de las imágenes. Hay muchas redes preentrenadas y muchas redes que podemos plantear para realizar la clasificación. Nosotros vamos a hacer uso de EfficientNet, ResNet, GoogleNet y además vamos a diseñar una red simple y una más compleja basadas en AlexNet.
+
+\subsubsection*{Red simple y compleja}
+
+\subsection*{EfficientNet}
+
+\subsection*{ResNet}
+
+\subsection*{GoogleNet}
+
+\subsection{Métricas}
+
+A la hora de realizar un problema de ciencia de datos supervisado es necesario establecer una métrica que nos diga como de bueno es nuestro modelo para poder mejorar los resultados. Como ya se menciono, en las redes neuronales lo que se hace es definir una función pérdida a la cual se le calcula el gradiente en función de los parámetros de la red y modificar así estos parámetros.
+
+Sin embargo, una vez realizado el ajuste hay distintas métricas que nos permiten que nos permiten evaluar el rendimiento como puede ser el porcentaje de acierto o la curva ROC. Estas métricas nos dan información sobre distintos aspectos pero en física para problemas como el que estamos tratando se suele usar la eficiencia y la pureza.
+
+Nuestro objetivo es detectar que eventos son eventos producidos por un electrón y cuales son 
+
+\subsection{Parámetros}
+
+\begin{itemize}
+  \item Contar detalladamente las representaciones (sobre todo la de color)
+  \item Contar las arquitecturas usadas sin entrar en mucho detalle
+  \item Hablar de todos los parámetros
+\end{itemize}
+\label{sec:arch}
+\section{Metodología}
+\begin{itemize}
+  \item Contar lo de los exp para seleccionar la representación
+  \item Luego optuna para un mejor modelo
+  \item Finalmente algunas cosas extras.
+\end{itemize}
+\section{Resultados y discusión}
+\begin{itemize}
+  \item Comentar pruebas iniciales
+  \item Comentar experimentación de las representación
+  \item Ajuste de hiperparámetros
+  \item Concatenación de redes!!!!
+  \item Preueba de concadenación de principio y final
+\end{itemize}
+
+\begin{table}[h!]
+
+  \centering
+  \begin{tabular}{cccccccccc}
+  \hline
+  \multicolumn{1}{|c|}{}                       & \multicolumn{3}{c|}{Proyección}                                                           & \multicolumn{3}{c|}{Color}                                                                & \multicolumn{3}{c|}{3D}                                                                   \\ \hline
+  \multicolumn{1}{|c|}{\% de acierto} & \multicolumn{1}{c|}{train} & \multicolumn{1}{c|}{val.}  & \multicolumn{1}{c|}{mejor val.} & \multicolumn{1}{c|}{train} & \multicolumn{1}{c|}{val.}  & \multicolumn{1}{c|}{mejor val.} & \multicolumn{1}{c|}{train} & \multicolumn{1}{c|}{val.}  & \multicolumn{1}{c|}{mejor val.} \\ \hline
+  \multicolumn{1}{|c|}{Simple}                 & \multicolumn{1}{c|}{0.865} & \multicolumn{1}{c|}{0.836} & \multicolumn{1}{c|}{0.849}      & \multicolumn{1}{c|}{0.659} & \multicolumn{1}{c|}{0.692} & \multicolumn{1}{c|}{0.692}      & \multicolumn{1}{c|}{0.500} & \multicolumn{1}{c|}{0.484} & \multicolumn{1}{c|}{0.516}      \\ \hline
+  \multicolumn{1}{|c|}{Complejo}               & \multicolumn{1}{c|}{0.874} & \multicolumn{1}{c|}{0.869} & \multicolumn{1}{c|}{0.871}      & \multicolumn{1}{c|}{0.837} & \multicolumn{1}{c|}{0.851} & \multicolumn{1}{c|}{0.851}      & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}        \\ \hline
+  \multicolumn{1}{|c|}{EfficieNet B0}          & \multicolumn{1}{c|}{0.805} & \multicolumn{1}{c|}{0.767} & \multicolumn{1}{c|}{0.767}      & \multicolumn{1}{c|}{0.745} & \multicolumn{1}{c|}{0.616} & \multicolumn{1}{c|}{0.648}      & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}        \\ \hline
+  \multicolumn{1}{|c|}{EfficieNet B2}          & \multicolumn{1}{c|}{0.805} & \multicolumn{1}{c|}{0.767} & \multicolumn{1}{c|}{0.767}      & \multicolumn{1}{c|}{0.745} & \multicolumn{1}{c|}{0.616} & \multicolumn{1}{c|}{0.648}      & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}        \\ \hline
+  \multicolumn{1}{|c|}{EfficieNet B5}          & \multicolumn{1}{c|}{0.805} & \multicolumn{1}{c|}{0.767} & \multicolumn{1}{c|}{0.767}      & \multicolumn{1}{c|}{0.745} & \multicolumn{1}{c|}{0.616} & \multicolumn{1}{c|}{0.648}      & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}        \\ \hline
+  \multicolumn{1}{|c|}{EfficieNet B7}          & \multicolumn{1}{c|}{0.896} & \multicolumn{1}{c|}{0.818} & \multicolumn{1}{c|}{0.832}      & \multicolumn{1}{c|}{0.853} & \multicolumn{1}{c|}{0.676} & \multicolumn{1}{c|}{0.717}      & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}        \\ \hline
+  \multicolumn{1}{|c|}{ResNet 50}              & \multicolumn{1}{c|}{0.957} & \multicolumn{1}{c|}{0.690} & \multicolumn{1}{c|}{0.718}      & \multicolumn{1}{c|}{0.953} & \multicolumn{1}{c|}{0.609} & \multicolumn{1}{c|}{0.658}      & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}        \\ \hline
+  \multicolumn{1}{|c|}{GoogleNet}              & \multicolumn{1}{c|}{0.672} & \multicolumn{1}{c|}{0.663} & \multicolumn{1}{c|}{0.667}      & \multicolumn{1}{c|}{0.640} & \multicolumn{1}{c|}{0.628} & \multicolumn{1}{c|}{0.631}      & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}        \\ \hline
+  \multicolumn{1}{l}{}                         & \multicolumn{1}{l}{}       & \multicolumn{1}{l}{}       & \multicolumn{1}{l}{}            & \multicolumn{1}{l}{}       & \multicolumn{1}{l}{}       & \multicolumn{1}{l}{}            & \multicolumn{1}{l}{}       & ---                        & \multicolumn{1}{l}{}           
+  \end{tabular}
+  \caption{}
+  \label{tab:my-table}
+  \end{table}
+\section{Conclusiones y trabajos futuros}
+
+% \begin{figure}[h!]
+%   \centering
+%   \includegraphics[scale=0.85]{boxk3.pdf}
+%   \caption{Diagrama de cajas de las distintas variables de los datos del tercer cluster separados por dos nuevos clusters, obtenidos de hacer aplicar clustering de forma recursiva.}
+%   \label{fig:boxclass3}
+% \end{figure}
+
+\newpage
+
+\printbibliography[title={Bibliografía}]
+
+
+
+\end{document}
