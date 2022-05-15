@@ -474,7 +474,7 @@ class GoogleNet(nn.Module):
         super(GoogleNet, self).__init__()
         self.bn = params['bn']
         self.base_model = models.googlenet(True)
-        n_layers = 211
+        n_layers = 173
         for index, param in enumerate(self.base_model.parameters()):
             if index <= n_layers - 1 - params["unfreeze_layers"]:
                 param.requires_grad = False
@@ -538,7 +538,7 @@ class EffNetB0(nn.Module):
         super(EffNetB0, self).__init__()
         self.bn = params['bn']
         self.base_model = models.efficientnet_b0(True)
-        n_layers = 211
+        n_layers = 213
         for index, param in enumerate(self.base_model.parameters()):
             if index <= n_layers - 1 - params["unfreeze_layers"]:
                 param.requires_grad = False
@@ -602,7 +602,7 @@ class EffNetB2(nn.Module):
         super(EffNetB2, self).__init__()
         self.bn = params['bn']
         self.base_model = models.efficientnet_b2(True)
-        n_layers = 211
+        n_layers = 301
         for index, param in enumerate(self.base_model.parameters()):
             if index <= n_layers - 1 - params["unfreeze_layers"]:
                 param.requires_grad = False
@@ -610,7 +610,7 @@ class EffNetB2(nn.Module):
                 param.requires_grad = True
         # aquí puedes cambiar el avgpool
         clf_block = self.make_clf_block(params)
-        self.base_model.classifier = nn.Sequential(*clf_block)
+        self.base_model.heads = nn.Sequential(*clf_block)
 
     def make_clf_block(self, params: dict):
         clf_neurons = params['clf_neurons']
@@ -666,7 +666,7 @@ class EffNetB5(nn.Module):
         super(EffNetB5, self).__init__()
         self.bn = params['bn']
         self.base_model = models.efficientnet_b5(True)
-        n_layers = 211
+        n_layers = 506
         for index, param in enumerate(self.base_model.parameters()):
             if index <= n_layers - 1 - params["unfreeze_layers"]:
                 param.requires_grad = False
@@ -725,12 +725,76 @@ class EffNetB5(nn.Module):
         x = self.base_model(x)
         return x
 
+class ViT(nn.Module):
+    def __init__(self, params: dict) -> None:
+        super(EffNetB5, self).__init__()
+        self.bn = params['bn']
+        self.base_model = models.efficientnet_b5(True)
+        n_layers = 152
+        for index, param in enumerate(self.base_model.parameters()):
+            if index <= n_layers - 1 - params["unfreeze_layers"]:
+                param.requires_grad = False
+            else:
+                param.requires_grad = True
+        # aquí puedes cambiar el avgpool
+        clf_block = self.make_clf_block(params)
+        self.base_model.classifier = nn.Sequential(*clf_block)
+
+    def make_clf_block(self, params: dict):
+        clf_neurons = params['clf_neurons']
+        input_shape = (1, 1) + params["input_shape"]
+        n_layers = len(clf_neurons)
+        # obtenemos la forma de la capa aplanada para obtener el nº de inputs 
+        # para la primera capa del clasificador
+        pre_cls_shape = 768
+        layers_in = (pre_cls_shape, *clf_neurons[:-1])
+        layers_out = clf_neurons
+        # creamos una tupla (len = número de capas) con el dropout tq el todos 
+        # son iguales (dado por params) menos el último que lo hacemos 0
+        # dropout_ratios = (0, ) + (params['dropout'], ) * (n_layers - 2) + (0, )  
+        dropout_ratios = (params['dropout'], ) * (n_layers - 1) + (0, )  
+        no_linear_fun = params["clf_no_linear_fun"]
+        no_linear_funs = (no_linear_fun, ) * (n_layers - 1) + ("log_softmax", )
+        clf_params = (layers_in, layers_out, dropout_ratios, no_linear_funs)
+        clf_block = []
+        
+        for layer_in, layer_out, d_r, nl_fun in zip(*clf_params):
+            block = self.get_layer_clf(layer_in, layer_out, d_r, nl_fun)
+            clf_block.extend(block)
+        return tuple(clf_block)
+
+    def get_layer_clf(self, layers_in, layers_out, dropout_ratio,
+                      no_linear_fun="relu"):
+        layer = nn.Linear(layers_in, layers_out)
+        dropout_ = nn.Dropout(dropout_ratio)
+        # seleccion de no lineal
+        if no_linear_fun == "relu":
+            no_linear = nn.ReLU(inplace=True)
+        elif no_linear_fun == "sigmoid":
+            no_linear = nn.Sigmoid()
+        elif no_linear_fun == "log_softmax":
+            no_linear = nn.LogSoftmax(1)
+        elif no_linear_fun == "none":
+            no_linear = nn.Identity()
+        else:
+            raise Exception("Not valid no_linear_fun")
+        if self.bn and no_linear_fun != "log_softmax" :
+            bn = nn.BatchNorm1d(layers_out)
+            fc = dropout_, layer, no_linear, bn
+        else:
+            fc = dropout_, layer, no_linear
+        return fc        
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.base_model(x)
+        return x
+
 class EffNetB7(nn.Module):
     def __init__(self, params: dict) -> None:
         super(EffNetB7, self).__init__()
         self.bn = params['bn']
         self.base_model = models.efficientnet_b7(True)
-        n_layers = 211
+        n_layers = 711
         for index, param in enumerate(self.base_model.parameters()):
             if index <= n_layers - 1 - params["unfreeze_layers"]:
                 param.requires_grad = False
@@ -932,7 +996,7 @@ if __name__ == "__main__":
     
     from exp_p_resnet.params import params
     # model = ResNet(params)
-    model = models.googlenet(pretrained=True)
+    model = models.vit_b_16(pretrained=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
     summary(model, (3, 224,  224))
@@ -947,3 +1011,7 @@ if __name__ == "__main__":
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # model.to(device)
     # summary(model, (3, 224,  224))
+    # models.vit_b_16(True)
+    model = models.googlenet(pretrained=True)
+    for i, j in enumerate(model.parameters()):
+        print(i)
