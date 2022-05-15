@@ -1,8 +1,8 @@
-PWD c:/Users/Alejandro/OneDrive - UNIVERSIDAD DE SEVILLA/universidad/codigo/Master/TFM/TFM/latex
+PWD c:/Users/Alejandro/OneDrive - UNIVERSIDAD DE SEVILLA/universidad/codigo/Master/TFM/tfm_/latex
 INPUT c:/texlive/2021/texmf.cnf
 INPUT c:/texlive/2021/texmf-dist/web2c/texmf.cnf
 INPUT c:/texlive/2021/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT c:/Users/Alejandro/OneDrive - UNIVERSIDAD DE SEVILLA/universidad/codigo/Master/TFM/TFM/latex/main.tex
+INPUT c:/Users/Alejandro/OneDrive - UNIVERSIDAD DE SEVILLA/universidad/codigo/Master/TFM/tfm_/latex/main.tex
 OUTPUT main.log
 INPUT c:/texlive/2021/texmf-dist/tex/latex/base/article.cls
 INPUT c:/texlive/2021/texmf-dist/tex/latex/base/article.cls

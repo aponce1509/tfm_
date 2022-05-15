@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2021.11.21)  15 MAY 2022 10:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2021.11.21)  15 MAY 2022 15:19
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**"c:/Users/Alejandro/OneDrive - UNIVERSIDAD DE SEVILLA/universidad/codigo/Master/TFM/TFM/latex/main.tex"
-(c:/Users/Alejandro/OneDrive - UNIVERSIDAD DE SEVILLA/universidad/codigo/Master/TFM/TFM/latex/main.tex
+**"c:/Users/Alejandro/OneDrive - UNIVERSIDAD DE SEVILLA/universidad/codigo/Master/TFM/tfm_/latex/main.tex"
+(c:/Users/Alejandro/OneDrive - UNIVERSIDAD DE SEVILLA/universidad/codigo/Master/TFM/tfm_/latex/main.tex
 LaTeX2e <2021-11-15>
 L3 programming layer <2021-11-12> (c:/texlive/2021/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
@@ -1166,12 +1166,12 @@ Package logreq Info: Writing requests to 'main.run.xml'.
  ) 
 Here is how much of TeX's memory you used:
  36775 strings out of 478371
- 723858 string characters out of 5852527
+ 723861 string characters out of 5852527
  1387569 words of memory out of 5000000
  54183 multiletter control sequences out of 15000+600000
  428093 words of font info for 95 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,9n,89p,1423b,2589s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 83i,9n,89p,1424b,2589s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{Hfootnote.4} has been referenced but does not exist, replaced by a fixed one
 
 pdfTeX warning (dest): name{Hfootnote.3} has been referenced but does not exist, replaced by a fixed one
