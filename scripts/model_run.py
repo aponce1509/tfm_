@@ -121,6 +121,8 @@ def test_model(run_id, model_log):
     """
     # cargamos el artifact con los parametros
     client = mlflow.tracking.MlflowClient()
+    if not os.path.exists('temp'):
+        os.mkdir('temp')
     local_dir = "temp/downloads"
     if not os.path.exists(local_dir):
         os.mkdir(local_dir)
@@ -594,6 +596,8 @@ def mlflow_log(params: dict, is_optuna, metrics, _id):
     mlflow.log_metrics(metrics)
     # creamos un archivo temporal con los parámetros para crear el artifact 
     # con los parámetros
+    if not os.path.exists('temp'):
+        os.mkdir('temp')
     with open("temp" + "/params", "wb") as file:
             pickle.dump(params_aux, file)
     mlflow.log_artifact("temp" + "/params")
