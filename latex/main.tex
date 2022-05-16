@@ -508,6 +508,7 @@ Que queiro contar:
 \end{itemize}
 
 \section{Experimentación}
+\label{sec:arch}
 
 En esta sección vamos a recoger y desarrollar todos los aspectos de la experimentación de este trabajo. Primero haremos una descripción detalla de las distintas representaciones presentadas. Así mismo, mostraremos las arquitecturas de los distintos modelos que vamos a emplear así como las métricas que emplearemos para realizar el entrenamiento y validar el modelo. Finalmente, haremos un listado de todos los parámetros que tenemos en todo el proceso, desde el tratamiento de los datos hasta el entrenamiento del modelo.
 
@@ -550,15 +551,37 @@ Estas redes se basan en hacer uso de mecanismos de atención y codificar la posi
 
 \subsection{Arquitecturas}
 
-En esta sección vamos a mostrar las distintas arquitecturas que vamos a emplear para realizar la clasificación de las imágenes. Hay muchas redes preentrenadas y muchas redes que podemos plantear para realizar la clasificación. Nosotros vamos a hacer uso de EfficientNet, ResNet, GoogleNet y además vamos a diseñar una red simple y una más compleja basadas en AlexNet.
+En esta sección vamos a mostrar las distintas arquitecturas que vamos a emplear para realizar la clasificación de las imágenes. Hay muchas redes preentrenadas y muchas redes que podemos plantear para realizar la clasificación. Nosotros vamos a hacer uso de EfficientNet, ResNet, GoogleNet y además vamos a diseñar una red simple y una más compleja basadas en LeNet.
 
 \subsubsection*{Red simple y compleja}
 
-\subsection*{EfficientNet}
+LeNet es una de las primeras propuestas de redes convolucionales \cite{} y consiste únicamente en aplicar varias veces el bloque convolucional que se mostro en la Sección que nos permite extraer las características y tras esto se hace uso de un MLP para realizar la clasificación.
+
+Con estas redes la idea es tener modelos simples que nos permitan establecer un punto de partida que tratar de mejorar con distintas redes o ajustando los hiperparámetros. Para hacer el diseño lo que hemos hecho es hacer uso de la representación más simple que hemos planteado, la proyección simple, y probar a modificar el número de filtros por nivel así como la el clasificador.
+
+Las pruebas realizadas serán descritas en la Sección  pero nos ha dado muchos problemas la construcción de la red ya que en muchos casos las redes no superaban el 50 \% de acierto. En la Fig. se muestran las arquitecturas de los modelos finales. Tenemos un modelo simple que consiste en dos bloques convolucionales con pocos filtros y una MLP con dos capas ocultas y pocas neuronas. El modelo más complejo es similar al simple pero hemos modificado el bloque convolucional de manera que se aplican dos capas convolucionales consecutivas sin aplicar el maxpooling. Además lo que hacemos es tener más filtros y más profundidad y anchura en el MLP.
+
+\subsubsection*{EfficieNet}
+
+EfficieNet \cite{} es una red que ha mostrado dar muy buenos resultados, y como ya se menciono, el objetivo de esta red arquitectura es establecer un modelo que sea eficiente y que sea escalable. Uno de los problemas fundamentales que se presentaban tras las primeras CNN es que al aumentar la complejidad de los modelos se tenían problemas para realizar el entrenamiento. Con el paso del tiempo se fueron introducido mecanismos para lidiar con este problema y EfficieNet establece una familia con 8 modelos que parten de un modelo base y van aumentando la complejidad.
+
+Una red neuronal se puede escalar aumentando la profundidad, la anchura o la resolución (tamaño de las imágenes) y EfficieNet lo que hace es introducir un método de escalado que aumenta la complejidad aumentando las tres opciones simultáneamente. Parten de la premisa que las distintas formas de escalar están relacionadas, i.e si tenemos imágenes más grandes vamos a necesitar más filtros y más capas para conseguir realizar la clasificación \cite{}.
+
+% La arquitectura del modelo esta basada en MovilNet v2 \cite{} y ademas hace uso de bloques 
+
+Nosotros vamos a usar estas arquitecturas no solo porque han mostrado dar muy buenos resultados en conjuntos de datos complejos si no porque nos permite probar con una red con distintos niveles de complejidad. 
 
 \subsection*{ResNet}
 
+ResNet es una arquitectura que surge antes que EfficieNet e introduce un mecanismo para solucionar problemas a la hora de realizar la optimización cuando se tienen modelos muy profundos. Esta basada en VGG \cite{} que se basa en aplicar sucesivamente bloques convolucionales pero teniendo un modelo muy profundo. ResNet introduce lo que denominan celdas residuales que consisten en agregar la entrada del bloque convolucional a la salida \cite{} a esto le denominan aprendizaje residual y muestran que ayuda a la optimización de los modelos.
+
+La arquitectura consiste en aplicar sucesivamente bloques convolucionales donde solo se aplica al tras la primera capa convolucional y se introduce el aprendizaje residual. Al igual que para EfficieNet se tiene una familia de modelos donde lo que varía es la profundidad del modelo. Nosotros usaremos únicamente ResNet 50, donde el 50 hace referencia al número de capas.
+
 \subsection*{GoogleNet}
+
+\subsection*{Visual Transformer}
+
+Los transformers \cite{} son modelos que se basan únicamente en mecanismos de atención y actualmente se han convertido en el estado del arte al trabajar con texto. Los Visual transformers hacen uso de estar arquitectura y la aplican a imágenes. La idea fundamental es que dividen la imagen en bloques y tratan cada bloque como una palabra que el tranformers procesa \cite{}.
 
 \subsection{Métricas}
 
@@ -566,20 +589,99 @@ A la hora de realizar un problema de ciencia de datos supervisado es necesario e
 
 Sin embargo, una vez realizado el ajuste hay distintas métricas que nos permiten que nos permiten evaluar el rendimiento como puede ser el porcentaje de acierto o la curva ROC. Estas métricas nos dan información sobre distintos aspectos pero en física para problemas como el que estamos tratando se suele usar la eficiencia y la pureza.
 
-Nuestro objetivo es detectar que eventos son eventos producidos por un electrón y cuales son 
-
-\subsection{Parámetros}
+En un problema de clasificación binaría tenemos dos clases que se suelen denominar como clase positiva y clase negativa. Con el clasificador asignaremos a cada instancia un valor de la clase y pueden darse 4 situaciones:
 
 \begin{itemize}
-  \item Contar detalladamente las representaciones (sobre todo la de color)
-  \item Contar las arquitecturas usadas sin entrar en mucho detalle
-  \item Hablar de todos los parámetros
+  \item La instancia sea positiva y el clasificador le asigne la clase positiva. A esto se le denomina positivo real (TP).
+  \item La instancia sea negativa y el clasificador le asigne la clase negativa. A esto se le denomina negativo real (TN).
+  \item La instancia sea positiva y el clasificador le asigne la clase negativa. A esto se le denomina falso negativo (FN).
+  \item La instancia sea negativa y el clasificador le asigne la clase positiva. A esto se le denomina falso positivo (FP).
+\end{itemize} 
+
+La eficiencia se define como:
+\begin{equation}
+  \text{eff} = \frac{\text{TP}}{\text{FN} + \text{TP}},
+\end{equation}
+es decir, el cociente entre el número de instancias positivas que hemos clasificado bien entre el número de instancias que son realmente positivas.
+
+La pureza se define como:
+\begin{equation}
+  \text{pureza} = \frac{\text{TP}}{\text{FP} + \text{TP}},
+\end{equation}
+es decir, el cociente entre las instancias positivas correctamente clasificadas entre las instancias que hemos dicho que son positivas. 
+
+La eficiencia nos dice de todos los eventos positivos se dan en el detector que porcentaje hemos sido capaces de clasificar correctamente. Sin embargo, la pureza nos dice que porcentaje de los eventos que hemos dicho que son positivos son realmente positivos.
+
+En física dependiendo de la tarea que estemos tratando nos va interesar maximizar una u otra. Por ejemplo, en los experimentos donde se pretende descubrir una partícula lo que se quiere normalmente es tener una pureza alta de manera que si se dice que se tiene dicha partícula realmente se tenga. \red{cuando se busca eff} 
+
+\subsection{Hiperparámetros}
+
+Por último, vamos a recoger la mayoría de parámetros que tenemos a la hora realizar el flujo de trabajo completo. Vamos separar clasificar los hiperparámetros en función de que parte del flujo en la que influyen. Vamos a formar tres bloques: El tratamiento de los datos, arquitectura de la red y entrenamiento de la red.
+
+Antes de entrar en estos bloques tenemos algunos parámetros generales como puede ser la semilla aleatoria que nos permite tener una reproducibilidad de los resultados. Hay algunas bloques que al usar la GPU para realizar el entrenamiento no son completamente reproducibles, sin embargo, nuestros modelos no hacen usos de estos bloques. Por otro lado, también es posible definir una rejilla de manera que con Optuna se realiza la búsqueda de hiperparámetros dentro de esa rejilla.
+
+Es importante tener en cuenta que el entrenamiento de un red neuronal es algo costoso tanto en recursos como en tiempo por lo que no nos podemos permitir hacer búsquedas en rejillas de gran tamaño. Por esto mismo es importante seleccionar aquellos hiperparámetros que más pueden influir en los resultados.
+
+\subsubsection*{Tratamiento de los datos}
+
+A la hora de hacer la creación de las imágenes hay un conjunto de parámetro que tenemos que establecer y que en algunos caso afecta mucho en el resultado obtenido. Los parámetros que tenemos son:
+
+\begin{itemize}
+  \item cube shape x: Fija el valor de $c$ en el eje $x$. A partir de este obtenemos los valores en el eje $y$ y $z$. 
+  \item win shape: Tamaño de la ventana cogida del detector.
+  \item projection: Tipo de proyección empleada. Como opciones tenemos considerar las imágenes tridimensionales, la proyección en uno de los ejes o el tratamiento de color.
+  \item projection pool y cube pool: Tratamiento de las situaciones en las tengamos superposición de puntos al realizar el tratamiento. Podemos elegir el máximo o la media.
+  \item log trans: Si hacemos o no una transformación logarítmica sobre la carga de los \textit{hits}.
+  \item transform: Si queremos aplicar una transformación sobre la imagen final. Consiste en hacer uso de la librería torchvision que introduce un conjunto de transformaciones como puede ser normalizar lo datos.
 \end{itemize}
-\label{sec:arch}
+
+\subsubsection*{Arquitectura}
+
+Por otro lado se tienen distintos parámetros que nos permitan controlar la red que estamos usando para realizar la clasificación. Estos parámetros dependerán de si el modelos es un modelo de la literatura, donde solo vamos a poder controlar el clasificador y el número de capas a reentrenar , o si es un modelo que se construye de cero, donde lo que hemos hecho es crear un modelo que acepte como parámetros las formas del extractor así como del clasificador. Los parámetros que tenemos para este apartado son:
+
+\begin{itemize}
+  \item model name: Nombre del modelo que vamos a usar.
+  \item conv filters, conv sizes, conv strides: Tupla que definen el número de capas convolucionales y como son estas capas: número de filtros, tamaño de los filtros y desplazamiento de los filtros.
+  \item pool sizes y pool strides: Define el tamaño y el desplazamiento al realizar el \textit{pool}. Son tuplas y tienen que tener el mismo tamaño que los parámetros que definen la convulución.
+  \item clf neurons: Tupla con el número de neuronas por cada capa. Cada elemento de la tupla establece una capa.
+  \item clf no linear fun y conv no linear fun: funciones no lineales aplicadas tras las capas densas y las capas de convolución respectivamente.
+  \item bn: si aplicamos capas de normalizan por \textit{batch}
+  % \item n channel: número de canales de la imagen. En caso de tener
+  \item dropout: Porcentaje de \textit{dropout}. 
+\end{itemize}
+
+\subsubsection*{Entrenamiento de la red}
+
+Por último, tenemos una serie de parámetros que nos permiten regular como se realizar el entrenamiento como puede ser el número de épocas o el tipo de optimizador:
+
+\begin{itemize}
+  \item batch size: Tamaño del \textit{batch}.
+  \item n epochs: núemro de épocas.
+  \item optim name: tipo de optimizador.
+  \item optin lr: ritmo de aprendizaje.
+  \item scheduler name: En caso de querer tener un ritmo de aprendizaje que cambie con las épocas cual queremos aplicar.
+  \item scheduler step size: cada cuanto se modifica el ritmo de aprendizaje.
+  \item scheduler gamma: cuanto se modifica el ritmo de aprendizaje.
+\end{itemize}
+
+
+Podemos ver que tenemos una gran cantidad que podemos modificar y en muchos casos pequeñas modificaciones sobre los parámetros hacen que pasemos de tener modelos que no pasen del 50\% de acierto a modelos que lleguen al 80\% de acierto. Por estos motivo el ajste de estos hiperparámetros es uno de los aspectos más importantes para tratar de obtener un modelo que nos de buenos resultados. Para esto lo que hacermos es trabajar una metodología concreta que nos permita llegar a ciertas conclusiones y luego ajsutar solo los parámetros más relevantes.
+
 \section{Metodología}
+
+En la sección anterior hemos visto todos los hiperparámetros que tenemos por lo que hacer una busqueda por todos los parámetros es completamente prohibitiva. Teniendo esto en mente vamos a definir una metodología que nos permita discernir que representación de las que se plantean es mejor así como la resolución de las imágenes. Una vez tengamos indicios que una de las resoluciones es mejor haremos distintas pruebas sobre los modelos que nos permitan mejorar los resultados.
+
+Lo primero que haremos es realizar un conjunto de pruebas no estructurado que nos permiten entender el problema y ver que el tratamiento diseñado es correcto. Así mismo, haremos uso de estas representaciones para diseñar los modelos que funcionen bien y que usaremos para realizar pruebas futuras.
+
+El siguiente punto será deternimar cual de las representaciones que presentamos es mejor. Para esto lo que vamos a hacer es probar las distintas representaciones para distintos modelos. En concreto haremos uso de un modelo simple y uno complejo diseñado por nosotros, distintos modelos EfficieNet, ResNet y GoogleNet. La pruebas las haremos de manera que se compartan todos los parámetros y que lo único que vamos a modificar en caso de ser necesario parametros del entrenamiento como puede ser el ritmo de aprendizaje. Una vez hecho este análisis obtendremos un modelo que es mejor al resto y será el que usaremos para el resto de pruebas. 
+
+El siguiente paso sera establecer una resolución para ello repetiremos el estudio anterior pero lo que cambiaremos ahora es simplemente la resolución. Lo siguiente que probaremos es a hacer pequeños ajustes sobre los modelos empleados donde definiremos un rejilla sobre la que buscaremos que parámetros funcionan mejor.
+
+Una vez acabados los distintos modelos trataremos de mejorar los resultados introduciendo modelos más complejos como pueden ser concadenación de redes, o ensembles que nos permitan mejorar los resultados.
+
 \begin{itemize}
   \item Contar lo de los exp para seleccionar la representación
-  \item Luego optuna para un mejor modelo
+  \item Luego optuna para un mejor modelo.
   \item Finalmente algunas cosas extras.
 \end{itemize}
 \section{Resultados y discusión}
