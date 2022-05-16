@@ -572,7 +572,6 @@ Una red neuronal se puede escalar aumentando la profundidad, la anchura o la res
 Nosotros vamos a usar estas arquitecturas no solo porque han mostrado dar muy buenos resultados en conjuntos de datos complejos si no porque nos permite probar con una red con distintos niveles de complejidad. 
 
 \subsection*{ResNet}
-
 ResNet es una arquitectura que surge antes que EfficieNet e introduce un mecanismo para solucionar problemas a la hora de realizar la optimización cuando se tienen modelos muy profundos. Esta basada en VGG \cite{} que se basa en aplicar sucesivamente bloques convolucionales pero teniendo un modelo muy profundo. ResNet introduce lo que denominan celdas residuales que consisten en agregar la entrada del bloque convolucional a la salida \cite{} a esto le denominan aprendizaje residual y muestran que ayuda a la optimización de los modelos.
 
 La arquitectura consiste en aplicar sucesivamente bloques convolucionales donde solo se aplica al tras la primera capa convolucional y se introduce el aprendizaje residual. Al igual que para EfficieNet se tiene una familia de modelos donde lo que varía es la profundidad del modelo. Nosotros usaremos únicamente ResNet 50, donde el 50 hace referencia al número de capas.
