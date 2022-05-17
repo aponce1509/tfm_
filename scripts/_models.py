@@ -610,7 +610,7 @@ class EffNetB2(nn.Module):
                 param.requires_grad = True
         # aquí puedes cambiar el avgpool
         clf_block = self.make_clf_block(params)
-        self.base_model.heads = nn.Sequential(*clf_block)
+        self.base_model.classifier = nn.Sequential(*clf_block)
 
     def make_clf_block(self, params: dict):
         clf_neurons = params['clf_neurons']
@@ -729,7 +729,7 @@ class ViT(nn.Module):
     def __init__(self, params: dict) -> None:
         super(EffNetB5, self).__init__()
         self.bn = params['bn']
-        self.base_model = models.efficientnet_b5(True)
+        self.base_model = models.vit_b_16(True)
         n_layers = 152
         for index, param in enumerate(self.base_model.parameters()):
             if index <= n_layers - 1 - params["unfreeze_layers"]:
@@ -738,7 +738,7 @@ class ViT(nn.Module):
                 param.requires_grad = True
         # aquí puedes cambiar el avgpool
         clf_block = self.make_clf_block(params)
-        self.base_model.classifier = nn.Sequential(*clf_block)
+        self.base_model.heads = nn.Sequential(*clf_block)
 
     def make_clf_block(self, params: dict):
         clf_neurons = params['clf_neurons']
@@ -996,7 +996,9 @@ if __name__ == "__main__":
     
     from exp_p_resnet.params import params
     # model = ResNet(params)
-    model = models.vit_b_16(pretrained=True)
+    # model = models.vit_b_16(pretrained=True)
+    params['unfreeze_layers'] = 10
+    model = EffNetB2(params)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
     summary(model, (3, 224,  224))
@@ -1012,6 +1014,6 @@ if __name__ == "__main__":
     # model.to(device)
     # summary(model, (3, 224,  224))
     # models.vit_b_16(True)
-    model = models.googlenet(pretrained=True)
+    model = models.vit_b_16(pretrained=True)
     for i, j in enumerate(model.parameters()):
         print(i)
