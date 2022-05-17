@@ -54,8 +54,6 @@ def get_gradient_elements(model_params: dict):
         model = ConvNet(model_params)
     elif model_params["model_name"] == "convnet3d":
         model = ConvNet3D(model_params)
-    elif model_params["model_name"] == "convnet_big":
-        model = ConvNetBig(model_params)
     elif model_params["model_name"] == "resnet50":
         model = ResNet50(model_params)
     elif model_params["model_name"] == "effb0":
