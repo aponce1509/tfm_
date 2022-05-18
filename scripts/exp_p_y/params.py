@@ -41,11 +41,11 @@ model_params = {
     'avg_layer': "identity",
     'avg_layer_size': None,  # (14, 30)
     "batch_size": 48,  # 48
-    "n_epochs": 7,
+    "n_epochs": 10,
 }
 params = {
-    "seeds": (3, ),
-    "seed_": 3,
+    "seeds": (19, ),
+    "seed_": 19,
     # parámetros de datos
     "cube_shape_x": 1000,
     "win_shape": (62, 62, 128),
