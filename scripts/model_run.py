@@ -603,23 +603,23 @@ def mlflow_log(params: dict, is_optuna, metrics, _id):
     mlflow.log_artifact("temp" + "/params")
 
 def hyperparameter_suggest(trial: optuna.Trial, params: dict):
+    n_conv = len(params['conv_sizes'])
     grid = params["grid"]
     if "lr_grid" in grid:
         lr = trial.suggest_int(**grid["lr_grid"])
+        params["optim_lr"] = 10**(-1*lr)
     if "optimizer_grid" in grid:
         optimizer_name = trial.suggest_categorical(**grid["optimizer_grid"])
+        params["optim_name"] = optimizer_name
     if 'kernel_size' in grid:
         k_size = trial.suggest_int(**grid['kernel_size'], step=2)
+        params['conv_sizes'] = (k_size, ) * n_conv
     if 'kernel_stride' in grid:
         k_stride = trial.suggest_int(**grid['kernel_stride'], step=1)
+        params['conv_strides'] = (k_stride, ) * n_conv
     if 'unfreeze_layers' in grid:
         ul = trial.suggest_categorical(**grid['unfreeze_layers'])
-    n_conv = len(params['conv_sizes'])
-    params['conv_strides'] = (k_stride, ) * n_conv
-    params['conv_sizes'] = (k_size, ) * n_conv
-    params["optim_lr"] = 10**(-1*lr)
-    params["optim_name"] = optimizer_name
-    params['unfreeze_layers'] = ul
+        params['unfreeze_layers'] = ul
     print(trial.params)
 
 def get_optuna_name():
