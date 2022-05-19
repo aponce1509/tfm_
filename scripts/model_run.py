@@ -610,7 +610,7 @@ def hyperparameter_suggest(trial: optuna.Trial, params: dict):
         optimizer_name = trial.suggest_categorical(**grid["optimizer_grid"])
     if 'kernel_size' in grid:
         k_size = trial.suggest_int(**grid['kernel_size'], step=2)
-    if 'kernel_size' in grid:
+    if 'kernel_stride' in grid:
         k_stride = trial.suggest_int(**grid['kernel_stride'], step=1)
     if 'unfreeze_layers' in grid:
         ul = trial.suggest_categorical(**grid['unfreeze_layers'])
