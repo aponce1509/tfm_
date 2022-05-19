@@ -32,6 +32,7 @@ def fix_seed(params: dict, pytorch_alg=True):
 def objective(trial: optuna.Trial, params: dict, opt_id=None,
               experiment_name="Defalut"):
     hyperparameter_suggest(trial, params)
+    fix_seed(params)
     error = basic_pipeline(params, is_optuna=True, optuna_step=trial.number,
                            verbose=False, trial_params=trial.params,
                            opt_id=opt_id, experiment_name=experiment_name,
@@ -43,12 +44,13 @@ def optuna_pipeline(params: dict, experiment_name: str, n_trials: int=5):
     Pipeline de la optimización de hiperparámetros usando optuna.
     """
     # nos metemos en el experimento y optenemos un id para la run de optuna
-    mlflow.set_experiment(experiment_name)
     mlflow.set_tracking_uri(MODEL_PATH)
+    mlflow.set_experiment(experiment_name)
     optuna_name = get_optuna_name()
     with mlflow.start_run(run_name=optuna_name):
         sampler = optuna.samplers.TPESampler(seed=params["seed_"])
-        pruner = optuna.pruners.MedianPruner(n_warmup_steps=5)
+        pruner = optuna.pruners.MedianPruner(n_startup_trials=5,
+                                             n_warmup_steps=5)
         study = optuna.create_study(direction="minimize", sampler=sampler,
                                     pruner=pruner)
         study.optimize(
@@ -605,12 +607,15 @@ def mlflow_log(params: dict, is_optuna, metrics, _id):
 def hyperparameter_suggest(trial: optuna.Trial, params: dict):
     n_conv = len(params['conv_sizes'])
     grid = params["grid"]
+    if "optimizer_grid" in grid:
+        optim = trial.suggest_categorical(**grid["optimizer_grid"])
+        params["optim_name"] = optim
     if "lr_grid" in grid:
         lr = trial.suggest_int(**grid["lr_grid"])
         params["optim_lr"] = 10**(-1*lr)
-    if "optimizer_grid" in grid:
-        optimizer_name = trial.suggest_categorical(**grid["optimizer_grid"])
-        params["optim_name"] = optimizer_name
+    if "scheduler_gamma" in grid:
+        gamma = trial.suggest_int(**grid["scheduler_gamma"])
+        params["scheduler_gamma"] = gamma * 0.1
     if 'kernel_size' in grid:
         k_size = trial.suggest_int(**grid['kernel_size'], step=2)
         params['conv_sizes'] = (k_size, ) * n_conv

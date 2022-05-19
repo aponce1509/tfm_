@@ -82,6 +82,7 @@ def get_gradient_elements(model_params: dict):
             model.parameters(), lr=model_params["optim_lr"]
         )
     elif model_params["optim_name"] == "SGD":
+        print("SGD")
         optimizer = optim.SGD(
             model.parameters(), lr=model_params["optim_lr"]
         )
