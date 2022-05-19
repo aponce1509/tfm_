@@ -20,36 +20,36 @@ def main_optuna(n_trials):
 
 # cx = 500
 params['n_epochs'] = 10
-params['cube_shape_x'] = 250
+
+
+params['cube_shape_x'] = 1500
+# modelo_simple(main, params)
+# modelo_complejo(main, params)
+eff_0(main, params)
+eff_2(main, params)
+eff_5(main, params)
+# # eff_7(main, params)
+
+params['cube_shape_x'] = 2000
 modelo_simple(main, params)
+modelo_complejo(main, params)
+eff_0(main, params)
+eff_2(main, params)
+eff_5(main, params)
+# # eff_7(main, params)
+
+params['cube_shape_x'] = 250
+# modelo_simple(main, params)
 # modelo_complejo(main, params)
 # eff_0(main, params)
-# eff_2(main, params)
+eff_2(main, params)
 # eff_5(main, params)
 # eff_7(main, params)
 
-# params['cube_shape_x'] = 500
+params['cube_shape_x'] = 500
 # modelo_simple(main, params)
 # modelo_complejo(main, params)
 # eff_0(main, params)
-# eff_2(main, params)
+eff_2(main, params)
 # eff_5(main, params)
 # # eff_7(main, params)
-
-# params['cube_shape_x'] = 1500
-# modelo_simple(main, params)
-# modelo_complejo(main, params)
-# eff_0(main, params)
-# eff_2(main, params)
-# eff_5(main, params)
-# # eff_7(main, params)
-
-# params['cube_shape_x'] = 2000
-# modelo_simple(main, params)
-# modelo_complejo(main, params)
-# eff_0(main, params)
-# eff_2(main, params)
-# eff_5(main, params)
-# # eff_7(main, params)
-
-
