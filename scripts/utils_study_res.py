@@ -63,10 +63,7 @@ def get_data(params: dict, transform=None):
     los parámetros del modelo que estamos estudiando
     """
     params_aux = params.copy()
-    if params_aux['transform'] and transform:
-        params_aux['transform'] = T.Compose([params_aux['transform'], transform])
-    elif transform:
-        params_aux['transform'] = transform
+    params_aux['transform'] = transform
     train_dataset, val_dataset = get_data_validation(params_aux)
     train_all_dataset, test_dataset = get_final_data(params_aux)
     train_loader = DataLoader(train_dataset, params_aux["batch_size"], shuffle=True)
@@ -392,9 +389,9 @@ def get_metrics(save: bool, model, train_loader, case_of_study):
     _ = efficiency_purity_energy(probs, y_true, energy, case_of_study,
                                  save=save)
 
-def metric_study(run_id, case_of_study="train", save=False):
+def metric_study(run_id, transform=None, case_of_study="train", save=False):
     params, model = get_model(run_id)
-    train_loader, val_loader, _, test_loader = get_data(params)
+    train_loader, val_loader, _, test_loader = get_data(params, transform)
     if case_of_study == "train":
         get_metrics(save, model, train_loader, case_of_study)
     elif case_of_study == "val":
@@ -402,7 +399,7 @@ def metric_study(run_id, case_of_study="train", save=False):
     elif case_of_study == "test":
         get_metrics(save, model, test_loader, case_of_study)
     else:
-        raise Exception("Not valid case_of_study")
+        raise Exception(f"Not valid case_of_study: {case_of_study}")
 
 def study_foto(run_id, seed, e_min=0, e_max=1000):
     params, model = get_model(run_id)

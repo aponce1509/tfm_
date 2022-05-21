@@ -37,7 +37,7 @@ def get_models(runs_id: list):
         models_list.append(model)
     return models_list, params_list
 
-def get_data_list(params_list: list):
+def get_data_list(params_list: list, transforms=None):
     """
     Función que dado una lista con los parametros de los distintos modelos
     obtiene los dataloader de train y val para los correctos para cada modelo
@@ -46,12 +46,26 @@ def get_data_list(params_list: list):
     val_loader_list = []
     train_all_loader_list = []
     test_loader_list = []
-    for params in params_list:
-        train_loader, val_loader, train_all_loader, test_loader = get_data(params)
-        train_loader_list.append(train_loader)
-        val_loader_list.append(val_loader)
-        train_all_loader_list.append(train_all_loader)
-        test_loader_list.append(test_loader)
+    if transforms:
+        for params, transform in zip(params_list, transforms):
+            train_loader, val_loader, train_all_loader, test_loader = get_data(
+                params, transform
+            )
+            train_loader_list.append(train_loader)
+            val_loader_list.append(val_loader)
+            train_all_loader_list.append(train_all_loader)
+            test_loader_list.append(test_loader)
+    else:
+        for params in params_list:
+            train_loader, val_loader, train_all_loader, test_loader = get_data(
+                params
+            )
+            train_loader_list.append(train_loader)
+            val_loader_list.append(val_loader)
+            train_all_loader_list.append(train_all_loader)
+            test_loader_list.append(test_loader)
+
+
     output = {
         "train": train_loader_list,
         "val": val_loader_list,
