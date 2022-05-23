@@ -13,6 +13,7 @@ exp_name = "Eff pruebas clf y layers"
 params['cube_shape_x'] = 3000
 params['win_shape'] = (224, 224, 224)
 params['projection'] = 'y'
+params['dropout'] = 0.3
 params['transform_des'] =   'Normalización efficientnet'
 params['transform'] = T.Compose([
     T.Lambda(lambda x: x.repeat(3, 1, 1)),
@@ -32,14 +33,13 @@ params['transform'] = T.Compose([
 #         main(params)
 
 # grid 2
-# clf_neurons = [(256, 2), (32, 8, 2), (100, 50, 2), (50, 2)]
-clf_neurons = [(512, 2), ]
-params['n_epochs'] = 10
-models_name = ['effb5', ]
 params['scheduler_gamma'] = 0.5
-params['dropout'] = 0.3
-unfreezes = [100, ]
+# clf_neurons = [(256, 2), (32, 8, 2), (100, 50, 2), (50, 2)]
+clf_neurons = [(256, 2), ]  # (128, 2), (256, 2)
+models_name = ['google', ]  # 'effb0', 'effb2', 
+unfreezes = [5, 50, 100, 300]  # 5, 50, 100, 
 lrs = [0.01, ]
+params['dropout'] = 0.3
 for clf_neuron in clf_neurons:
     for model_name in models_name:
         for lr in lrs:
