@@ -52,6 +52,8 @@ def get_gradient_elements(model_params: dict):
     # Modelo
     if model_params["model_name"] == "convnet":
         model = ConvNet(model_params)
+    elif model_params["model_name"] == "convnet_padd":
+        model = ConvNetPadd(model_params)
     elif model_params["model_name"] == "convnet3d":
         model = ConvNet3D(model_params)
     elif model_params["model_name"] == "resnet50":
@@ -143,6 +145,121 @@ class ConvNet(nn.Module):
     def get_block(self, channels_in, channels_out, conv_size, conv_stride, 
                   pool_size, pool_sride, no_linear_fun, dropout_ratio):
         conv = nn.Conv2d(channels_in, channels_out, conv_size, conv_stride)
+        pool = nn.MaxPool2d(pool_size, pool_sride)
+        dropout_ = nn.Dropout(dropout_ratio)
+        if no_linear_fun == "relu":
+            no_linear = nn.ReLU(inplace=True)
+        elif no_linear_fun == "none":
+            no_linear = nn.Identity()
+        else:
+            raise Exception("Not valid no_linear_fun")
+        if self.bn:
+            bn = nn.BatchNorm2d(channels_out)
+            block = conv, no_linear, bn, pool, dropout_
+        else:
+            block = conv, no_linear, pool, dropout_
+        return block
+
+    def make_clf_block(self, params: dict):
+        clf_neurons = params['clf_neurons']
+        input_shape = (1, params['n_channels']) + params["input_shape"]
+        n_layers = len(clf_neurons)
+        # obtenemos la forma de la capa aplanada para obtener el nº de inputs 
+        # para la primera capa del clasificador
+        pre_cls_shape = self.convolutions(
+            torch.rand(input_shape)
+        ).data.shape[1]
+        layers_in = (pre_cls_shape, *clf_neurons[:-1])
+        layers_out = clf_neurons
+        # creamos una tupla (len = número de capas) con el dropout tq el todos 
+        # son iguales (dado por params) menos el último que lo hacemos 0
+        # dropout_ratios = (0, ) + (params['dropout'], ) * (n_layers - 2) + (0, )  
+        dropout_ratios = (params['dropout'], ) * (n_layers - 1) + (0, )  
+        no_linear_fun = params["clf_no_linear_fun"]
+        no_linear_funs = (no_linear_fun, ) * (n_layers - 1) + ("log_softmax", )
+        clf_params = (layers_in, layers_out, dropout_ratios, no_linear_funs)
+        clf_block = []
+        
+        for layer_in, layer_out, d_r, nl_fun in zip(*clf_params):
+            block = self.get_layer_clf(layer_in, layer_out, d_r, nl_fun)
+            clf_block.extend(block)
+        return tuple(clf_block)
+
+    def get_layer_clf(self, layers_in, layers_out, dropout_ratio,
+                      no_linear_fun="relu"):
+        layer = nn.Linear(layers_in, layers_out)
+        dropout_ = nn.Dropout(dropout_ratio)
+        # seleccion de no lineal
+        if no_linear_fun == "relu":
+            no_linear = nn.ReLU(inplace=True)
+        elif no_linear_fun == "sigmoid":
+            no_linear = nn.Sigmoid()
+        elif no_linear_fun == "log_softmax":
+            no_linear = nn.LogSoftmax(1)
+        elif no_linear_fun == "none":
+            no_linear = nn.Identity()
+        else:
+            raise Exception("Not valid no_linear_fun")
+        if self.bn and no_linear_fun != "log_softmax" :
+            bn = nn.BatchNorm1d(layers_out)
+            fc = dropout_, layer, no_linear, bn
+        else:
+            fc = dropout_, layer, no_linear
+        return fc        
+
+    def convolutions(self, x):
+        x = self.features(x)
+        x = self.end_conv(x)
+        x = self.avgpool(x)
+        x = torch.flatten(x, 1)
+        return x
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.convolutions(x)
+        x = self.classifier(x)
+        return x
+
+class ConvNetPadd(nn.Module):
+
+    def __init__(self, params: dict) -> None:
+        super(ConvNetPadd, self).__init__()
+        self.bn = params['bn']
+        conv_block = self.make_conv_block(params)
+        self.features = nn.Sequential(*conv_block[:-2])
+        self.end_conv = nn.Sequential(*conv_block[-2:])
+        if params['avg_layer'] == "identity":
+            self.avgpool = nn.Identity()
+        elif params['avg_layer'] == "adp":
+            self.avgpool = nn.AdaptiveAvgPool2d(params['avg_layer_size'])
+        else:
+            raise Exception("not valid avg_layer")
+
+        clf_block = self.make_clf_block(params)
+        self.classifier = nn.Sequential(*clf_block)
+
+    def make_conv_block(self, params: dict):
+        conv_sizes = params['conv_sizes']
+        conv_strides = params['conv_strides']
+        pool_sizes = params['pool_sizes']
+        pool_strides = params['pool_strides']
+        channels_in = (params['n_channels'], *params['conv_filters'][:-1])
+        channels_out = params['conv_filters']
+        no_linear_fun = params["clf_no_linear_fun"]
+        n_convs = len(conv_sizes)
+        dropout_ratios = (params['dropout'], ) * (n_convs - 1) + (0, ) 
+        conv_params = (conv_sizes, conv_strides, pool_sizes, pool_strides,
+                       channels_in, channels_out, dropout_ratios)
+        conv_block = []
+        for c_size, c_stride, p_size, p_stride, chan_in, chan_out, d_r in zip(*conv_params):
+            block = self.get_block(chan_in, chan_out, c_size, c_stride, p_size, 
+                           p_stride, no_linear_fun, d_r)
+            conv_block.extend(block)
+        return tuple(conv_block)
+
+    def get_block(self, channels_in, channels_out, conv_size, conv_stride, 
+                  pool_size, pool_sride, no_linear_fun, dropout_ratio):
+        conv = nn.Conv2d(channels_in, channels_out, conv_size, conv_stride,
+                         padding=5)
         pool = nn.MaxPool2d(pool_size, pool_sride)
         dropout_ = nn.Dropout(dropout_ratio)
         if no_linear_fun == "relu":
