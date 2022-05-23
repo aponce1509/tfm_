@@ -3,100 +3,49 @@ sys.path.append('./scripts')
 from model_run import fix_seed, basic_pipeline, optuna_pipeline
 from torchvision import transforms as T
 from exp_p_y.params import params
-exp_name = "Eff pruebas optim"
 
-def main_optuna(n_trials, torch_rand=True):
-    for seed in params['seeds']:
-        params["seed_"] = seed
-        fix_seed(params, torch_rand)
-        optuna_pipeline(params, exp_name, n_trials=n_trials)
+def main(params, torch_rand=True):
+    fix_seed(params, torch_rand)
+    basic_pipeline(params, experiment_name=exp_name)
 
-params['grid'] = {
-    "optimizer_grid":
-    {
-        "name": "optim_name",
-        "choices": ["adam", 'SGD']
-    },
-    "lr_grid": 
-    {
-        "name": "lr",
-        "low": 2,
-        "high": 5
-    }
-}
-
-params['unfreeze_layers'] = 20
-params['cube_shape_x'] = 2000
-params["model_name"] = "effb0"
-params['clf_neurons'] = (100, 50, 2)
-params['transform_des'] = 'Normalización eff'
+exp_name = "Eff pruebas clf y layers"
+# General params
+params['cube_shape_x'] = 3000
+params['win_shape'] = (224, 224, 224)
+params['projection'] = 'y'
+params['transform_des'] =   'Normalización efficientnet'
 params['transform'] = T.Compose([
     T.Lambda(lambda x: x.repeat(3, 1, 1)),
     T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
-main_optuna(8)
 
-# params['grid'] ={
-#     "unfreeze_layers":
-#     {
-#         "name": "unfreeze",
-#         "choices": [5, 10, 15, 20, 50, 100, 1000]
-#     },
-#     "lr_grid": 
-#     {
-#         "name": "lr",
-#         "low": 3,
-#         "high": 4
-#     }
-# }
-
-exp_name = "Eff pruebas clf y layers"
-params["model_name"] = "effb0"
-# params['clf_neurons'] = (32, 8, 2)
-# main_optuna(14)
-
-# params['clf_neurons'] = (100, 50, 2)
-# main_optuna(14)
-
+# grid 1
+# params['model_name'] = 'effb2'
 # params['clf_neurons'] = (256, 2)
-# main_optuna(14)
+# params['unfreeze_layers'] = 50
+# lrs = [0.01, 0.001, 0.0001]
+# steps = [0.5, 0.8, 1.0]
+# for lr in lrs:
+#     for step in steps:
+#         params['optim_lr'] = lr
+#         params['scheduler_gamma'] = step
+#         main(params)
 
-# params['clf_neurons'] = (50, 2)
-# main_optuna(14)
-
-params["model_name"] = "effb2"
-# params['clf_neurons'] = (32, 8, 2)
-# main_optuna(14)
-
-# params['clf_neurons'] = (100, 50, 2)
-# main_optuna(14)
-
-# params['clf_neurons'] = (256, 2)
-# main_optuna(14)
-
-# params['clf_neurons'] = (50, 2)
-# main_optuna(14)
-params["model_name"] = "effb5"
-# params['clf_neurons'] = (32, 8, 2)
-# main_optuna(14)
-
-# params['clf_neurons'] = (100, 50, 2)
-# main_optuna(14)
-
-# params['clf_neurons'] = (256, 2)
-# main_optuna(14)
-
-# params['clf_neurons'] = (50, 2)
-# main_optuna(14)
-params["model_name"] = "effb7"
-# params['clf_neurons'] = (32, 8, 2)
-# main_optuna(14)
-
-# params['clf_neurons'] = (100, 50, 2)
-# main_optuna(14)
-
-# params['clf_neurons'] = (256, 2)
-# main_optuna(14)
-
-# params['clf_neurons'] = (50, 2)
-# main_optuna(14)
+# grid 2
+# clf_neurons = [(256, 2), (32, 8, 2), (100, 50, 2), (50, 2)]
+clf_neurons = [(512, 2), ]
+params['n_epochs'] = 10
+models_name = ['effb5', ]
+params['scheduler_gamma'] = 0.5
+params['dropout'] = 0.3
+unfreezes = [100, ]
+lrs = [0.01, ]
+for clf_neuron in clf_neurons:
+    for model_name in models_name:
+        for lr in lrs:
+            for unfreeze in unfreezes:
+                params['optim_lr'] = lr
+                params['unfreeze_layers'] = unfreeze
+                params['model_name'] = model_name
+                params['clf_neurons'] = clf_neuron
+                main(params)
