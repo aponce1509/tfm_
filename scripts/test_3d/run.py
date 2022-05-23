@@ -26,7 +26,7 @@ params['clf_neurons'] = (32, 8, 2)
 params['avg_layer'] = "identity"
 params['avg_layer_size'] = None
 params['scheduler_step'] = 1
-params['optim_lr'] = 0.001
+params['optim_lr'] = 0.0001
 for seed in params['seeds']:
     params['seed_'] = 123
     main(False)
