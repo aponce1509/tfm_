@@ -1,20 +1,23 @@
 [0] Config.pm:311> INFO - This is Biber 2.16
 [0] Config.pm:314> INFO - Logfile is 'main.blg'
-[257] biber-MSWIN32:340> INFO - === 
-[363] Biber.pm:415> INFO - Reading 'main.bcf'
-[556] Biber.pm:952> INFO - Found 33 citekeys in bib section 0
-[585] Biber.pm:4340> INFO - Processing section 0
-[617] Biber.pm:4531> INFO - Looking for bibtex format file 'texto.bib' for section 0
-[701] bibtex.pm:1689> INFO - LaTeX decoding ...
-[776] bibtex.pm:1494> INFO - Found BibTeX data source 'texto.bib'
-[875] Utils.pm:395> WARN - legacy month field 'may' in entry 'neutrino_mass' is not an integer - this will probably not sort properly.
-[879] Utils.pm:395> WARN - legacy month field 'mar' in entry 'kamiokande' is not an integer - this will probably not sort properly.
-[916] Utils.pm:395> WARN - legacy month field 'Nov' in entry 'supernova' is not an integer - this will probably not sort properly.
-[934] Utils.pm:395> WARN - legacy month field 'Mar' in entry 'mlops_nvidea' is not an integer - this will probably not sort properly.
-[941] Utils.pm:395> WARN - legacy month field 'Jul' in entry 'mlops_neal' is not an integer - this will probably not sort properly.
-[1159] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[1159] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
-[1159] Biber.pm:4168> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'es-ES'
-[1230] bbl.pm:654> INFO - Writing 'main.bbl' with encoding 'UTF-8'
-[1266] bbl.pm:757> INFO - Output to main.bbl
-[1267] Biber.pm:128> INFO - WARNINGS: 5
+[409] biber-MSWIN32:340> INFO - === 
+[480] Biber.pm:415> INFO - Reading 'main.bcf'
+[761] Biber.pm:952> INFO - Found 43 citekeys in bib section 0
+[807] Biber.pm:4340> INFO - Processing section 0
+[838] Biber.pm:4531> INFO - Looking for bibtex format file 'texto.bib' for section 0
+[949] bibtex.pm:1689> INFO - LaTeX decoding ...
+[1081] bibtex.pm:1494> INFO - Found BibTeX data source 'texto.bib'
+[1085] Utils.pm:395> WARN - Duplicate entry key: 'vit' in file 'texto.bib', skipping ...
+[1086] Utils.pm:395> WARN - Duplicate entry key: 'transformers' in file 'texto.bib', skipping ...
+[1198] Utils.pm:395> WARN - legacy month field 'may' in entry 'neutrino_mass' is not an integer - this will probably not sort properly.
+[1203] Utils.pm:395> WARN - legacy month field 'mar' in entry 'kamiokande' is not an integer - this will probably not sort properly.
+[1267] Utils.pm:395> WARN - legacy month field 'Nov' in entry 'supernova' is not an integer - this will probably not sort properly.
+[1295] Utils.pm:395> WARN - legacy month field 'Mar' in entry 'mlops_nvidea' is not an integer - this will probably not sort properly.
+[1304] Utils.pm:395> WARN - legacy month field 'Jul' in entry 'mlops_neal' is not an integer - this will probably not sort properly.
+[1651] Utils.pm:395> WARN - Range field 'pages' in entry '3d_1' is malformed, falling back to literal
+[1765] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1766] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1766] Biber.pm:4168> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'es-ES'
+[1869] bbl.pm:654> INFO - Writing 'main.bbl' with encoding 'UTF-8'
+[1967] bbl.pm:757> INFO - Output to main.bbl
+[1968] Biber.pm:128> INFO - WARNINGS: 8

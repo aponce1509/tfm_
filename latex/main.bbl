@@ -838,6 +838,40 @@
       \verb https://commons.wikimedia.org/wiki/File:MultiLayerPerceptron.svg
       \endverb
     \endentry
+    \entry{dataaug}{article}{}
+      \name{author}{2}{}{%
+        {{hash=d49d1c5cbce775054678e29a462ca723}{%
+           family={Shorten},
+           familyi={S\bibinitperiod},
+           given={Connor},
+           giveni={C\bibinitperiod}}}%
+        {{hash=c7e0de384e7d1be2ca29a338e7f5c047}{%
+           family={Khoshgoftaar},
+           familyi={K\bibinitperiod},
+           given={Taghi\bibnamedelima M},
+           giveni={T\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{dae7c2fd5449b2cabfe6d8cea2eebe96}
+      \strng{fullhash}{dae7c2fd5449b2cabfe6d8cea2eebe96}
+      \strng{bibnamehash}{dae7c2fd5449b2cabfe6d8cea2eebe96}
+      \strng{authorbibnamehash}{dae7c2fd5449b2cabfe6d8cea2eebe96}
+      \strng{authornamehash}{dae7c2fd5449b2cabfe6d8cea2eebe96}
+      \strng{authorfullhash}{dae7c2fd5449b2cabfe6d8cea2eebe96}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of big data}
+      \field{number}{1}
+      \field{title}{A survey on image data augmentation for deep learning}
+      \field{volume}{6}
+      \field{year}{2019}
+      \field{pages}{1\bibrangedash 48}
+      \range{pages}{48}
+    \endentry
     \entry{dl_phy}{article}{}
       \name{author}{1}{}{%
         {{hash=77573c73167d5e6ea3f13d4692ac7480}{%
@@ -855,8 +889,8 @@
       \strng{authorbibnamehash}{77573c73167d5e6ea3f13d4692ac7480}
       \strng{authornamehash}{77573c73167d5e6ea3f13d4692ac7480}
       \strng{authorfullhash}{77573c73167d5e6ea3f13d4692ac7480}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{International Journal of Modern Physics A}
@@ -894,8 +928,8 @@
       \strng{authorbibnamehash}{cda167fce63bcc49e650f189cbfea98a}
       \strng{authornamehash}{cda167fce63bcc49e650f189cbfea98a}
       \strng{authorfullhash}{cda167fce63bcc49e650f189cbfea98a}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Annual Review of Nuclear and Particle Science}
@@ -1215,6 +1249,7 @@
       \strng{authorbibnamehash}{3c6ed03914c0610af0050fb8a809b599}
       \strng{authornamehash}{3c6ed03914c0610af0050fb8a809b599}
       \strng{authorfullhash}{3c6ed03914c0610af0050fb8a809b599}
+      \field{extraname}{1}
       \field{sortinit}{4}
       \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
@@ -1344,8 +1379,8 @@
       \strng{authorbibnamehash}{d96316bc7578db680aba71d4226354c8}
       \strng{authornamehash}{d96316bc7578db680aba71d4226354c8}
       \strng{authorfullhash}{e2f7b82b6bcaba0b27eef166b225c54a}
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{arXiv preprint arXiv:2010.11929}
@@ -1406,6 +1441,311 @@
       \verb{doi}
       \verb 10.1093/ptep/ptaa104
       \endverb
+    \endentry
+    \entry{hue_page}{misc}{}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labeltitlesource}{title}
+      \field{title}{HSL colour space}
+      \verb{urlraw}
+      \verb https://www.pythoninformer.com/computer-science/colour/hsl-colour/
+      \endverb
+      \verb{url}
+      \verb https://www.pythoninformer.com/computer-science/colour/hsl-colour/
+      \endverb
+    \endentry
+    \entry{lenet}{article}{}
+      \name{author}{7}{}{%
+        {{hash=6a1aa6b7eab12b931ca7c7e3f927231d}{%
+           family={LeCun},
+           familyi={L\bibinitperiod},
+           given={Yann},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=824ee0660bd2a40e283a9b8266f0868b}{%
+           family={Boser},
+           familyi={B\bibinitperiod},
+           given={Bernhard},
+           giveni={B\bibinitperiod}}}%
+        {{hash=017996bb299557636f8e47759ba29a60}{%
+           family={Denker},
+           familyi={D\bibinitperiod},
+           given={John\bibnamedelima S},
+           giveni={J\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=0444ce878492140cb17d6d4f19c2b24d}{%
+           family={Henderson},
+           familyi={H\bibinitperiod},
+           given={Donnie},
+           giveni={D\bibinitperiod}}}%
+        {{hash=ddaff2b97b0b8bf177545e0a7f694002}{%
+           family={Howard},
+           familyi={H\bibinitperiod},
+           given={Richard\bibnamedelima E},
+           giveni={R\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+        {{hash=494b3ee863ae780ea5237c5b09b80c0e}{%
+           family={Hubbard},
+           familyi={H\bibinitperiod},
+           given={Wayne},
+           giveni={W\bibinitperiod}}}%
+        {{hash=7c31ca2e27cf716eb355090b20ab6455}{%
+           family={Jackel},
+           familyi={J\bibinitperiod},
+           given={Lawrence\bibnamedelima D},
+           giveni={L\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {MIT Press}%
+      }
+      \strng{namehash}{9e4c6012409dc8dd9b2aa198a2059804}
+      \strng{fullhash}{db03602b955b0c9b23b4bd012343619d}
+      \strng{bibnamehash}{9e4c6012409dc8dd9b2aa198a2059804}
+      \strng{authorbibnamehash}{9e4c6012409dc8dd9b2aa198a2059804}
+      \strng{authornamehash}{9e4c6012409dc8dd9b2aa198a2059804}
+      \strng{authorfullhash}{db03602b955b0c9b23b4bd012343619d}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Neural computation}
+      \field{number}{4}
+      \field{title}{Backpropagation applied to handwritten zip code recognition}
+      \field{volume}{1}
+      \field{year}{1989}
+      \field{pages}{541\bibrangedash 551}
+      \range{pages}{11}
+    \endentry
+    \entry{enet}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=1e7d6abb8225099acc71f672b9ec336e}{%
+           family={Tan},
+           familyi={T\bibinitperiod},
+           given={Mingxing},
+           giveni={M\bibinitperiod}}}%
+        {{hash=841a83a4bb5e622d6e1bde4818879016}{%
+           family={Le},
+           familyi={L\bibinitperiod},
+           given={Quoc},
+           giveni={Q\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {PMLR}%
+      }
+      \strng{namehash}{3c6ed03914c0610af0050fb8a809b599}
+      \strng{fullhash}{3c6ed03914c0610af0050fb8a809b599}
+      \strng{bibnamehash}{3c6ed03914c0610af0050fb8a809b599}
+      \strng{authorbibnamehash}{3c6ed03914c0610af0050fb8a809b599}
+      \strng{authornamehash}{3c6ed03914c0610af0050fb8a809b599}
+      \strng{authorfullhash}{3c6ed03914c0610af0050fb8a809b599}
+      \field{extraname}{2}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{International conference on machine learning}
+      \field{title}{Efficientnet: Rethinking model scaling for convolutional neural networks}
+      \field{year}{2019}
+      \field{pages}{6105\bibrangedash 6114}
+      \range{pages}{10}
+    \endentry
+    \entry{resnet}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=6b4b60e909e78633945f3f9c9dc83e01}{%
+           family={He},
+           familyi={H\bibinitperiod},
+           given={Kaiming},
+           giveni={K\bibinitperiod}}}%
+        {{hash=5e72bc22dbcf0984c6d113d280e36990}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Xiangyu},
+           giveni={X\bibinitperiod}}}%
+        {{hash=bb295293acacd54387339079ebbe4ead}{%
+           family={Ren},
+           familyi={R\bibinitperiod},
+           given={Shaoqing},
+           giveni={S\bibinitperiod}}}%
+        {{hash=f85751488058842b5777c7b4074077b5}{%
+           family={Sun},
+           familyi={S\bibinitperiod},
+           given={Jian},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{6edb98fe38401d2fe4a026f5ce6e8451}
+      \strng{fullhash}{42c4b52dc3a62cebabbc11c73e1afb53}
+      \strng{bibnamehash}{6edb98fe38401d2fe4a026f5ce6e8451}
+      \strng{authorbibnamehash}{6edb98fe38401d2fe4a026f5ce6e8451}
+      \strng{authornamehash}{6edb98fe38401d2fe4a026f5ce6e8451}
+      \strng{authorfullhash}{42c4b52dc3a62cebabbc11c73e1afb53}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the IEEE conference on computer vision and pattern recognition}
+      \field{title}{Deep residual learning for image recognition}
+      \field{year}{2016}
+      \field{pages}{770\bibrangedash 778}
+      \range{pages}{9}
+    \endentry
+    \entry{vgg}{article}{}
+      \name{author}{2}{}{%
+        {{hash=9d16b7284df92c9adaee86c37ab992df}{%
+           family={Simonyan},
+           familyi={S\bibinitperiod},
+           given={Karen},
+           giveni={K\bibinitperiod}}}%
+        {{hash=c72fc39e94030f67717052309266a44d}{%
+           family={Zisserman},
+           familyi={Z\bibinitperiod},
+           given={Andrew},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{25d2f3c4577a6632d37f0126cc781232}
+      \strng{fullhash}{25d2f3c4577a6632d37f0126cc781232}
+      \strng{bibnamehash}{25d2f3c4577a6632d37f0126cc781232}
+      \strng{authorbibnamehash}{25d2f3c4577a6632d37f0126cc781232}
+      \strng{authornamehash}{25d2f3c4577a6632d37f0126cc781232}
+      \strng{authorfullhash}{25d2f3c4577a6632d37f0126cc781232}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint arXiv:1409.1556}
+      \field{title}{Very deep convolutional networks for large-scale image recognition}
+      \field{year}{2014}
+    \endentry
+    \entry{batchnorm}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=5543e82359e26b035efc009cb3efff9d}{%
+           family={Ioffe},
+           familyi={I\bibinitperiod},
+           given={Sergey},
+           giveni={S\bibinitperiod}}}%
+        {{hash=ed568d9c3bb059e6bf22899fbf170f86}{%
+           family={Szegedy},
+           familyi={S\bibinitperiod},
+           given={Christian},
+           giveni={C\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {PMLR}%
+      }
+      \strng{namehash}{7e8dee717d54c2984b1c6bd3f3c0561f}
+      \strng{fullhash}{7e8dee717d54c2984b1c6bd3f3c0561f}
+      \strng{bibnamehash}{7e8dee717d54c2984b1c6bd3f3c0561f}
+      \strng{authorbibnamehash}{7e8dee717d54c2984b1c6bd3f3c0561f}
+      \strng{authornamehash}{7e8dee717d54c2984b1c6bd3f3c0561f}
+      \strng{authorfullhash}{7e8dee717d54c2984b1c6bd3f3c0561f}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{International conference on machine learning}
+      \field{title}{Batch normalization: Accelerating deep network training by reducing internal covariate shift}
+      \field{year}{2015}
+      \field{pages}{448\bibrangedash 456}
+      \range{pages}{9}
+    \endentry
+    \entry{3d_1}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=4b70f790c6290cd314b405cb316c813f}{%
+           family={Kopuklu},
+           familyi={K\bibinitperiod},
+           given={Okan},
+           giveni={O\bibinitperiod}}}%
+        {{hash=f203d1f6be51e2cfd2c867feb19debeb}{%
+           family={Kose},
+           familyi={K\bibinitperiod},
+           given={Neslihan},
+           giveni={N\bibinitperiod}}}%
+        {{hash=784ef2fe2288ee96663e794bcb6be96c}{%
+           family={Gunduz},
+           familyi={G\bibinitperiod},
+           given={Ahmet},
+           giveni={A\bibinitperiod}}}%
+        {{hash=a412590ea8e1a24b3b627f33dce92dc1}{%
+           family={Rigoll},
+           familyi={R\bibinitperiod},
+           given={Gerhard},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{91a5a9f8d2b43a212e19bc0d77d3fe04}
+      \strng{fullhash}{327a17564174b99c7481a9d53ad4bf01}
+      \strng{bibnamehash}{91a5a9f8d2b43a212e19bc0d77d3fe04}
+      \strng{authorbibnamehash}{91a5a9f8d2b43a212e19bc0d77d3fe04}
+      \strng{authornamehash}{91a5a9f8d2b43a212e19bc0d77d3fe04}
+      \strng{authorfullhash}{327a17564174b99c7481a9d53ad4bf01}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the IEEE/CVF International Conference on Computer Vision Workshops}
+      \field{title}{Resource efficient 3d convolutional neural networks}
+      \field{year}{2019}
+      \field{pages}{0--0}
+      \range{pages}{-1}
+      \warn{\item Range field 'pages' in entry '3d_1' is malformed, falling back to literal}
+    \endentry
+    \entry{3d_sparse}{article}{}
+      \name{author}{1}{}{%
+        {{hash=9a5caea4e1fd1c222de940e030126b65}{%
+           family={Graham},
+           familyi={G\bibinitperiod},
+           given={Ben},
+           giveni={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{9a5caea4e1fd1c222de940e030126b65}
+      \strng{fullhash}{9a5caea4e1fd1c222de940e030126b65}
+      \strng{bibnamehash}{9a5caea4e1fd1c222de940e030126b65}
+      \strng{authorbibnamehash}{9a5caea4e1fd1c222de940e030126b65}
+      \strng{authornamehash}{9a5caea4e1fd1c222de940e030126b65}
+      \strng{authorfullhash}{9a5caea4e1fd1c222de940e030126b65}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint arXiv:1505.02890}
+      \field{title}{Sparse 3D convolutional neural networks}
+      \field{year}{2015}
+    \endentry
+    \entry{sparse_neutrino}{article}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{3}{}{%
+        {{hash=28654106fc3705cdef4aca86d38b7ee5}{%
+           family={Dominé},
+           familyi={D\bibinitperiod},
+           given={Laura},
+           giveni={L\bibinitperiod}}}%
+        {{hash=61ade3c05ca359c6086ba944fab5b2db}{%
+           family={Terao},
+           familyi={T\bibinitperiod},
+           given={Kazuhiro},
+           giveni={K\bibinitperiod}}}%
+        {{hash=0e0d11e7f0752c8bc62037dbae8b7737}{%
+           family={Collaboration},
+           familyi={C\bibinitperiod},
+           given={DeepLearnPhysics},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {APS}%
+      }
+      \strng{namehash}{a2cd921e9e9478dba72a9e7ea56b65ef}
+      \strng{fullhash}{a2cd921e9e9478dba72a9e7ea56b65ef}
+      \strng{bibnamehash}{a2cd921e9e9478dba72a9e7ea56b65ef}
+      \strng{authorbibnamehash}{a2cd921e9e9478dba72a9e7ea56b65ef}
+      \strng{authornamehash}{a2cd921e9e9478dba72a9e7ea56b65ef}
+      \strng{authorfullhash}{a2cd921e9e9478dba72a9e7ea56b65ef}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Physical Review D}
+      \field{number}{1}
+      \field{title}{Scalable deep convolutional neural networks for sparse, locally dense liquid argon time projection chamber data}
+      \field{volume}{102}
+      \field{year}{2020}
+      \field{pages}{012005}
+      \range{pages}{1}
     \endentry
   \enddatalist
 \endrefsection
