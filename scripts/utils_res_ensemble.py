@@ -45,9 +45,9 @@ def models_evaluation_ensemble(loaders: dict, models: list):
         test_en_list.append(test_en)
     return train_probs_list, test_probs_list, train_labels_list, test_labels_list, train_en_list, test_en_list
 
-def get_data_ensemble(runs_id):
+def get_data_ensemble(runs_id, transforms=None):
     model_list, params_list = get_models(runs_id)
-    loaders = get_data_list(params_list)
+    loaders = get_data_list(params_list, transforms)
     train_probs, test_probs, train_labels, test_labels, train_ens, test_ens = models_evaluation_ensemble(
         loaders, model_list
     )
@@ -80,7 +80,8 @@ def get_metrics_ensemble(save, model, X, y_true, energy, case_of_study, n_bins):
     _ = efficiency_purity_energy(probs, y_true, energy, case_of_study, n_bins,
                                  save)
 
-def metric_study_ensemble(run_id: str, case_of_study, save: bool, n_bins=50):
+def metric_study_ensemble(run_id: str, case_of_study, transforms=None,
+                          save: bool=False, n_bins=50):
     runs_id, model = get_model(run_id, True)
     X_train, X_test, y_train, y_test, energy_train, energy_test = get_data_ensemble(runs_id)    
     if case_of_study == "train":
