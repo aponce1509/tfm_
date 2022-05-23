@@ -40,7 +40,14 @@ params = {
     "log_trans": False,
     "transform_des": "Normalización",
     # "transform": None,
-    "transform": T.Compose([T.Lambda(lambda x: x.type(torch.float)), T.Normalize((0.485, 0.485, 0.485), (0.229, 0.229, 0.229))]),
+    "transform": T.Compose([
+        T.Lambda(lambda x: x.type(torch.float)),
+        T.Normalize(mean=[0, 0, 0], std=[255, 255, 255]),
+        T.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225]
+        )
+    ]),
     "is_fast": True,
     # parámetros de entrenamiento de la red
     "is_def": False,
