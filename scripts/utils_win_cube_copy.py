@@ -1102,9 +1102,22 @@ if __name__ == "__main__":
     # cascada = CascadasFast(cube_shape_x=1000)
     # img, label = cascada[7]
     # cascada.plot_simple(7)
-    cascada = CascadasFast(cube_shape_x=500, projection="y", 
-                           win_shape=(62, 62, 128))
-    cascada.plot_simple(469)
+    import torchvision.transforms as T
+    transform = T.Compose([
+        T.Lambda(lambda x: x.type(torch.float)),
+        T.Normalize(mean=[0, 0, 0], std=[255, 255, 255]),
+        T.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225]
+        )
+    ])
+    cascada = CascadasFast(cube_shape_x=1000, projection="color", 
+                           win_shape=(62, 62, 128), transform=transform)
+    # cascada.plot_simple(469)
     # cascada_2 = CascadasFast(cube_shape_x=1000, projection="color", 
     #                        win_shape=(62, 62, 128))
     # cascada_2.plot_simple(5)
+    # %%
+    img, _, _ = cascada[469]
+    img.max()
+# %%

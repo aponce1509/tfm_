@@ -1,6 +1,7 @@
 \documentclass[a4paper,12pt,twoside,titlepage]{article}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage[export]{adjustbox}
 \usepackage{fixltx2e}
 \usepackage{siunitx}
 \usepackage[shortlabels]{enumitem}
@@ -21,6 +22,9 @@
 \usepackage{multirow}
 \usepackage{tabu}
 \usepackage{hyperref}
+
+\usepackage{minted}
+\newcommand{\inline}[1]{\mintinline{Python}{#1}}
 \graphicspath{ {./img/} }
 \tolerance=1000
 \usepackage[spanish,es-tabla,es-nodecimaldot]{babel}
@@ -128,7 +132,7 @@ En este trabajo estudiaremos los neutrinos que, como ya hemos dicho, son partíc
 
 Para su detección inicial se emplearon fuentes muy intensas (partículas por unidad de tiempo) para compensar la baja probabilidad de interacción. El primer detector consistía en un tanque de agua donde se buscaba la reacción $\beta$ inversa y los neutrinos procedían de una central nuclear \cite{particle_griff}. Otros detectores son por ejemplo el Super Kamiokande \cite{kamiokande} que se basan en la radiación de Cherenkov\footnote{Luz emitida por una partícula cargada al moverse por un medio dieléctrico a una velocidad superior a la de la luz en dicho medio \cite{jackson}.} o las cámaras de proyección temporal (TPC) que se usa en experimentos como SBN \cite{sbnd} o DUNE \cite{dune}. Los datos que vamos a usar en este trabajo proceden de simulaciones realizadas sobre el experimento SNB que actualmente esta en proceso de construcción y en secciones posteriores describiremos cómo funciona exactamente.
 
-Las fuentes de neutrinos son diversas y pueden ser producidos de manera artificial en reactores nucleares o en aceleradores de partículas. También pueden ser producidos de forma natural en el proceso de fusión del hidrógeno en el Sol. De hecho, en muchos eventos cósmicos, como supernovas, se producen neutrinos \cite{supernova}, que gracias a su débil interacción con la materia son capaces de recorrer grandes distancias de manera que muchísimos neutrinos llegan a la superficie terrestre cada segundo \red{pongo algun número?}.
+Las fuentes de neutrinos son diversas y pueden ser producidos de manera artificial en reactores nucleares o en aceleradores de partículas. También pueden ser producidos de forma natural en el proceso de fusión del hidrógeno en el Sol. De hecho, en muchos eventos cósmicos, como supernovas, se producen neutrinos \cite{supernova}, que gracias a su débil interacción con la materia son capaces de recorrer grandes distancias de manera que muchísimos neutrinos llegan a la superficie terrestre cada segundo \red{TODO: numero}.
 
 Hasta ahora hemos hablado de los distintos tipos de neutrinos que se han observado y son los que el Modelo Estándar recoge. Un hecho importante es que, a medida que estos neutrinos se desplazan, estos cambian de un tipo a otro que es lo que se conoce como oscilación de neutrinos de lo que hay muchas evidencias experimentales \cite{oscilation}. No obstante, hay una serie de medidas anómalas al contar el número de neutrinos en ciertos experimentos donde se observa un exceso de los que se predicen de manera teórica. Estas anomalías podrían explicarse introduciendo un nuevo neutrino que no siente la interacción débil \cite{sbnd} estando, por tanto, trabajando más allá en física más allá del Modelo Estándar.
 
@@ -282,7 +286,7 @@ La dificultad reside en construir bloques que sirvan para el tipo de datos que s
 
 Las CNN son un tipo de NN donde la función matemática que se realiza es la de convolución. Antes de entrar en la parte matemática, mostremos la idea detrás de esta capa de convolución. Para ello supongamos que tenemos una imagen, que se representa como una matriz donde cada elemento describe al píxel.
 
-Sobre esta imagen podemos ir aplicando un filtro pequeño, i.e un bloque $3\times 3$ e ir recorriendo la imagen y recogiendo el resultado de aplicar el filtro. Entiéndase aplicar el el filtro como sumar los píxeles de la imagen que pase por un patrón fijo, por ejemplo podría se una linea diagonal. Esto matemáticamente lo podemos ver como tenemos una matriz $I$, la imagen, y una $K$, el filtro, donde las dimensiones de $I$ son mayores que las de $K$. La matriz $K$ se fija definiendo el filtro (en el caso de tener la linea diagonal tendríamos nulo) y lo que se hace es ir recorriendo $I$ en bloques y hacer un producto elemento a elemento y sumarlo de manera que si recogemos todos los resultados en una matriz el resultado de aplicar el filtro sería otra matriz.
+Sobre esta imagen podemos ir aplicando un filtro pequeño, i.e un bloque $3\times 3$ e ir recorriendo la imagen y recogiendo el resultado de aplicar el filtro. Entiéndase aplicar el filtro como sumar los píxeles de la imagen que pase por un patrón fijo, por ejemplo podría se una linea diagonal. Esto matemáticamente lo podemos ver como tenemos una matriz $I$, la imagen, y una $K$, el filtro, donde las dimensiones de $I$ son mayores que las de $K$. La matriz $K$ se fija definiendo el filtro (en el caso de tener la linea diagonal tendríamos nulo) y lo que se hace es ir recorriendo $I$ en bloques y hacer un producto elemento a elemento y sumarlo de manera que si recogemos todos los resultados en una matriz el resultado de aplicar el filtro sería otra matriz.
 
 Sea $I$ una matriz de dimensiones $p\times q$ y $K$ una matriz de dimensiones $r\times s$ tal que $p>r$ y $q>s$. Definimos aplicar un filtro como:
 \begin{equation}
@@ -305,39 +309,43 @@ Esta definición se puede generalizar para varias dimensiones simplemente añadi
 \begin{equation}
   s[i, j]=(I * K)[i, j]=\sum_{m} \sum_{n} I[m, n] K[i-m, j-n],
 \end{equation}
-donde $I$ es una matriz de dimensiones $p\times q$, la entrada, y $K$ es una matriz de dimensiones $k\times l$, el kernel. Los límites de los sumatorios realmente serían de menos infinito a infinito pero en nuestro caso está determinado por las dimensiones de K (podemos definir $K = 0$ si los indices superan las dimensiones). Notar la gran similitud con \ref{ec:def_filtro}
+donde $I$ es una matriz de dimensiones $p\times q$, la entrada, y $K$ es una matriz de dimensiones $k\times l$, el kernel. Los límites de los sumatorios realmente serían de menos infinito a infinito pero en nuestro caso está determinado por las dimensiones de K (podemos definir $K = 0$ si los indices superan las dimensiones). Notar la gran similitud con \ref{ec:def_filtro}.
 
 % Veamos esta expresión con el ejemplo que pusimos antes. $I$ es una matriz dada por la imagen, $K$ es el filtro y $s$ es la matriz final tras aplicar el filtro. Notar que la ecuación esta definida para los elementos de las matrices. La expresión anterior lo que nos dice es que el elemento $i$, $j$ de la matriz $s$ esta dado por hacer el producto elemento a elemento de la matriz $K$ con una parte de la matriz $I$ en un entorno del elemento $i$, $j$. Tras hacer el producto lo que se hace es sumar. Esto lo hacemos para todos los $i$, $j$ posibles y es lo que antes decíamos de aplicar el filtro a la imagen.
 
-La capa de convolución consiste en aplicar el filtro y luego (en la mayoría de casos) aplicar una capa de pooling que consiste en reducir las dimensiones de la salida mediante la agregación de varios elementos en uno solo. Por ejemplo, una imagen la podemos reducir si fragmentamos la imagen en bloques $2\times 2$ y le hacemos la media a estos bloques. Esta operación ayuda a que el resultado de la aplicación del filtro sea invariante a pequeños desplazamientos, que es fundamental a la hora de estudiar imágenes ya que queremos que imágenes que se distingan solo por desplazamientos se clasifiquen igual (pensar que la imagen puede estar tomada en puntos distintos pero contener lo mismo).
+La capa de convolución consiste en aplicar el filtro y luego (en la mayoría de casos) aplicar una capa de reducción \textit{pooling} que consiste en reducir las dimensiones de la salida mediante la agregación de un grupo de píxeles. Por ejemplo, una imagen la podemos reducir si fragmentamos la imagen en bloques $2\times 2$ y le hacemos la media a estos bloques. Esta operación ayuda a que el resultado de la aplicación del filtro sea invariante a pequeños desplazamientos, que es fundamental a la hora de estudiar imágenes ya que queremos que imágenes que se distingan solo por desplazamientos se clasifiquen igual (pensar que la imagen puede estar tomada desde puntos de vista distintos pero contener el mismo objeto).
 
-Esto que acabamos de describir son los elementos más básicos de una CNN y es el punto de partida a la hora de construirlas. Las CNN no son más que un tipo de arquitectura de NN donde cada tipo de arquitectura tiene unas características que hacen que sean útiles para un tipo de problema. Las CNN son muy buenas para a la hora de estudiar imágenes ya que permiten estudiar una región de la imagen y determinar que elementos se tienen en la imagen.
+Estos son los elementos básicos de una CNN y es el punto de partida a la hora de construirlas. En resumen, hay muchas arquitecturas posibles para un NN donde cada una tendrá unas características que hacen que sean útiles para un tipo de problema concreto. En concreto, las CNN son muy buenas para a la hora de estudiar imágenes ya que permiten estudiar regiones de la imagen y determinar que elementos y patrones se tienen en la imagen, desde patrones muy simples que se obtiene con las primeras capas de convolución a patrones más complejos cuando aumentamos la complejidad del modelo.
 
 \subsubsection*{Aprendizaje}
 
 Hasta ahora hemos hablado de como es una NN. Sin embargo, no hemos entrado en como se determinan los pesos para que sean capaces de resolver un problema determinado. Sin entrar en mucho detalle, lo que se hace es emplear lo que se conoce como el descenso del gradiente y la \textit{backpropagation}.
 
-Con los modelos de ciencia de datos lo que se suele querer es que dados unos datos, el modelo sea capaz de realizar una determinada tarea. En el caso del aprendizaje supervisado, se parte de que se tienen unos datos que sabemos su clase/valor y con estos datos se entrena el modelo para que realice la tarea concreta. Para la NN lo que se hace es aprender los distintos pesos de la red.
+El objetivo de un problema de ciencia de datos es que dados unos datos usar un modelo que sea capaz de realizar una determinada tarea sobre estos datos con la intención de obtener patrones no triviales. En el caso del aprendizaje supervisado, se parte de que se tienen unos datos que sabemos su clase/valor y con estos datos se entrena el modelo para que realice la tarea concreta. Las NN lo que hacen es hacer uso de los datos y sus etiquetas para determinar los pesos que mejor realizan la tarea concreta que se este realizado. Como ejemplo de tarea tenemos la clasificación que consiste en dada una instancia determinar la clase de salida.
 
-El descenso del gradiente consiste en definir una función perdida que tome la salida de manera que se penaliza los caso donde el modelo se equivoca y no se penaliza en casos contrarios. Esta función toma como argumento la salida de la red y su valor real que normalmente se define tal que a peor funcione la red se tengan valores más bajos. Por otro lado, el valor de esta función dependerá del valor de los pesos ya que influyen en la salida de la red, por lo que si queremos mejorar el modelo tenemos que encontrar los pesos que hagan que el error cometido sea el menor posible para todos los ejemplos.
+El descenso del gradiente consiste en definir una función perdida que toma la clase dada por la red y la compara con la clase real. En el caso que la red se equivoque la salida de la función perdida será mayor y será menor a medida que el modelo acierte la clase de las distintas instancias. Esta función va a depender de los pesos de la red ya que son estos pesos los que determinan la clase que se asigna a la instancia. El descenso del gradiente consiste en obtener el gradiente esta función perdida con respecto a los parámetros de la red obteniendo la dirección de crecimiento de la función. Lo que se hace es modificar los pesos en la dirección contraria con la idea de reducir el valor de la función perdida que implica obtener mejores resultados.
 
-Matemáticamente hablando el problema consiste en la optimización de una función de varias variables, los pesos de red. Para obtenerlos lo que se hace es calcular el gradiente y cambiar los parámetros en función del valor obtenido. El cambio se hace poco a poco y se regula con lo que se conoce como ritmo de aprendizaje (lr). Hay distintos algoritmos para este problema como puede ser SGD o Adam.
+Matemáticamente hablando el problema consiste en la optimización de una función de varias variables, los pesos de red. Los pesos se inicializan de manera aleatoria y se modifican calculando el gradiente y cambiando estos pesos en función del valor obtenido. El cambio se hace poco a poco y se regula con lo que se conoce como ritmo de aprendizaje ($lr$). Hay distintos algoritmos para este problema como puede ser SGD o Adam.
 
-El proceso de aprendizaje suele realizarse dando un pequeño conjunto de datos obteniendo el valor de la función perdida para cada dato, promediando y finalmente ajustar los pesos calculando el gradiente. Esto se repite para todos las instancias y, normalmente, este procedimiento se repite de manera que durante el aprendizaje el modelo estudia cada dato varias veces. A el conjunto de datos pequeños se le conoce como \textit{batch size} y al número de veces que se recorre el conjunto de datos como número de épocas.
+El proceso de aprendizaje suele realizarse dando un pequeño conjunto de datos obteniendo el valor de la función perdida para cada dato, promediando y finalmente ajustar los pesos calculando el gradiente. Esto se repite para todos las instancias y, normalmente, este procedimiento se repite de manera que durante el aprendizaje el modelo estudia cada dato varias veces. A el conjunto de datos pequeños se le conoce como \textit{batch size} ($bs$) y al número de veces que se recorre el conjunto de datos como número de épocas ($n_e$).
 
-Uno de los problemas fundamentales que se tienen con el DL es que a medida que se tienen redes complejas el número de pesos aumenta y esto da problemas de sobre ajuste. De hecho una de las limitaciones del DL es la gran cantidad de datos que se necesitan para entrenar los modelos. Este problema ha hecho que hayan surgido métodos de regulación como el dropout que tratan de lidiar con este problema. El dropout no es más que eliminar aleatóriamente un porcentaje de los enlaces entre dos capas que a mostrado buenos resultados para lidiar con este problema.
+Uno de los problemas fundamentales que se tienen con el DL es que a medida que se tienen redes complejas el número de pesos aumenta y esto hace que sea relativamente simple tener sobre ajuste. De hecho una de las limitaciones del DL es la gran cantidad de datos que se necesitan para entrenar los modelos. Este problema ha hecho que hayan surgido métodos de regulación como el dropout que tratan de lidiar con este problema. El dropout no es más que eliminar aleatoriamente un porcentaje de los enlaces entre dos capas que a mostrado buenos resultados para lidiar con este problema.
+
+Otras alternativas para reducir el sobre ajuste consisten en introducir pequeñas modificaciones sobre la imágenes para aumentar la variabilidad de los datos así como la cantidad de imágenes. Estas transformaciones suelen ser rotaciones, desplazamientos, cambios de brillo, reflexiones, etc. Esto es lo que se conoce como \textit{data augmentation} y ha mostrado dar muy buenos resultados \cite{dataaug}. Sin embargo, no vamos a hacer uso de esta técnica, ya que trabajamos con simulaciones y podemos hasta cierto punto obtener más datos en caso que sea necesario y porque transformaciones como rotaciones y reflexiones modifican la geometría del detector que es algo no deseado.
+
+Otra opción es hacer uso de modelos ya entrenados con conjuntos de datos con muchas imágenes y muchas clases. La idea de tras de este enfoque consiste en que estas redes han aprendido muchos patrones que se pueden aplicar en otras situaciones. Se puede usar la red completa o únicamente el extractor de características. El aprendizaje consiste en entrenar el clasificador (en el caso de usar la red completa sería únicamente la capa) o modificar los pesos de las capas más profundas al ser la capas que contienen los patrones más complejos y por tanto pueden ser más específicos y por tanto no ser buenos para otro problema.
 
 \subsubsection*{Elementos}
 
 A modo de resumen final, vamos a recoger lo distintos bloques que pueden formar una CNN.
 
-Un elemento necesario es el optimizador que se va a usar y el lr. En este punto lo que se hace es construir la NN usando distintas capas. Las capas más simples son las que hemos ido mencionado. Se tiene el bloque de convolución que esta formado por la aplicación de los filtros así como de la capa de pooling. El otro elemento que hemos visto son las capas densas. Una CNN muy simple la podemos construir como la aplicación de varias capas de convolución y tras esto usar una MLP que clasifique los resultados.
+Un elemento necesario es el optimizador, el algoritmo que realiza el descenso del gradiente, y el $lr$. En este punto lo que se hace es construir la NN usando distintas capas. Las capas más simples son las que hemos ido mencionado. Se tiene el bloque de convolución que esta formado por la aplicación de los filtros así como de la capa de pooling. El otro elemento que hemos visto son las capas densas. Una CNN muy simple la podemos construir como la aplicación de varias capas de convolución y tras esto usar una MLP que clasifique los resultados.
 
 Esto son los bloques más simples pero con el tiempo han ido surgiendo nuevos bloques y modificaciones sobre estos con la idea de mejorar la optimización o los resultados. También hay distintas forma de unir todos estos elementos para construir la red. No vamos a entrar en estos bloques ya que los avances en los últimos años a sido muy grande y una revisión de estos elementos es un trabajo en si. En el caso de hacer uso de alguna de estas arquitecturas o elementos lo describiremos cuando se describa dicha arquitectura.
 
 \subsection{Estado del arte}
 
-En los últimos años distintos laboratorios como el CERN han aplicado técnicas de DL \cite{ml_phy} con la idea de mejorar la capacidad de análisis de los datos qe se obtienen. Algunas de la aplicaciones que se pueden encontrar son en seguimiento de partículas, identificación de eventos, identificación de \textit{Jets} o simulaciones aplicando redes generativas \cite{dl_phy, dl_lhc}. De hecho en microBooNE, un detector similar al nuestro, hace uso de las CNN para la clasificación de las cascadas \cite{ml_phy}.
+En los últimos años distintos laboratorios como el CERN han aplicado técnicas de DL \cite{ml_phy} con la idea de mejorar la capacidad de análisis de los datos que se obtienen. Algunas de la aplicaciones que se pueden encontrar son en seguimiento de partículas, identificación de eventos, identificación de \textit{Jets} o simulaciones aplicando redes generativas \cite{dl_phy, dl_lhc}. De hecho en microBooNE, un detector similar al nuestro, hace uso de las CNN para la clasificación de las cascadas \cite{ml_phy}.
 
 Los neutrinos estériles surgen como una explicación teórica fuera del Modelo Estándar de una serie de resultados anómalos en distintos detectores de neutrinos. En los detectores LSND \cite{lsnd}, MiniBooNE \cite{miniboo} se han observado exceso del número de neutrinos esperados y que son compatibles con la existencia del cuarto neutrino \cite{sbnd}. Además se han observado otras anomalías conocidas como la anomalía del reactor o la anomalía de Galio que también podrían explicarse con la presencia del neutrino estéril. Los programas SNB y DUNE tiene como objetivo realizar experimentos de seguimiento que traten de confirmar que efectivamente se tienen esas anomalías \cite{sbnd, dune}. El detector microBooNE \cite{microboo} tenía un objetivo similar y ha publicado resultados recientemente, que son inconsistentes con los resultados de MiniBooNE  \cite{micro_res}. Sin embargo, no dejan de ser unos resultados iniciales y siguen teniendo incertidumbres tales que no descartan completamente los resultados previos. Una de las incertidumbres principales proviene de la selección de los eventos que provienen de neutrinos y por tanto para reducir la incertidumbre una de las cosas que hay que mejorar es la detección de cascadas electromagnéticas. 
 
@@ -391,7 +399,7 @@ Nuestro objetivo principal en este trabajo es logar distinguir las cascadas orig
 Las redes convolucionales son el estado del arte en clasificación de imágenes por lo que todos los enfoques que vamos a desarrollar van a hacer uso de estas arquitecturas. Sin embargo, se pueden abordar mediante otros procedimientos como puede ser hacer la clasificación mediante la definición de nuevas variables a partir de las imágenes o el uso de métodos clásicos de extracción de características. Estos enfoques son más clásicos en el sentido que no se hace uso del Deep Learning y lo que hacemos es definir nosotros las características con la luego aplicar un clasificador.
 
 \subsection{Procesamiento de los datos}
-
+\label{sec:des_trat}
 Antes de entrar en los modelo que vamos a usar para hacer la clasificación tenemos que ver cómo  se tratan los datos iniciales para que así podamos hacer uso de un modelo. Lo primero que tenemos que hacer es pasar los datos que tenemos al formato con el que se tratan las imágenes. Una imagen no es más que una matriz donde cada elemento es un píxel. En nuestro caso, al trabajar con imágenes tridimensionales, tendremos que trabajar con matrices con cuatro dimensiones, tres de posición y una para el canal de color. El color de la imagen lo asociaremos con la cantidad de carga depositada por el hit, por lo que, en principio, trabajamos con imágenes en blanco y negro.
 
 Una vez que hemos construido las imágenes vamos a plantear distintas formas de tratarlas que consideramos que pueden ayudar a la hora de discriminar los eventos. Estamos son los que enumeramos a continuación.
@@ -419,6 +427,7 @@ Para fijar ideas, supongamos que tenemos solo dos dimensiones y queremos acabar 
 
 De manera formal lo que se tiene es lo siguiente. Sea ${r} = (r_x, r_y, r_z)$ un punto cualquiera de la trayectoria de un evento cualquiera, $t_{min} = (x_{min}, y_{min}, z_{min})$, $t_{min} = (x_{max}, y_{max}, z_{max})$ tuplas que recogen los valores más pequeños y más grande en cada eje respectivamente, que se obtienen de todos los eventos de entrenamiento, y $c = (c_x, c_y, c_z)$ una tupla con la resolución final de la imagen que contiene al detector completo y que verifican:
 \begin{equation}
+  \label{eq:resolucion}
   c_x = c_y = \frac{5}{4}c_z,
 \end{equation}
 para que los tres ejes tengan las mismas unidades.
@@ -447,7 +456,7 @@ Una vez se han procesado los datos y tenemos la imágenes tenemos que aplicar un
   \item Una CNN simple, con pocas capas que nos sirva de punto de partida.
   % \item \red{Una CNN compleja hecha por nosotros????}
   \item Una CNN más compleja, similar a la simple pero más densa, más filtros y neuronas, y más profundas, más capas.
-  \item Hacer uso de arquitectura del estado del arte como pueden ser ResNet, EfficieNet o Visual Transformers. Probaremos a entrenar con los pesos aprendidos con el conjunto de datos de ImageNet reentrenando las últimas capas.
+  \item Hacer uso de arquitectura del estado del arte como pueden ser ResNet, EfficientNet o Visual Transformers. Probaremos a entrenar con los pesos aprendidos con el conjunto de datos de ImageNet reentrenando las últimas capas.
 \end{itemize}
 
 Con todo esto proponemos distintos métodos tanto para el procesamiento de los datos así como el modelo empleado. En las siguientes secciones mostraremos tanto una descripción detallada de las arquitecturas de los modelos empleados así como los resultados obtenidos a la hora de hacer la clasificación.
@@ -478,113 +487,217 @@ Por otro lado, como ya se menciono al estar trabajando en un problema donde no s
 \end{itemize} 
 \newpage
 \section{Análisis de los datos}
+
 En esta sección vamos a analizar los datos con la idea de poder entenderlos mejor y poder tomar decisiones sobre como procesar los datos y crear las imágenes. En concreto nos centraremos en estudiar el rango y distribución de distintas variables.
 
-Como ya he explicado, una de las variables que tenemos de cada evento es la energía de la partícula que origina dicho suceso. Recordemos que esta variables se tiene gracias a que trabajamos con simulaciones y solo se usará para hacer el estudio de los resultados obtenidos. Para este estudio es necesario conocer la distribución de esta variable, es decir, si tenemos rangos de energía donde tenemos más evento. En la Fig. se muestra un histograma de la distribución de energías de los distintos eventos donde vemos que efectivamente se tiene una distribución uniforme. En nuestro caso esto se tiene ya que estamos trabajando con simulaciones y se han generado los eventos de manera que los modelos se entrenen con la misma cantidad de eventos para todas las energías. En la realidad no se espera que los datos sigan esta distribución por lo que será necesario estudiar las métricas en función de la energía para saber si hay rangos de energía donde nuestro modelo es mejor o peor.
+Como ya se ha mencionado, una de las variables que tenemos para cada evento es la energía de la partícula que origina la cascada. Recordemos que esta variable se tiene gracias a que trabajamos con simulaciones y solo se usará para hacer el estudio de los resultados obtenidos. En la Fig. \ref{fig:hist_energia} se muestra un histograma de la distribución de energías de los distintos eventos donde vemos que se tiene una distribución uniforme, es decir, no hay rangos de energía donde se tengan más eventos. En nuestro caso, se tiene esta distribución al trabajar con simulaciones y nos permite entrenar la misma cantidad de evento en los distintos rangos de energía. En la realidad no se espera que los datos sigan esta distribución por lo que será necesario estudiar las métricas en función de la energía para saber si hay rangos de energía donde nuestro modelo es mejor o peor.
 
-Otra variable que resulta importante comprender es la posición sobre todo es importante hacernos una idea de la cantidad de volumen que ocupan los eventos ya que nos permite hacernos una idea de la resolución que podemos usar así como el tamaño de las imágenes. Para esto lo que vamos a hacer es agrupar por eventos y calcular el rango en los distintos ejes para cada evento. Con esto obtenemos un rango para cada evento y para cada eje y estas variables son las que vamos a estudiar. En la Fig. se muestran los histogramas para las tres variables espaciales y en la Tabla mostramos algunas medidas estadísticas como los cuariles o la media.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.85]{hist_en.pdf}
+  \caption{Histograma de la energía de los distintos eventos.}
+  \label{fig:hist_energia}
+\end{figure}
 
-Antes de entrar a discutir estas gráficas vamos a mostrar como afecta el parámetro $c$ que nos permite manejar la resolución. Supongamos que queremos tener una resolución de 0.1 cm, es decir, construir una imagen donde la distancia entre dos píxeles consecutivos equivale a 0.1cm. En este caso teniendo en cuenta las dimensiones del detector: $x \in [-200, 200]$ cm, $y \in [-200, 200]$ cm y $z \in [0, 500]$ cm el valor de $c$ tendría que ser $(4000, 4000, 5000)$. Básicamente lo que tenemos que hacer es establecer una resolución y dividir el rango de los ejes por esta resolución. Este valor de $c$ significa que representamos el volumen completo del detector con una malla de $4000\times 4000\times 5000$ un evento dentro de este volumen solo ocupa una parte y lo que hacemos es coger una ventana del volumen completo. Por ejemplo, si queremos una proyección de $128\times 128$ lo que hacemos es realizar la proyección y quedarnos con una región con estas dimensiones del volumen completo.
+Otra variable que resulta importante comprender es la posición, en concreto nos interesa saber la cantidad de volumen que ocupan los eventos, ya que nos permite entender el efecto que tienen en la imagen la resolución y el tamaño de la ventana. Para obtener el volumen lo hacemos es agrupar por eventos y calcular el rango en los distintos ejes para cada evento, es decir, para cada evento restamos el máximo y el mínimo en cada eje, obteniendo así el rango para los tres ejes para cada evento. En la Fig. \ref{fig:hist_rango} se muestran los histogramas para estas nuevas variables. Por otro lado, en la Tabla \ref{tab:cuartiles_rango} mostramos los cuartiles para estas mismas variables.
 
-En la Tabla se mostraban medidas de los rangos que tienen los distintos eventos. Si seguimos con el ejemplo anterior, supongamos que queremos asegurarnos que no se pierde nada de información al tomar la venta, para esto tenemos que ver cual son los rangos máximos que puede darse en un evento, que en el caso que la resolución sea de 0.1 cm tendríamos que usar imágenes de $2636\times 3123\times 4294$ que son imágenes muy grandes. Sin embargo si nos conformamos con mantener la información completa del 75\% de los eventos sería de $723\times 990\times 1701$ que siguen siendo imágenes muy grandes pero vemos como son bastante más pequeñas. A la hora de entrenar los modeles vamos a tener que jugar con los parámetros de resolución y de tamaño de la ventana para regular la cantidad de información que se mantiene al realizar las imágenes. Es importante mencionar que la información que se pierde es en general la parte final de cascada mientras que el origen se mantiene siempre ya que es donde se tienen las principales diferencias entre las cascadas de origen electrónico y de origen fotónico. 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.85]{hist_rango.pdf}
+  \caption{Histograma de los rangos. Los rangos hacen referencia a la distancia entre el \textit{hit} que ocurre en el valor más pequeño y el ocurre en el valor más grande. Se obtienen para los tres ejes espaciales y para cada evento.}
+  \label{fig:hist_rango}
+\end{figure}
 
-Por otro lado, la cantidad de hits que tenemos por evento depende de la energía del suceso en Fig. se muestra la relación que hay entre el número de hits de un evento y la energía del mismo donde vemos que se observa una tendencia positiva. El problema se tiene sobre todo cuando se tienen pocos hits donde un evento esta dado por 5-10 hits, es interesante ver como se comporta nuestros modelos a estos rangos de energía bajos.
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+  \hline
+           &  hitsX (cm) &  hitsY (cm) &  hitsZ (cm) \\ \hline
+  min      &        0.04 &        0.00 &        0.40 \\ \hline
+  25\%     &       31.26 &       48.79 &      111.90 \\ \hline
+  50\%     &       47.47 &       71.12 &      140.50 \\ \hline
+  75\%     &       72.23 &       98.97 &      170.15 \\ \hline
+  max      &      263.51 &      312.29 &      429.40 \\ \hline
+\end{tabular}
+\caption{Cuartiles de los rangos que alcanzan las cascadas en los distintos eventos y ejes.}
+\label{tab:cuartiles_rango}
+\end{table}
 
-Por último tenemos que estudiar como se comporta la variable que nos dice la carga de cada uno de los hits. En la Fig. se muestra la distribución de la carga tras dividir por el máximo. En esta gráfica vemos que la mayoría de hits tienen energías pequeñas mientras que muy pocos hits tienen altas energías.
+Antes de entrar a discutir estas gráficas, recordemos que el parámetro $c$ nos permite regular la resolución con la que se describe el volumen del detector. Supongamos que queremos tener una resolución de 0.1 cm, es decir, construir una imagen donde la distancia entre dos píxeles consecutivos equivale a 0.1cm. En este caso teniendo en cuenta las dimensiones del detector: $x \in [-200, 200]$ cm, $y \in [-200, 200]$ cm y $z \in [0, 500]$ cm el valor de $c$ tendría que ser $(4000, 4000, 5000)$ px. Básicamente lo que tenemos que hacer es establecer una resolución y dividir el rango de los ejes por esta resolución. Este valor de $c$ significa que representamos el volumen completo del detector con una malla de $4000\times 4000\times 5000$ px. Un evento dentro de este volumen solo ocupa una parte y lo que hacemos es coger una ventana del volumen completo. Por ejemplo, si queremos una proyección de $128\times 128$ px lo que hacemos es realizar la proyección y quedarnos con una región con estas dimensiones del volumen completo.
 
-Este comportamiento es importante tenerlo en mente ya que en algunos casos puede que los hits más energéticos tengan valores tan grandes que en comparación los menos energéticos no tengan nada de importancia. Una forma de solucionar este problema es realizar una transformación logarítmica en esta variable. En la Fig. se muestran tanto los datos sin realizar la transformación como los datos tras realizar la transformación mencionada donde vemos que el problema se soluciona. A la hora de entrenar los modelos vamos tener que considerar esta transformación ya que puede que mejore los resultados.
+En la Tabla \ref{tab:cuartiles_rango} se recogen los cuartiles de los rangos que tienen los distintos eventos. Entonces, si seguimos con el ejemplo anterior, supongamos que queremos asegurarnos que no se pierde nada de información al tomar la ventana, para esto tenemos que ver cual es el rango máximo que puede darse en un evento. En el caso que la resolución sea de 0.1 cm tendríamos que usar imágenes de $2636\times 3123\times 4294$ px que son imágenes muy grandes. Sin embargo, si nos conformamos con mantener la información completa del 75\% de los eventos, el tamaño de la ventana sería de $723\times 990\times 1701$ px que siguen siendo imágenes muy grandes pero son considerablemente más pequeñas. A la hora de entrenar los modelos vamos a tener que jugar con los parámetros de resolución y de tamaño de la ventana para regular la cantidad de información que se mantiene al crear las imágenes. Es importante mencionar que la información que se pierde es, en su gran mayoría, la parte final de cascada\footnote{Debido a la geometría del problema las cascadas tras originarse se desarrollan de menor $z$ a mayor $z$ y en el eje $x$ depende de si ocurre a la derecha o la izquierda del cátodo porque siempre se dirigen hacia el ánodo (recordar Fig. \ref{fig:sensado} y \ref{fig:estructura_detector}). Al crear las imágenes las centramos en el origen colocando el origen en una esquina de manera que se recoja la dirección de avance. Sin embargo, puede darse que en algunas ocasiones las partículas emitidas durante la interacción se dirijan en la dirección contraria dando situaciones en las que se pierde un poco de información no correspondiente al final de la cascada.} mientras que el origen se mantiene siempre. Lo hacemos de esta forma ya que en origen de la cascada es donde se tienen las principales diferencias entre las cascadas electromagnéticas de origen electrónico y de origen fotónico. En la Fig. \ref{fig:varias_resoluciones} se muestra el mismo evento para distintos valores resolución, donde vemos como a para valores muy bajos tenemos toda la cascada pero con muy poca definición de la cascada. Sin embargo, a media que se aumenta vemos como se va definiendo la cascada pero vamos perdiendo información. El tamaño de la imagen mostrada es de de $128\times128$ px.
 
-Otra cosa que es interesante observar en esta variable es la distribución de la carga en función del tiempo, ya que es conocido que al comienzo del evnto se deben observar valores más altos para la carga. No se tiene una variable tiempo como tal pero los hits se nos han dados ordenados temporalmente. En la Fig. se muestran un histograma bidimensional donde en el eje $x$ se tiene el tiempo y en el eje $y$ se muestra el logaritmo de la carga. Ambas variables están normalizadas, el tiempo se ha normalizado para cada evento, es decir, un valor de tiempo igual a 0 equivale al comienzo del evento y un valor de 1 equivale al final. Sin embargo, la carga si la hemos normalizado usando el máximo total. Vemos que la distribución en el tiempo es uniforme mientras que parece que hay pequeños cambios en la distribución de la carga donde vemos que para tiempos bajos tenemos que la carga alcanza valores mayores que era justo lo que se esperaba.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.65, center]{varias_resoluciones.pdf}
+  \caption{Mismos evento representado para distintas resoluciones (número de píxeles que describen el detector completo). El tamaño de las imágenes es de $128\times128$ px.}
+  \label{fig:varias_resoluciones}
+\end{figure}
 
 
+Por último, vamos a estudiar los \textit{hits} y su energía. La cantidad de \textit{hits} que se tienen por evento depende de la energía del suceso en Fig. \ref{fig:scatter_n_e} se muestra la relación que hay entre el número de \textit{hits} de un evento y la energía del mismo donde vemos que se observa una tendencia positiva. El problema se tiene sobre todo cuando se tienen pocos \textit{hits} donde un evento esta dado por 5-10 \textit{hits}, es interesante ver como se comporta nuestros modelos a estos rangos de energía bajos.
 
-Que queiro contar:
-\begin{itemize}
-  \item Quiero que sirva para contar todo lo que hay detrás de la creación de las imágenes
-  \item Rangos
-  \item Energías
-  \item Eventos poco energéticos
-  \item distribución de carga.
-\end{itemize}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.85]{scatter_n_e.pdf}
+  \caption{Diagrama de dispersión donde se muestra la relación entre el número de \textit{hits} de un evento y la energía.}
+  \label{fig:scatter_n_e}
+\end{figure}
 
-\section{Experimentación}
+
+Otro aspecto importante es estudiar la carga de cada uno de los \textit{hits} que describen los eventos. En la Fig. \ref{fig:hist_charge} se muestra la distribución de la carga tras dividir por el valor máximo de la carga y también se muestra los mismos datos tras aplicar una transformación logarítmica. En esta gráfica vemos a simple vista que parece que la distribución sin aplicar la transformación logarítmica sigue una distribución exponencial, donde tenemos que la mayoría de \textit{hits} depositan poca carga mientras que muy pocos tienen valores de carga mayores. Sin embargo, vemos que tras aplicar la transformación se pierde esta distribución exponencial y tenemos una distribución que en ciertas ocasiones puede ser deseable al no tener tanta diferencias entre el máximo y el mínimo. Notar que al haber dividido por el máximo hay al menos un \textit{hit} con valor 1 en la carga normalizada.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.85]{hist_charge.pdf}
+  \caption{Histogramas de la carga de los \textit{hits} que se observan en los distintos eventos. Se muestran los datos sin aplicar ninguna transformación y los datos tras aplicar una transformación logarítmica.}
+  \label{fig:hist_charge}
+\end{figure}
+
+
+Este comportamiento es importante tenerlo en mente ya que en algunos casos puede que los \textit{hits} más energéticos tengan valores tan grandes que en comparación los menos energéticos no tengan nada de importancia. Una forma de solucionar este problema es haciendo uso de la transformación mostrada. A la hora de entrenar los modelos vamos tener que considerar esta transformación ya que puede que se mejoren los resultados. En algunos caso puede darse que si no se aplica la transformación no se obtengan imágenes que nos permitan describir el evento.
+
+Otra cosa que es interesante observar en esta variable es la distribución de la carga en función del tiempo, ya que es conocido que al comienzo del evento se deben observar valores más altos para la carga. Aunque no se dispone de la variable tiempo, se puede inferir al tener los datos ordenados temporalmente. En la Fig. \ref{fig:hist_charge_t} se muestran un histograma bidimensional donde en el eje $x$ se tiene el tiempo y en el eje $y$ se muestra el logaritmo de la carga. Ambas variables están normalizadas: el tiempo se ha normalizado para cada evento, es decir, un valor de tiempo igual a 0 equivale al comienzo del evento y un valor de 1 equivale al final. Sin embargo, la carga si la hemos normalizado usando el máximo total. Vemos que la distribución en el tiempo es prácticamente uniforme salvo al principio donde vemos que he tienen \textit{hits} con energías superiores.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.85]{hist_charge_time.pdf}
+  \caption{Histogramas bidimensional donde se muestra la distribución de hits en función de la carga y el tiempo. Ambas variables las hemos normalizado para que tomen valores entre cero y uno.}
+  \label{fig:hist_charge_t}
+\end{figure}
+
+
+\section{Descripción de la solución}
 \label{sec:arch}
 
-En esta sección vamos a recoger y desarrollar todos los aspectos de la experimentación de este trabajo. Primero haremos una descripción detalla de las distintas representaciones presentadas. Así mismo, mostraremos las arquitecturas de los distintos modelos que vamos a emplear así como las métricas que emplearemos para realizar el entrenamiento y validar el modelo. Finalmente, haremos un listado de todos los parámetros que tenemos en todo el proceso, desde el tratamiento de los datos hasta el entrenamiento del modelo.
+En esta sección vamos a recoger y desarrollar todos las propuestas que se plantean en este trabajo. Primero haremos una descripción detallada de las distintas representaciones presentadas. Así mismo, mostraremos las arquitecturas de los distintos modelos que vamos a emplear así como las métricas que emplearemos para realizar el entrenamiento y validar el modelo. Finalmente, haremos un listado de todos los parámetros que tenemos en todo el proceso, desde el tratamiento de los datos hasta el entrenamiento del modelo.
 
 \subsection{Representaciones de los datos}
 
-Como ya hemos visto, hay muchas opciones a la hora de crear las imágenes desde los datos tabulares. En esta sección vamos a describir las representaciones que hemos propuesto. Todas estas representaciones parten de hacer el cambio de unidades y de sistema de referencia que hemos descrito en secciones anteriores. Lo que vamos a tratar aquí es ver como tratar con la tercera dimensión espacial. 
+Como ya hemos visto, hay muchas opciones a la hora de crear las imágenes desde los datos tabulares. En esta sección vamos a describir las representaciones que hemos propuesto. Todas estas representaciones parten de hacer el cambio de unidades y de sistema de referencia que hemos descrito en la Sección \ref{sec:des_trat} secciones anteriores. Lo que vamos a tratar aquí es ver como tratar con la tercera dimensión espacial que no se puede recoger en una imagen. 
 
 \subsubsection*{Representación tridimensional}
 
-Una forma de abordar el problema es quedarnos con toda la información y no descartar ninguna dimensión ya que la operación de convolución, como ya hemos visto, no esta limitada a trabajar con dos dimensiones espaciales. Esta representación es conceptualmente muy simple pero surgen una serie de problemas como puede ser el tamaño de las imágenes y que no se tienen modelos preentrenados como se tiene para las imágenes bidimensionales.
+Una forma de abordar el problema es quedarnos con toda la información y no descartar ninguna dimensión ya que la operación de convolución no está limitada a trabajar con dos dimensiones espaciales. Esta representación es conceptualmente muy simple pero surgen una serie de problemas como puede ser el tamaño de las imágenes y que no se tienen modelos complejos previamente entrenados como si se tiene para las imágenes bidimensionales.
 
 \subsubsection*{Representación bidimensional, una proyección}
 
-Otra alternativa simple es quedarnos únicamente con una de las proyecciones. De esta forma tenemos una imagen bidimensional. Si recordamos, el eje $x$ es el eje de deriva, el haz de neutrinos tiene el eje $z$ y eje $y$ es simplemente la altura. En el caso de tener que descartar una de las direcciones la mejor opción es quitar el eje $y$.
+Otra alternativa simple es quedarnos únicamente con una de las proyecciones. De esta forma tenemos una imagen bidimensional. Si recordamos, el eje $x$ es el eje de deriva, el haz de neutrinos está dirigido en la dirección del eje $z$ y eje $y$ es simplemente la altura. En el caso de tener que descartar una de las direcciones la mejor opción es quitar el eje $y$.
 
-La forma de hacer esto es simplemente quitar la columna del eje que se quiera proyectar y en caso de tener eventos repetidos nos quedamos con la media o con el máximo. Por lo demás es simplemente hacer los cambios de unidades y de sistema de referencia. Veamos el resultado para unos eventos. En la Fig. se muestra un evento que ha sido realizado usando los datos tabulares directamente y en la Fig. se muestran distintos eventos obtenidos tras realizar el tratamiento de datos descrito y de realizar la proyección en el eje $y$. Los parámetros que hemos usado para la creación de las imágenes es de $c_x = 1000$, de un tamaño de venta de $128\times 128$ y no hacer ninguna transformación logarítmica. 
+La forma de hacer esto es simplemente quitar la columna del eje que se quiera proyectar y en caso de tener eventos repetidos nos quedamos con la media o con el máximo. Por lo demás es simplemente hacer los cambios de unidades y de sistema de referencia. En la Fig. \ref{fig:varias_proyecciones} se muestra gráficamente la trayectoria proyectada de un evento que ha sido obtenida usando los datos tabulares directamente junto con la imagen obtenida tras realizar el tratamiento de datos descrito. Los parámetros que hemos usado para la creación de las imágenes es de $c_x = 1000$ px, de un tamaño de venta de $128\times 128$ px y no aplicar la transformación logarítmica. En la Fig. \ref{fig:muchas_proyecciones} se muestran varias eventos con esta representación, tanto para cascada electrónicas como fotónicas.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.85, center]{ambas_pro.pdf}
+  \caption{En la izquierda se muestra un evento proyectado obtenido de los datos tabulares directamente sin hacer uso del procesamiento que presentamos. En la derecha se muestra la imagen procesada con una resolución de 1000 px y tamaño $128\times128$ px.}
+  \label{fig:varias_proyecciones}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.75, center]{varias_proyecciones.pdf}
+  \caption{Imágenes obtenidas tras procesar y quedarnos con la proyecciones en el eje $y$ para distintos eventos. Las imágenes han sido procesadas con una resolución de 1000 y tamaño $128\times128$.}
+  \label{fig:muchas_proyecciones}
+\end{figure}
 
 \subsubsection*{Representación bidimensional, codificación del color}
 
-Al realizar la proyección lo que hacemos es perder completamente la información que se tenía en uno de los ejes. Una forma de mantener esta información es codificarla de alguna forma en el color de la imagen.
+Al realizar la proyección se pierde completamente la información que se tenía en dicho eje. Una forma de mantener esta información es codificarla de alguna forma en el color de la imagen.
 
-Hasta ahora hemos estado trabajando con imágenes de grises donde la imagen es una matriz con un solo canal. En el caso de trabajar con imágenes que tengan color es necesario trabajar con imágenes que tengan tres canales. Hay distintos espacios para recoger el color de una imagen, el más común es el RGB donde un canal dice la cantidad de rojo, otro la cantidad de verde y otro la cantidad de azul. Hay otros muchos pero nosotros a trabajar en el espacio de color HSL, donde la H hacer referencia al \textit{hue}, el color, la S a la saturación y la L a la luminosidad. 
+Hasta ahora hemos estado trabajando con imágenes de grises donde la imagen es una matriz con un solo canal. En el caso de trabajar con imágenes que tengan color es necesario trabajar con imágenes que tengan tres canales. Hay distintos espacios para recoger el color de una imagen, el más común es el RGB donde donde los canales recogen la cantidad de rojo, verde y azul de la imagen. Hay otros muchos espacios y en función de lo que se quiera hacer con la imagen será más adecuado usar uno u otro. Nosotros vamos a trabajar en el espacio de color HSL, donde la H hacer referencia al \textit{hue}, el color, la S a la saturación y la L a la luminosidad. En la Fig. \ref{fig:hue} se muestra el color correspondiente para los distintos valores de \textit{hue}. 
 
-Si queremos mantener toda la información a la hora de hacer la proyección tenemos que codificar la posición de los hits en el eje proyectado así como agregar la carga de los distintos hits. Lo que hacemos es fijar la saturación, y codificar la posición en el color y la carga en la luminosidad. La idea es en caso que tengamos puntos que se superpongan en el eje a proyectar sumar los valores de la posición en dicho eje y de la carga. De esta forma tenemos las dos variables espaciales intactas, la suma de las posiciones en el eje proyectado y la suma de la carga.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.45]{h-colours.png}
+  \caption{Rueda con los colores asociados al valor de \textit{hue} fijados la saturación y la luminosidad \cite{hue_page}.}
+  \label{fig:hue}
+\end{figure}
 
-Veamos esto de manera formal. Tenemos los datos tabulares que denotamos con $X$. Cada instancia hace referencia a un hit, y tenemos las columnas $X_e$ que determina el evento del hit, $X_x$, $X_y$ y $X_z$ que indican la posición y $X_c$ que muestra la carga. Para fijar idea supongamos que queremos proyectar el eje $y$. Lo que hacemos es agrupar por evento, posición en $x$ y posición en $z$ y sumar tanto la carga como la posición en el eje $y$. Una vez hecho esto lo que hacemos es rescalar las nuevas variables obtenidas de manera que el máximo de la posición sea 180 al representar el \textit{hue} y el de la carga sea 1 al representar la luminosidad.
+Si queremos mantener toda la información a la hora de hacer la proyección tenemos que codificar la posición de los \textit{hits} en el eje proyectado así como agregar la carga de los distintos \textit{hits}. Lo que se propone es fijar la saturación, y codificar la posición y la carga en el color y la en luminosidad respectivamente. De esta forma, si se tienen puntos que se superponen en el eje a proyectar lo que hacemos es sumar los valores de la posición en el eje proyectado y de la carga. De esta forma tenemos las dos variables espaciales no proyectadas, la suma de las posiciones en el eje proyectado y la suma de la carga. Estas dos magnitudes obtenidas nos darán el \textit{hue} y la luminosidad.
 
-Surgen un par de problemas. Por un lado si hacemos justo esto si tenemos dos eventos idénticos pero solo desplazados en el eje de proyección vamos a tener colores distintos y esto es algo que no queremos que ocurra. Para solucionar eso lo que hacemos es para cada evento cambiamos el sistema de referencia de manera que hacemos cero el mínimo valor del eje proyectado. 
+Veamos esto de manera formal. Sea $X$ el conjunto de datos de partida. Cada instancia hace referencia a un \textit{hit}, y tenemos las columnas $X_e$ que determina el evento del hit, $X_x$, $X_y$ y $X_z$ que indican la posición y $X_c$ que muestra la carga. Para fijar idea supongamos que queremos proyectar el eje $y$. Lo que hacemos es agrupar\footnote{Agrupar consiste en coger todos las instancias que compartan valor en una o varias variables y hacer una operación sobre las variables restantes como puede ser tomar el máximo.} por evento, posición en $x$ y posición en $z$ y sumar tanto la carga como la posición en el eje $y$. Una vez hecho esto lo que hacemos es reescalar las nuevas variables obtenidas de manera que el máximo de la posición sea 180\footnote{Normalmente el rango del \textit{hue} va de 0º a 360º, sin embargo, nosotros vamos a usar Open CV que fija el máximo en 180º.}, al representar el \textit{hue}, y el de la carga sea 1 al representar la luminosidad.
 
-El otro problema esta relacionado con la distribución exponencial que se observaba en la carga que se agrava al realizar la suma. Esto hace que el valor de la luminosidad para la mayoría de eventos sea tan pequeño que al realizar la imagen se tenga que los hits no se observan. Para esto lo que hacemos es tomar logaritmo tras realizar la suma.
+Sea $X^i\left(e = e_n, x=x_m, z=z_p\right)$ los \textit{hits} que pertenecen al evento $e_n$ y están en la posición $(x_m, z_p)$. Definimos $\hat{X}_k$ como:
+\begin{equation}
+  \hat{X}_k\left(e = e_n, x=x_m, z=z_p\right) = \sum_i X^i_k\left(e = e_n, x=x_m, z=z_p\right) \quad \forall n, m, p.
+\end{equation}
+Esto es una forma de describir matemáticamente la operación de agrupar por evento y por las posiciones no proyectadas. De esta forma, transformamos los datos a $\hat{X}$ donde las variables por la que hemos agrupado se mantienen iguales y las variables $X_c$ y $X_y$ se han modificado al sumarse aquellas instancias con los mismos valores en las variables agrupadas. Una vez hecho el agrupamiento lo que hacemos es cambiar los rangos para que coincidan con el \textit{hue} y con la luminosidad.
 
-En la Fig. se muestran el color en función del \textit{hue} vemos por tanto que si tenemos cascadas más dispersas en el eje $y$ vamos a ir desde el naranja hasta el rojo siendo el naranja la menos dispersa y el rojo la más. Por otro lado, la luminosidad de los píxeles serán mayor si tenemos más carga sumada y menor si la carga sumada es menor. En la Fig. mostramos algunos ejemplos del tratamiento de algunas de las imágenes.
+Sin embargo, surgen un par de problemas. Por un lado, si hacemos justo lo que se acaba de mostrar, si tenemos dos eventos idénticos pero solo desplazados en el eje de proyección vamos a tener colores distintos y esto es algo que no queremos que ocurra. Para solucionarlo, lo que hacemos es para cada evento se cambia el sistema de referencia, modificando únicamente el eje proyectado, haciendo cero el mínimo valor del eje proyectado en ese evento. 
 
+El otro problema esta relacionado con la distribución exponencial que se observaba en la carga y que se agrava al realizar la suma. Esto hace que el valor de la luminosidad para la mayoría de eventos sea tan pequeño que al realizar la imagen se tenga que los \textit{hits} no se observan. Para solucionar esto lo que hacemos es tomar logaritmo tras realizar la suma.
 
-\subsubsection*{Representación para tranformers}
+Con todo esto lo que vamos a tener en la imagen es valores pequeños de \textit{hue} para el valor más pequeño en el eje proyectado, a medida que la trayectoria se desplace hacia valores más alto en dicho eje, se aumentará el valor del hue. En caso de tener superposición de \textit{hits} observaremos valores más altos en la luminosidad así como en el \textit{hue} al corresponderse a la suma de varios valores de posición y carga. En la Fig. \ref{fig:proy_color} mostramos un ejemplo de un evento tratado con esta representación.
 
-En este trabajo nos vamos a centrar sobre todo en el tratamiento de imágenes y el estudio lo vamos a realizar sobre las imágenes. Sin embargo, también vamos a plantear una representación/tratamiento de los datos distinto como trabajo futuro. La idea es nuestros datos tienen un marcado carácter temporal donde tenemos que el origen de la trayectoria y esta va avanzando. Los transformers son un tipo de red que ha mostrado muy buenos resultados con texto que son datos donde el orden de las palabras es fundamental. 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.85]{proyeccion_color.pdf}
+  \caption{Evento procesado codificando la tercera dimensión en el color de la imagen. Las imágenes han sido procesadas con una resolución de 1000 y tamaño $128\times128$.}
+  \label{fig:proy_color}
+\end{figure}
+
+\subsubsection*{Representación para Tranformers}
+
+En este trabajo nos vamos a centrar sobre todo en el tratamiento de imágenes y el estudio lo vamos a realizar sobre las imágenes. Sin embargo, también vamos a plantear una representación/tratamiento de los datos distinto que dejamos como trabajo futuro. Nuestros datos tienen un marcado carácter temporal donde tenemos el origen de la trayectoria y esta va avanzando. Además sabemos que al principio es donde se tiene la mayor parte de la información. Los transformers son una arquitectura que ha mostrado muy buenos resultados con texto que son datos donde el orden de las palabras es fundamental. 
 
 Estas redes se basan en hacer uso de mecanismos de atención y codificar la posición de las palabras. Estas redes se han convertido en el estado del arte del procesamiento de lenguaje natural y también se han aplicado en la clasificación de imágenes segmentando la imagen en bloques. La idea es probar a usar los datos tabulares directamente codificando las instancias por el tiempo.
 
+Lo que si haremos es probar el modelo Visual Tranformers (ViT) que hace uso de los tranformers para trabajar con imágenes. Este modelo lo que hace es particionar la imagen y usar estos bloques como entrada para el tranformer. Sin embargo, los datos admiten ser tratados directamente por transformers sin necesidad de pasar por la construcción de la imagen. Por lo que esta forma, de funcionar sería mucho más eficiente que el tratamiento con imágenes y no se descartaría nada de información. 
+
 \subsection{Arquitecturas}
 
-En esta sección vamos a mostrar las distintas arquitecturas que vamos a emplear para realizar la clasificación de las imágenes. Hay muchas redes preentrenadas y muchas redes que podemos plantear para realizar la clasificación. Nosotros vamos a hacer uso de EfficientNet, ResNet, GoogleNet y además vamos a diseñar una red simple y una más compleja basadas en LeNet.
+En esta sección vamos a mostrar las distintas arquitecturas que vamos a emplear para realizar la clasificación de las imágenes. Para esto vamos a usar redes diseñadas desde cero así como arquitecturas del estado del arte ya entrenadas donde modificaremos tanto los pesos como el clasificador. Las arquitecturas que usaremos serán: EfficientNet, ResNet, GoogleNet y además vamos a diseñar una red simple y una más compleja basadas en LeNet.
 
-\subsubsection*{Red simple y compleja}
+Independientemente de la arquitectura que se use, es necesario implementar el aprendizaje ($lr$) del modelo. Como ya hemos dicho vamos a emplear Pytorch y vamos a considerar un $lr$ dinámico. Para esto necesitamos definir un optimizador, como puede ser SGD o Adam, y la forma de modificar el $lr$. Con esto elementos se implementa primero el descenso del gradiente para todos \textit{batchs} y repetimos esto varias veces para el conjunto de datos (es lo que se conoce como épocas). Cada vez que se completa una época se validan los resultados usando una parte del conjunto de datos no visto por el modelo durante el entrenamiento. A mediad que se avanza en el entrenamiento se van guardando los pesos aprendidos pero solo se guardan se mejoran los resultados en validación, es decir, que los pesos del modelo guardado tras el entrenamiento son aquellos con los que mejores resultados se han obtenido en validación.
 
-LeNet es una de las primeras propuestas de redes convolucionales \cite{} y consiste únicamente en aplicar varias veces el bloque convolucional que se mostro en la Sección que nos permite extraer las características y tras esto se hace uso de un MLP para realizar la clasificación.
+Con la intención de no tener fijar un número de épocas lo que hemos hecho ha sido implementar lo que se conoce como parada temprana y es que si tras un número consecutivo de épocas hay mucho sobre ajuste o el modelo no mejora en validación se para el ciclo de aprendizaje y se guardan los pesos con los que mejores resultados se han obtenido. De esta forma no es necesario fijar el número de épocas ya que el entrenamiento se interrumpirá en el momento que ya no estén mejorando los resultados. En el Anexo \red{ref} se muestra la en mayor detalle la implementación realizada del ciclo descrito.
 
-Con estas redes la idea es tener modelos simples que nos permitan establecer un punto de partida que tratar de mejorar con distintas redes o ajustando los hiperparámetros. Para hacer el diseño lo que hemos hecho es hacer uso de la representación más simple que hemos planteado, la proyección simple, y probar a modificar el número de filtros por nivel así como la el clasificador.
+\subsubsection*{LeNet}
 
-Las pruebas realizadas serán descritas en la Sección  pero nos ha dado muchos problemas la construcción de la red ya que en muchos casos las redes no superaban el 50 \% de acierto. En la Fig. se muestran las arquitecturas de los modelos finales. Tenemos un modelo simple que consiste en dos bloques convolucionales con pocos filtros y una MLP con dos capas ocultas y pocas neuronas. El modelo más complejo es similar al simple pero hemos modificado el bloque convolucional de manera que se aplican dos capas convolucionales consecutivas sin aplicar el maxpooling. Además lo que hacemos es tener más filtros y más profundidad y anchura en el MLP.
+LeNet es una de las primeras propuestas de redes convolucionales \cite{lenet} y consiste únicamente en aplicar varias veces el bloque convolucional que se mostró en la Sección \ref{sec:dl} y que consiste en una primera capa que realiza la operación de convolución y una segunda capa de reducción. Una vez se extraen las características se realiza la clasificación haciendo uso de un MLP.
 
-\subsubsection*{EfficieNet}
+Con estas redes la idea es construir modelos simples que nos permitan establecer un punto de partida que tratar de mejorar con distintas redes o ajustando los hiperparámetros. Crearemos dos modelos basados en esta arquitectura, uno simple y otro más complejo donde se aumentará tanto la anchura como la profundidad del modelo simple. Para hacer el diseño de estas redes lo que hemos hecho es hacer uso de la representación más simple que hemos planteado, la proyección simple, y probar a modificar el número de filtros por nivel así como la el clasificador.
 
-EfficieNet \cite{} es una red que ha mostrado dar muy buenos resultados, y como ya se menciono, el objetivo de esta red arquitectura es establecer un modelo que sea eficiente y que sea escalable. Uno de los problemas fundamentales que se presentaban tras las primeras CNN es que al aumentar la complejidad de los modelos se tenían problemas para realizar el entrenamiento. Con el paso del tiempo se fueron introducido mecanismos para lidiar con este problema y EfficieNet establece una familia con 8 modelos que parten de un modelo base y van aumentando la complejidad.
+Las pruebas realizadas serán descritas en la Sección \ref{sec:pruebas_iniciales} pero mencionar que nos ha dado muchos problemas la construcción de la red ya que en muchos casos las redes no superaban el 50\% de acierto y pequeños cambios en la estructura de la red hacía que modelo pasara de no aprender a aprender. En la Fig. \ref{fig:lenet} se muestran las arquitecturas de los modelos finales que vamos a usar. Tenemos un modelo simple que consiste en dos bloques convolucionales con pocos filtros y una MLP con dos capas ocultas y pocas neuronas. El modelo más complejo es similar al simple pero hemos modificado el bloque convolucional de manera que se aplican dos capas convolucionales consecutivas sin aplicar la capa de reducción. Además lo que hacemos es tener más filtros y más profundidad y anchura en el MLP.
 
-Una red neuronal se puede escalar aumentando la profundidad, la anchura o la resolución (tamaño de las imágenes) y EfficieNet lo que hace es introducir un método de escalado que aumenta la complejidad aumentando las tres opciones simultáneamente. Parten de la premisa que las distintas formas de escalar están relacionadas, i.e si tenemos imágenes más grandes vamos a necesitar más filtros y más capas para conseguir realizar la clasificación \cite{}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.85, center]{lenet.PNG}
+  \caption{Arquitectura basada en LeNet usada para la clasificación de las imágenes dadas. En las capas de convolución se muestran el número de filtros, el tamaño y es desplazamiento, en las capas de reducción se muestra el tamaño y desplazamiento y en las capas densas el número de neuronas.}
+  \label{fig:lenet}
+\end{figure}
+
+\subsubsection*{EfficientNet}
+
+EfficientNet \cite{enet} es una red que ha mostrado dar muy buenos resultados cuyo objetivo es el que sea eficiente y escalable. Uno de los problemas fundamentales que se presentaban tras las primeras CNN es que al aumentar la complejidad de los modelos se tenían problemas para realizar el entrenamiento. Con el paso del tiempo se fueron introducido mecanismos para lidiar con este problema y EfficientNet establece una familia con 8 modelos que parten de un modelo base y van aumentando la complejidad.
+
+Una red neuronal se puede escalar aumentando la profundidad, la anchura o la resolución (tamaño de las imágenes) y EfficientNet lo que hace es introducir un método de escalado que aumenta la complejidad aumentando las tres opciones simultáneamente. Parten de la premisa que las distintas formas de escalar están relacionadas, i.e si tenemos imágenes más grandes vamos a necesitar más filtros y más capas para conseguir realizar la clasificación \cite{enet}.
 
 % La arquitectura del modelo esta basada en MovilNet v2 \cite{} y ademas hace uso de bloques 
 
 Nosotros vamos a usar estas arquitecturas no solo porque han mostrado dar muy buenos resultados en conjuntos de datos complejos si no porque nos permite probar con una red con distintos niveles de complejidad. 
 
 \subsection*{ResNet}
-ResNet es una arquitectura que surge antes que EfficieNet e introduce un mecanismo para solucionar problemas a la hora de realizar la optimización cuando se tienen modelos muy profundos. Esta basada en VGG \cite{} que se basa en aplicar sucesivamente bloques convolucionales pero teniendo un modelo muy profundo. ResNet introduce lo que denominan celdas residuales que consisten en agregar la entrada del bloque convolucional a la salida \cite{} a esto le denominan aprendizaje residual y muestran que ayuda a la optimización de los modelos.
+ResNet es una arquitectura que surge antes que EfficientNet e introduce un mecanismo para solucionar problemas a la hora de realizar la optimización cuando se tienen modelos muy profundos \cite{resnet}. Esta basada en VGG \cite{vgg} que se basa en aplicar sucesivamente bloques convolucionales pero teniendo un modelo muy profundo. ResNet introduce lo que denominan celdas residuales que consisten en agregar la entrada del bloque convolucional a la salida \cite{resnet} a esto le denominan aprendizaje residual y muestran una mejora en la optimización del modelo.
 
-La arquitectura consiste en aplicar sucesivamente bloques convolucionales donde solo se aplica al tras la primera capa convolucional y se introduce el aprendizaje residual. Al igual que para EfficieNet se tiene una familia de modelos donde lo que varía es la profundidad del modelo. Nosotros usaremos únicamente ResNet 50, donde el 50 hace referencia al número de capas.
+La arquitectura consiste en aplicar sucesivamente bloques convolucionales donde solo se aplica la reducción tras la primera capa convolucional y se introduce el aprendizaje residual. Al igual que para EfficientNet, se tiene una familia de modelos donde lo que varía es la profundidad del modelo. Nosotros usaremos únicamente ResNet 50, donde el 50 hace referencia al número de capas. En la Fig. \ref{fig:resnet} podemos ver la arquitectura de este modelo junto con la de VGG y la arquitectura de ResNet sin el aprendizaje residual.
 
-\subsection*{GoogleNet}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=1.0, center]{resnet50.png}
+  \caption{Arquitectura de la red ResNet donde se muestra VGG y como se modifica para introducir el aprendizaje residual.}
+  \label{fig:resnet}
+\end{figure}
+
+% \subsection*{GoogleNet}
 
 \subsection*{Visual Transformer}
 
-Los transformers \cite{} son modelos que se basan únicamente en mecanismos de atención y actualmente se han convertido en el estado del arte al trabajar con texto. Los Visual transformers hacen uso de estar arquitectura y la aplican a imágenes. La idea fundamental es que dividen la imagen en bloques y tratan cada bloque como una palabra que el tranformers procesa \cite{}.
+Los transformers \cite{transformers} son modelos que se basan únicamente en mecanismos de atención y actualmente se han convertido en el estado del arte al trabajar con texto. Los Visual transformers hacen uso de esta arquitectura y la aplican a imágenes. La idea fundamental es que dividen la imagen en bloques y tratan cada bloque como una palabra que el tranformers procesa \cite{vit}.
 
 \subsection{Métricas}
 
-A la hora de realizar un problema de ciencia de datos supervisado es necesario establecer una métrica que nos diga como de bueno es nuestro modelo para poder mejorar los resultados. Como ya se menciono, en las redes neuronales lo que se hace es definir una función pérdida a la cual se le calcula el gradiente en función de los parámetros de la red y modificar así estos parámetros.
+A la hora de realizar un problema de ciencia de datos es necesario establecer una métrica que nos diga como de bueno es nuestro modelo para poder mejorar los resultados. Como ya se menciono, en las redes neuronales lo que se hace es definir una función pérdida a la cual se le calcula el gradiente en función de los parámetros de la red y modificar así estos parámetros de la red.
 
 Sin embargo, una vez realizado el ajuste hay distintas métricas que nos permiten que nos permiten evaluar el rendimiento como puede ser el porcentaje de acierto o la curva ROC. Estas métricas nos dan información sobre distintos aspectos pero en física para problemas como el que estamos tratando se suele usar la eficiencia y la pureza.
 
@@ -611,27 +724,27 @@ es decir, el cociente entre las instancias positivas correctamente clasificadas 
 
 La eficiencia nos dice de todos los eventos positivos se dan en el detector que porcentaje hemos sido capaces de clasificar correctamente. Sin embargo, la pureza nos dice que porcentaje de los eventos que hemos dicho que son positivos son realmente positivos.
 
-En física dependiendo de la tarea que estemos tratando nos va interesar maximizar una u otra. Por ejemplo, en los experimentos donde se pretende descubrir una partícula lo que se quiere normalmente es tener una pureza alta de manera que si se dice que se tiene dicha partícula realmente se tenga. \red{cuando se busca eff} 
+En física dependiendo de la tarea que estemos tratando nos va interesar maximizar una u otra. Por ejemplo, en los experimentos donde se pretende descubrir una partícula lo que se quiere normalmente es tener una pureza alta de manera que si se dice que se tiene dicha partícula realmente se tenga. La eficiencia se busca cuando se quiere detectar el número de eventos que ocurren en un detector o cuando no queremos perder datos al realizar la clasificación. Por ejemplo, en un detector Geiger que determina las partículas radiactivas nos interesa que tengamos una alta eficiencia de manera que sepamos cuando es peligroso un sitio.   
 
 \subsection{Hiperparámetros}
 
-Por último, vamos a recoger la mayoría de parámetros que tenemos a la hora realizar el flujo de trabajo completo. Vamos separar clasificar los hiperparámetros en función de que parte del flujo en la que influyen. Vamos a formar tres bloques: El tratamiento de los datos, arquitectura de la red y entrenamiento de la red.
+Por último, vamos a recoger la mayoría de parámetros que tenemos a la hora realizar el flujo de trabajo completo, que es lo que se conoce como hiperparámetros. Vamos separar clasificar los hiperparámetros en función de que parte del flujo en la que influyen. Vamos a formar tres bloques: El tratamiento de los datos, arquitectura de la red y entrenamiento de la red.
 
-Antes de entrar en estos bloques tenemos algunos parámetros generales como puede ser la semilla aleatoria que nos permite tener una reproducibilidad de los resultados. Hay algunas bloques que al usar la GPU para realizar el entrenamiento no son completamente reproducibles, sin embargo, nuestros modelos no hacen usos de estos bloques. Por otro lado, también es posible definir una rejilla de manera que con Optuna se realiza la búsqueda de hiperparámetros dentro de esa rejilla.
+Antes de entrar en estos bloques tenemos algunos parámetros generales como puede ser la semilla aleatoria que nos permite tener una reproducibilidad de los resultados. Es importante tener en cuenta que hay algunas funciones que al usar la GPU para realizar el entrenamiento no son completamente reproducibles, sin embargo, nuestros modelos no hacen usos de estas funciones. Por otro lado, también es posible definir una rejilla de manera que con Optuna se realiza la búsqueda de hiperparámetros dentro de esa rejilla.
 
-Es importante tener en cuenta que el entrenamiento de un red neuronal es algo costoso tanto en recursos como en tiempo por lo que no nos podemos permitir hacer búsquedas en rejillas de gran tamaño. Por esto mismo es importante seleccionar aquellos hiperparámetros que más pueden influir en los resultados.
+Es importante tener en cuenta que el entrenamiento de un red neuronal es algo costoso tanto en recursos como en tiempo por lo que no nos podemos permitir hacer búsquedas en rejillas de gran tamaño. Por esto mismo, es importante seleccionar aquellos hiperparámetros que más pueden influir en los resultados.
 
 \subsubsection*{Tratamiento de los datos}
 
 A la hora de hacer la creación de las imágenes hay un conjunto de parámetro que tenemos que establecer y que en algunos caso afecta mucho en el resultado obtenido. Los parámetros que tenemos son:
 
 \begin{itemize}
-  \item cube shape x: Fija el valor de $c$ en el eje $x$. A partir de este obtenemos los valores en el eje $y$ y $z$. 
-  \item win shape: Tamaño de la ventana cogida del detector.
-  \item projection: Tipo de proyección empleada. Como opciones tenemos considerar las imágenes tridimensionales, la proyección en uno de los ejes o el tratamiento de color.
-  \item projection pool y cube pool: Tratamiento de las situaciones en las tengamos superposición de puntos al realizar el tratamiento. Podemos elegir el máximo o la media.
-  \item log trans: Si hacemos o no una transformación logarítmica sobre la carga de los \textit{hits}.
-  \item transform: Si queremos aplicar una transformación sobre la imagen final. Consiste en hacer uso de la librería torchvision que introduce un conjunto de transformaciones como puede ser normalizar lo datos.
+  \item \inline{cube_shape_x}: Fija el valor de $c$ en el eje $x$. A partir de este obtenemos los valores en el eje $y$ y $z$.
+  \item \inline{win_shape}: Tamaño de la ventana cogida del detector.
+  \item \inline{projection}: Tipo de proyección empleada. Como opciones tenemos:  las imágenes tridimensionales, la proyección en cualquiera de los ejes o el tratamiento de color.
+  \item \inline{projection_pool} y \inline{cube_pool}: Tratamiento de las situaciones en las tengamos superposición de puntos al realizar el tratamiento. Podemos elegir el máximo o la media.
+  \item \inline{log_trans}: Si hacemos o no una transformación logarítmica sobre la carga de los \textit{hits}.
+  \item \inline{transform}: Si queremos aplicar una transformación sobre la imagen final. Consiste en hacer uso de la librería \textit{torchvision} que introduce un conjunto de transformaciones como puede ser normalizar lo datos.
 \end{itemize}
 
 \subsubsection*{Arquitectura}
@@ -639,14 +752,14 @@ A la hora de hacer la creación de las imágenes hay un conjunto de parámetro q
 Por otro lado se tienen distintos parámetros que nos permitan controlar la red que estamos usando para realizar la clasificación. Estos parámetros dependerán de si el modelos es un modelo de la literatura, donde solo vamos a poder controlar el clasificador y el número de capas a reentrenar , o si es un modelo que se construye de cero, donde lo que hemos hecho es crear un modelo que acepte como parámetros las formas del extractor así como del clasificador. Los parámetros que tenemos para este apartado son:
 
 \begin{itemize}
-  \item model name: Nombre del modelo que vamos a usar.
-  \item conv filters, conv sizes, conv strides: Tupla que definen el número de capas convolucionales y como son estas capas: número de filtros, tamaño de los filtros y desplazamiento de los filtros.
-  \item pool sizes y pool strides: Define el tamaño y el desplazamiento al realizar el \textit{pool}. Son tuplas y tienen que tener el mismo tamaño que los parámetros que definen la convulución.
-  \item clf neurons: Tupla con el número de neuronas por cada capa. Cada elemento de la tupla establece una capa.
-  \item clf no linear fun y conv no linear fun: funciones no lineales aplicadas tras las capas densas y las capas de convolución respectivamente.
-  \item bn: si aplicamos capas de normalizan por \textit{batch}
+  \item \inline{model_name}: Nombre del modelo que vamos a usar.
+  \item \inline{conv filters}, \inline{conv_sizes}, \inline{convstrides}: Tupla que definen el número de capas convolucionales y como son estas capas: número de filtros, tamaño de los filtros y desplazamiento de los filtros.
+  \item \inline{pool_sizes} y \inline{pool_strides}: Define el tamaño y el desplazamiento al realizar el \textit{pool}. Son tuplas y tienen que tener el mismo tamaño que los parámetros que definen la convolución.
+  \item \inline{clf_neurons}: Tupla con el número de neuronas por cada capa. Cada elemento de la tupla establece una capa.
+  \item \inline{clf_no_linear_fun} y \inline{conv_no_linear_fun}: funciones no lineales aplicadas tras las capas densas y las capas de convolución respectivamente.
+  \item \inline{bn}: si aplicamos capas de normalizan por \textit{batch}
   % \item n channel: número de canales de la imagen. En caso de tener
-  \item dropout: Porcentaje de \textit{dropout}. 
+  \item \inline{dropout}: Porcentaje de \textit{dropout}. 
 \end{itemize}
 
 \subsubsection*{Entrenamiento de la red}
@@ -654,72 +767,333 @@ Por otro lado se tienen distintos parámetros que nos permitan controlar la red 
 Por último, tenemos una serie de parámetros que nos permiten regular como se realizar el entrenamiento como puede ser el número de épocas o el tipo de optimizador:
 
 \begin{itemize}
-  \item batch size: Tamaño del \textit{batch}.
-  \item n epochs: núemro de épocas.
-  \item optim name: tipo de optimizador.
-  \item optin lr: ritmo de aprendizaje.
-  \item scheduler name: En caso de querer tener un ritmo de aprendizaje que cambie con las épocas cual queremos aplicar.
-  \item scheduler step size: cada cuanto se modifica el ritmo de aprendizaje.
-  \item scheduler gamma: cuanto se modifica el ritmo de aprendizaje.
+  \item \inline{batch_size}: Tamaño del \textit{batch}.
+  \item \inline{n_epochs}: núemro de épocas.
+  \item \inline{optim_name}: tipo de optimizador.
+  \item \inline{optim_lr}: ritmo de aprendizaje.
+  \item \inline{scheduler_name}: En caso de querer tener un ritmo de aprendizaje que cambie con las épocas cual queremos aplicar.
+  \item \inline{scheduler_step_size}: cada cuanto se modifica el ritmo de aprendizaje.
+  \item \inline{scheduler_gamma}: cuanto se modifica el ritmo de aprendizaje.
 \end{itemize}
 
+Podemos ver que tenemos una gran cantidad que podemos modificar y en muchos casos pequeñas modificaciones sobre los parámetros hacen que pasemos de tener modelos que no pasen del 50\% de acierto a modelos que lleguen al 80\% de acierto. Por estos motivo el ajuste de estos hiperparámetros es uno de los aspectos más importantes para tratar de obtener un modelo que nos de buenos resultados. Para esto lo que haremos es trabajar una metodología concreta que nos permita llegar a ciertas conclusiones y luego ajustar solo los parámetros más relevantes.
 
-Podemos ver que tenemos una gran cantidad que podemos modificar y en muchos casos pequeñas modificaciones sobre los parámetros hacen que pasemos de tener modelos que no pasen del 50\% de acierto a modelos que lleguen al 80\% de acierto. Por estos motivo el ajste de estos hiperparámetros es uno de los aspectos más importantes para tratar de obtener un modelo que nos de buenos resultados. Para esto lo que hacermos es trabajar una metodología concreta que nos permita llegar a ciertas conclusiones y luego ajsutar solo los parámetros más relevantes.
+\subsection{Entorno de trabajo}
+
+Por último, vamos a describir algunas peculiaridades del entorno donde hemos realizado lo experimentos, que es un aspecto importante al trabajar con redes neuronales debido a la gran cantidad de recursos que necesitan. Por un lado, vamos a trabajar con redes neuronales y el entrenamiento de estas redes se beneficia de la gran paralelización de las GPU, sin embargo, el entrenamiento consume muchos recursos lo que hace que en algunos casos un ordenador personal no sea suficiente. La pruebas iniciales se han realizado en un ordenador personal pero para las pruebas finales hemos recurrido a un cluster de ordenadores. 
+
+El otro aspecto fundamental es el control de todas los resultados obtenidos ya al final se van a realizar muchas pruebas y es necesario mantener un seguimiento, no solo por conocer los resultados de pruebas antiguas si no para poder recuperar los modelos que han mostrado buenos resultados y saber los hiperparámetros de este modelo. Como ya hemos mencionado, vamos a hacer uso de MLFlow para hacer este seguimiento así como herramienta que nos permite realizar un despliegue automático de modelos. Además esta herramienta nos ha permitido que al hacer uso del cluster para establecer un servidor donde se guarden todas las métricas y modelos y accesible desde distintas las distintas máquinas\footnote{Para usar el cluster fue necesario hacer una migración de la base de datos que se tenía en local a la nueva base de datos que se creo en el cluster.}. 
 
 \section{Metodología}
 
-En la sección anterior hemos visto todos los hiperparámetros que tenemos por lo que hacer una busqueda por todos los parámetros es completamente prohibitiva. Teniendo esto en mente vamos a definir una metodología que nos permita discernir que representación de las que se plantean es mejor así como la resolución de las imágenes. Una vez tengamos indicios que una de las resoluciones es mejor haremos distintas pruebas sobre los modelos que nos permitan mejorar los resultados.
+En la sección anterior se ha mostrado la gran cantidad de hiperparámetros que tenemos por lo que hacer una búsqueda por todos los parámetros es completamente prohibitiva. Teniendo esto en mente vamos a definir una metodología que nos permita discernir que representación de las que se plantean es mejor así como la resolución de las imágenes. Una vez tengamos indicios que una de las resoluciones es mejor haremos distintas pruebas sobre los modelos que nos permitan mejorar los resultados.
 
 Lo primero que haremos es realizar un conjunto de pruebas no estructurado que nos permiten entender el problema y ver que el tratamiento diseñado es correcto. Así mismo, haremos uso de estas representaciones para diseñar los modelos que funcionen bien y que usaremos para realizar pruebas futuras.
 
-El siguiente punto será deternimar cual de las representaciones que presentamos es mejor. Para esto lo que vamos a hacer es probar las distintas representaciones para distintos modelos. En concreto haremos uso de un modelo simple y uno complejo diseñado por nosotros, distintos modelos EfficieNet, ResNet y GoogleNet. La pruebas las haremos de manera que se compartan todos los parámetros y que lo único que vamos a modificar en caso de ser necesario parametros del entrenamiento como puede ser el ritmo de aprendizaje. Una vez hecho este análisis obtendremos un modelo que es mejor al resto y será el que usaremos para el resto de pruebas. 
+El siguiente punto será determinar cual de las representaciones que presentamos es mejor. Para esto lo que vamos a hacer es probar las distintas representaciones para distintos modelos. En concreto haremos uso de un modelo simple y uno complejo diseñado por nosotros, distintos modelos EfficientNet, ResNet y GoogleNet. La pruebas las haremos de manera que se compartan todos los parámetros y que lo único que vamos a modificar, en caso de ser necesario, son los parámetros del entrenamiento como puede ser el ritmo de aprendizaje. Una vez hecho este análisis se pretende obtener una representación que sea mejor que resto y será la que usaremos para el resto de pruebas. 
 
-El siguiente paso sera establecer una resolución para ello repetiremos el estudio anterior pero lo que cambiaremos ahora es simplemente la resolución. Lo siguiente que probaremos es a hacer pequeños ajustes sobre los modelos empleados donde definiremos un rejilla sobre la que buscaremos que parámetros funcionan mejor.
+El siguiente paso sera establecer una resolución para ello repetiremos el estudio anterior pero lo que cambiaremos ahora es simplemente la resolución. El siguiente paso será ajustar los modelos para intentar superar los resultados obtenidos. Para esto definiremos una rejilla sobre la que buscaremos que parámetros funcionan mejor y lo haremos para distintos modelos.
 
-Una vez acabados los distintos modelos trataremos de mejorar los resultados introduciendo modelos más complejos como pueden ser concadenación de redes, o ensembles que nos permitan mejorar los resultados.
+Una vez hemos obtenidos buenos modelos haciendo uso de la representación establecida trataremos de mejorar los resultados introduciendo modelos más complejos como pueden ser concatenación de redes, o ensembles que nos permitan mejorar los resultados.
 
-\begin{itemize}
-  \item Contar lo de los exp para seleccionar la representación
-  \item Luego optuna para un mejor modelo.
-  \item Finalmente algunas cosas extras.
-\end{itemize}
 \section{Resultados y discusión}
-\begin{itemize}
-  \item Comentar pruebas iniciales
-  \item Comentar experimentación de las representación
-  \item Ajuste de hiperparámetros
-  \item Concatenación de redes!!!!
-  \item Preueba de concadenación de principio y final
-\end{itemize}
+
+En esta sección vamos a mostrar los resultado de hacer uso los distintos modelos que se han presentado junto con las distintas representaciones. Inicialmente se mostraran las pruebas preliminares realizadas sin una metodología clara pero nos permite entender el problema, su complejidad y establecer un punto de partida. Luego se realizaremos unos estudios que nos permitan determinar tanto la representación como la resolución de las imágenes. Finalmente, ajustaremos los parámetros de los modelos que mejores resultados nos hayan dado y haremos distintas modificaciones sobre los modelos para tratar de mejorar los resultados.
+
+\subsection{Pruebas iniciales}
+\label{sec:pruebas_iniciales}
+Tras obtener las representaciones y las imágenes vamos a realizar unos primeros estudios para ver que el procesamiento realizado es correcto y tratar de establecer redes capaces de realizar la clasificación. En estas pruebas iniciales no hemos seguido ninguna metodología concreta en gran medida por la infinidad de puntos de partida posibles.
+
+El punto de partida que establecimos fue hacer uso de la representación más simple y una resolución y tamaño que recoja siempre el comienzo de las cascadas al ser la zona donde más diferencias se encuentran. Además hemos tratado de usar imágenes pequeñas nos permitiera construir un modelo con pocos parámetros y establecer un modelo base. Por lo tanto, para estas pruebas iniciales en general hemos usado imágenes donde hemos proyectado el eje $y$ con un $c_x = 1000$ px y de tamaño $62 \times 128$ px ($62$ píxeles para el eje $x$ y $128$ para el $z$)
+
+Lo primero que hicimos fue diseñar el modelo LeNet simple que se mostró en la sección anterior. La idea de hacer un modelo que no sea especialmente complejo con pocos filtros estaba motivada a que la diferencia existente entre las cascadas no son patrones muy complejos si no que se tratan de patrones simples como líneas. Además un modelo simple consume mucho menos recursos y el aprendizaje es rápido lo que nos permite hacer un mayor número de pruebas. Nuestra idea con estos modelos simples es establecer un modelo base que sea capaz de extraer la máxima información del origen de la cascada.
+
+El primer resultado que se obtuvo fue de 67\% de acierto en validación que se obtuvo con la primera prueba, donde la proyección se hizo sobre el eje $z$. Con estas pruebas, el máximo que se llego a obtener fue de un 88.5\% al realizar cambios en la arquitectura, en como se creaban las imágenes y en algunos parámetros de interés así como el eje de proyección donde se escogió el eje $y$ por se el menos relevante. Entrar a comentar todas estas pruebas realizadas no es especialmente interesante al ser más de 100 pruebas y muchos de los cambios consisten en realizar ajuste en el tratamiento de las imágenes, y cambios en el número de filtros, clasificador, variaciones en el ciclo de aprendizaje, etc.
+
+Sin embargo, si hay algunas cosas que se han observado que son especialmente interesantes de mostrar. Una de las primeras cosas que tratamos de hacer tras obtener un modelo que mostraba buenos resultados fue tratar de escalarlo aumentando tanto el número de filtros como el número de capas. No obstante, nos encontramos con que todos los modelos tenían mucha sensibilidad con la semilla de números aleatorios, y con la arquitectura de la red haciendo que en algunos casos se obtuvieran buenos resultados (entorno al $80\%$) mientras que en otros casos no se conseguía superar el 50\%, que es lo mismo que usar una moneda para realizar la clasificación. 
+
+El hecho que los resultados dependan de la semilla es un problema ya que nos incapacita decir que un conjunto de parámetros es malo ya que puede que simplemente estemos en una semilla mala. Para solucionar este problema lo que se probó fue tratar de modificar el tamaño del \textit{batch} ($bs$) y cada cuanto se modifica el ritmo de aprendizaje ($lr$). Otro parámetro que se modificó fue el optimizador ($optim.$) pero Adam mostraba mejores resultados siempre. El motivo por el que pensábamos que tendría que ser un parámetro relacionado con el aprendizaje es porque el tratamiento de las imágenes no depende de la semilla por lo que al cambiar la semilla lo que modificamos es el orden con el que llegan las imágenes al modelo, el conjunto de validación y como se realiza el descenso del gradiente. Con distintas pruebas observamos que al aumentar tanto el $bs$ como la frecuencia de cambio del ($lr$) se solucionaba este problema.
+
+Otra gran cantidad de prueba se hizo con la idea de obtener modelos basados en LeNet más complejos con la idea de ver si eramos capaces de mejorar los resultados al obtener patrones que el modelo simple no es capaz de determinar. Sin embargo, nos encontramos con que muchos de los modelos probados no conseguían clasificar el conjunto de datos. Debido a esto solo hemos conseguido establecer dos modelos de distinta complejidad que consigan clasificar los datos, la arquitectura de estos modelos se mostraba en la Fig. \ref{fig:lenet}. A la hora de realizar los estudios posteriores vamos a usar estos modelos así como los modelos EfficientNet que tienen distintos niveles de complejidad para ver si modelos más complejos mejoran o empeoran los resultados.
 
 \begin{table}[h!]
-
   \centering
+  \begin{tabular}{|c|c|c|c|c|c|}
+  \hline
+  BN & log & Normalización & dropout & \begin{tabular}[c]{@{}c@{}}Acc.\\ Mejor Val\end{tabular} & \begin{tabular}[c]{@{}c@{}}Acc.\\ Entrenamiento\end{tabular} \\ \hline
+  No & No  & No            & 0.0     & 0.885                                                    & 0.892                                                \\ \hline
+  No & No  & Si            & 0.0     & 0.649                                                    & 0.638                                                \\ \hline
+  No & Si  & No            & 0.2     & 0.865                                                    & 0.840                                                \\ \hline
+  No & Si  & Si            & 0.2     & 0.879                                                    & 0.888                                                \\ \hline
+  Si & No  & No            & 0.35    & 0.884                                                    & 0.875                                                \\ \hline
+  Si & No  & Si            & 0.35    & 0.638                                                    & 0.87                                                 \\ \hline
+  Si & Si  & No            & 0.35    & 0.863                                                    & 0.879                                                \\ \hline
+  Si & Si  & Si            & 0.35    & 0.866                                                    & 0.865                                                \\ \hline
+  \end{tabular}
+  \caption{Estudio del efecto de la normalización, capas de normalización por \textit{batch} (BN) y la transformación logarítmica sobre una misma representación. La representación empleada es la proyección en $y$ y el modelo usado es el LeNet simple.}
+  \label{tab:transformaciones}
+  \end{table}
+
+Otro aspecto que probamos antes de entrar a realizar los distintos estudios fue a probar aplicar la transformación logarítmica así como introducir capas de normalización por \textit{batch} (BN) \cite{batchnorm}. La introducción de estas modificaciones no mostraron mejoras en los resultados y observamos un aumento en el sobre ajuste llegando a obtener cerca de un 100\% de acierto en el conjunto de entrenamiento. Con el uso del \textit{dropout} se consiguió reducir el sobre ajuste llegando a obtener resultados prácticamente idénticos a los obtenidos sin introducir estas modificaciones por lo que no se observa que sean técnicas que mejoren los resultados. En la Tabla \ref{tab:transformaciones} se muestra un pequeño estudio realizado sobre la proyección, una resolución de 1000 px, y una ventana de $62\times128$ px. En este estudio probamos todas combinaciones de introducir o no las capas de BN, la transformación logarítmica y realizar una normalización sobre los píxeles\footnote{Esta normalización se suele aplicar a las imágenes y suele consistir en aplicar un transformación z-score sobre los distintos canales una vez la imagen esta en el rango 0 y 1. Para realizar esta transformación se toman como media: $(0.485, 0.456, 0.406)$ y como desviación estándar: $(0.229, 0.224, 0.225)$. En nuestro caso la imágenes están en este rango, por lo que solo aplicamos la transformación descrita.} para una misma configuración donde solo hemos modificado el \textit{dropout} si se tenía mucho sobre ajuste. Vemos que los mejores resultados se obtienen cuando no se introduce ninguna de modificaciones mencionadas llegando a obtener resultados similares si solo aplicamos la capa BN pero para ello es necesario introducir mucho \textit{dropout} para reducir el sobre ajuste. Otro aspecto importante es que la BN no mejora los resultados si solo aplicamos normalización y es relevante porque para los modelos preentrenados se suele aplicar esta normalización ya que los modelos se han entrenado con imágenes normalizadas de esta forma. Por todo esto, para los próximos experimentos no vamos a hacer uso de estos elementos y solo realizaremos la normalización para los modelos preentrenados.
+
+\subsection{Selección de una representación}
+
+Las pruebas iniciales nos han servido para entender mejor el conjunto de datos y establecer un punto de partida. Además, la sección anterior, nos ha mostrado la cantidad de pruebas que se pueden hacer para mejorar los resultados poniendo en manifiesto la necesidad de establecer una metodología que nos permita descartar opciones.
+
+Lo primero que vamos a hacer es establecer que representación da mejores resultados de manera general. Para ello lo que vamos a hacer es probar distintos modelos, con distintas complejidades y ver cual de ellas es mejor. Para ello hemos usado los mismos parámetros y redes salvo el ritmo de aprendizaje que se ha modificado solo si el modelo no conseguía superar el 50\%. Las pruebas se han realizado a 10 épocas y con una resolución $c_x = 1000$ px.
+
+En la Tabla \ref{tab:estudio_repre} se recogen los resultados para las 3 representaciones que hemos presentado, donde para la presentación tridimensional no se han realizado pruebas con los modelos preentrenados debido a que son redes entrenadas para imágenes planas. Para los modelos preentrenados hemos usando el mismo clasificador que para el modelo LeNet simple. En el Anexo se puede consultar en detalle los parámetros empleados.
+
+\begin{table}[h!]
+  \centering
+  \scalebox{0.85}{
   \begin{tabular}{cccccccccc}
   \hline
-  \multicolumn{1}{|c|}{}                       & \multicolumn{3}{c|}{Proyección}                                                           & \multicolumn{3}{c|}{Color}                                                                & \multicolumn{3}{c|}{3D}                                                                   \\ \hline
-  \multicolumn{1}{|c|}{\% de acierto} & \multicolumn{1}{c|}{train} & \multicolumn{1}{c|}{val.}  & \multicolumn{1}{c|}{mejor val.} & \multicolumn{1}{c|}{train} & \multicolumn{1}{c|}{val.}  & \multicolumn{1}{c|}{mejor val.} & \multicolumn{1}{c|}{train} & \multicolumn{1}{c|}{val.}  & \multicolumn{1}{c|}{mejor val.} \\ \hline
-  \multicolumn{1}{|c|}{Simple}                 & \multicolumn{1}{c|}{0.865} & \multicolumn{1}{c|}{0.836} & \multicolumn{1}{c|}{0.849}      & \multicolumn{1}{c|}{0.659} & \multicolumn{1}{c|}{0.692} & \multicolumn{1}{c|}{0.692}      & \multicolumn{1}{c|}{0.500} & \multicolumn{1}{c|}{0.484} & \multicolumn{1}{c|}{0.516}      \\ \hline
-  \multicolumn{1}{|c|}{Complejo}               & \multicolumn{1}{c|}{0.874} & \multicolumn{1}{c|}{0.869} & \multicolumn{1}{c|}{0.871}      & \multicolumn{1}{c|}{0.837} & \multicolumn{1}{c|}{0.851} & \multicolumn{1}{c|}{0.851}      & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}        \\ \hline
-  \multicolumn{1}{|c|}{EfficieNet B0}          & \multicolumn{1}{c|}{0.805} & \multicolumn{1}{c|}{0.767} & \multicolumn{1}{c|}{0.767}      & \multicolumn{1}{c|}{0.745} & \multicolumn{1}{c|}{0.616} & \multicolumn{1}{c|}{0.648}      & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}        \\ \hline
-  \multicolumn{1}{|c|}{EfficieNet B2}          & \multicolumn{1}{c|}{0.805} & \multicolumn{1}{c|}{0.767} & \multicolumn{1}{c|}{0.767}      & \multicolumn{1}{c|}{0.745} & \multicolumn{1}{c|}{0.616} & \multicolumn{1}{c|}{0.648}      & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}        \\ \hline
-  \multicolumn{1}{|c|}{EfficieNet B5}          & \multicolumn{1}{c|}{0.805} & \multicolumn{1}{c|}{0.767} & \multicolumn{1}{c|}{0.767}      & \multicolumn{1}{c|}{0.745} & \multicolumn{1}{c|}{0.616} & \multicolumn{1}{c|}{0.648}      & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}        \\ \hline
-  \multicolumn{1}{|c|}{EfficieNet B7}          & \multicolumn{1}{c|}{0.896} & \multicolumn{1}{c|}{0.818} & \multicolumn{1}{c|}{0.832}      & \multicolumn{1}{c|}{0.853} & \multicolumn{1}{c|}{0.676} & \multicolumn{1}{c|}{0.717}      & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}        \\ \hline
-  \multicolumn{1}{|c|}{ResNet 50}              & \multicolumn{1}{c|}{0.957} & \multicolumn{1}{c|}{0.690} & \multicolumn{1}{c|}{0.718}      & \multicolumn{1}{c|}{0.953} & \multicolumn{1}{c|}{0.609} & \multicolumn{1}{c|}{0.658}      & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}        \\ \hline
-  \multicolumn{1}{|c|}{GoogleNet}              & \multicolumn{1}{c|}{0.672} & \multicolumn{1}{c|}{0.663} & \multicolumn{1}{c|}{0.667}      & \multicolumn{1}{c|}{0.640} & \multicolumn{1}{c|}{0.628} & \multicolumn{1}{c|}{0.631}      & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}   & \multicolumn{1}{c|}{---}        \\ \hline
-  \multicolumn{1}{l}{}                         & \multicolumn{1}{l}{}       & \multicolumn{1}{l}{}       & \multicolumn{1}{l}{}            & \multicolumn{1}{l}{}       & \multicolumn{1}{l}{}       & \multicolumn{1}{l}{}            & \multicolumn{1}{l}{}       & ---                        & \multicolumn{1}{l}{}           
+  \multicolumn{1}{|c|}{}                       & \multicolumn{3}{c|}{Proyección}                                                           & \multicolumn{3}{c|}{Color}                                                                & \multicolumn{3}{c|}{3D}                                                                  \\ \hline
+  \multicolumn{1}{|c|}{\% de acierto} & \multicolumn{1}{c|}{train} & \multicolumn{1}{c|}{val.}  & \multicolumn{1}{c|}{mejor val.} & \multicolumn{1}{c|}{train} & \multicolumn{1}{c|}{val.}  & \multicolumn{1}{c|}{mejor val.} & \multicolumn{1}{c|}{train} & \multicolumn{1}{c|}{val.} & \multicolumn{1}{c|}{mejor val.} \\ \hline
+  \multicolumn{1}{|c|}{Simple}                   & \multicolumn{1}{c|}{0.892} & \multicolumn{1}{c|}{0.885} & \multicolumn{1}{c|}{0.885}      & \multicolumn{1}{c|}{0.763} & \multicolumn{1}{c|}{0.772} & \multicolumn{1}{c|}{0.772}      & \multicolumn{1}{c|}{0.637}     & \multicolumn{1}{c|}{0.627}    & \multicolumn{1}{c|}{0.627}           \\ \hline
+  \multicolumn{1}{|c|}{Complejo}                 & \multicolumn{1}{c|}{0.852} & \multicolumn{1}{c|}{0.866} & \multicolumn{1}{c|}{0.866}      & \multicolumn{1}{c|}{0.856} & \multicolumn{1}{c|}{0.836} & \multicolumn{1}{c|}{0.852}      & \multicolumn{1}{c|}{---}       & \multicolumn{1}{c|}{---}      & \multicolumn{1}{c|}{---}             \\ \hline
+  \multicolumn{1}{|c|}{EfficientNet B0}          & \multicolumn{1}{c|}{0.762} & \multicolumn{1}{c|}{0.756} & \multicolumn{1}{c|}{0.768}      & \multicolumn{1}{c|}{0.686} & \multicolumn{1}{c|}{0.641} & \multicolumn{1}{c|}{0.646}      & \multicolumn{1}{c|}{---}       & \multicolumn{1}{c|}{---}      & \multicolumn{1}{c|}{---}             \\ \hline
+  \multicolumn{1}{|c|}{EfficientNet B2}          & \multicolumn{1}{c|}{0.688} & \multicolumn{1}{c|}{0.665} & \multicolumn{1}{c|}{0.665}      & \multicolumn{1}{c|}{0.675} & \multicolumn{1}{c|}{0.601} & \multicolumn{1}{c|}{0.610}      & \multicolumn{1}{c|}{---}       & \multicolumn{1}{c|}{---}      & \multicolumn{1}{c|}{---}             \\ \hline
+  \multicolumn{1}{|c|}{EfficientNet B5}          & \multicolumn{1}{c|}{0.671} & \multicolumn{1}{c|}{0.613} & \multicolumn{1}{c|}{0.623}      & \multicolumn{1}{c|}{0.659} & \multicolumn{1}{c|}{0.587} & \multicolumn{1}{c|}{0.597}      & \multicolumn{1}{c|}{---}       & \multicolumn{1}{c|}{---}      & \multicolumn{1}{c|}{---}             \\ \hline
+  \multicolumn{1}{|c|}{EfficientNet B7}          & \multicolumn{1}{c|}{0.663} & \multicolumn{1}{c|}{0.638} & \multicolumn{1}{c|}{0.643}      & \multicolumn{1}{c|}{0.681} & \multicolumn{1}{c|}{0.601} & \multicolumn{1}{c|}{0.601}      & \multicolumn{1}{c|}{---}       & \multicolumn{1}{c|}{---}      & \multicolumn{1}{c|}{---}             \\ \hline
+  \multicolumn{1}{|c|}{ResNet 50}                & \multicolumn{1}{c|}{0.972} & \multicolumn{1}{c|}{0.690} & \multicolumn{1}{c|}{0.731}      & \multicolumn{1}{c|}{0.953} & \multicolumn{1}{c|}{0.607} & \multicolumn{1}{c|}{0.651}      & \multicolumn{1}{c|}{---}       & \multicolumn{1}{c|}{---}      & \multicolumn{1}{c|}{---}             \\ \hline
+  \multicolumn{1}{|c|}{GoogleNet}                & \multicolumn{1}{c|}{0.788} & \multicolumn{1}{c|}{0.779} & \multicolumn{1}{c|}{0.779}      & \multicolumn{1}{c|}{0.706} & \multicolumn{1}{c|}{0.659} & \multicolumn{1}{c|}{0.667}      & \multicolumn{1}{c|}{---}       & \multicolumn{1}{c|}{---}      & \multicolumn{1}{c|}{---}             \\ \hline
+  \multicolumn{1}{l}{}                           & \multicolumn{1}{l}{}       & \multicolumn{1}{l}{}       & \multicolumn{1}{l}{}            & \multicolumn{1}{l}{}       & \multicolumn{1}{l}{}       & \multicolumn{1}{l}{}            & \multicolumn{1}{l}{}           & ---                           & \multicolumn{1}{l}{}                
   \end{tabular}
-  \caption{}
-  \label{tab:my-table}
+  }
+  \caption{Porcentajes de acierto para el conjunto de entrenamiento y validación en la última época y el mejor porcentaje de acierto obtenido en validación. Se muestran los resultados obtenidos para distintas representaciones y modelos.}
+  \label{tab:estudio_repre}
+\end{table}
+
+
+En la tabla se muestran tanto el mejor porcentaje de acierto en validación (que corresponde al modelo guardado) así como los porcentajes en entrenamiento y en validación obtenidos en la última época. Lo más importante que notamos es que en todos los modelos, los mejores resultados se tienen cuando nos quedamos únicamente con la proyección del eje $y$. Por lo tanto, para el resto de estudios vamos a hacer uso de esta proyección. No obstante, es posible que estas diferencias se deban a que no hemos conseguido un modelo capaz de aprender la complejidad añadida al introducir el color de la forma que la hemos introducido, pero al no tener ninguna evidencia de esto vamos a hacer uso de la proyección simple.   
+
+Antes de pasar al resto de pruebas veamos un en detalle los resultados que se recogen en esta tabla. Por un lado mencionar que el estudio está sesgado con los modelos LeNet ya que estos modelos se han obtenido haciendo uso de la proyección simple por lo que es posible que se tengan mejores resultados únicamente por esto. Sin embargo, si nos fijamos únicamente en los modelos preentrenados vemos que la proyección simple es mejor en todos los casos.
+
+En la representación tridimensional vemos como solo hemos hecho pruebas con el modelo LeNet simple al no tener versión tridimensional de los modelos preentrenados. En el caso de los modelos basados en LeNet, al no ser modelos preentrenados, podemos modificarlos para que funcione con imágenes con tres dimensiones espaciales, incluso con esto no hemos podido usar el modelo complejo al superar la memoria disponible. Además vemos que los resultados obtenidos son considerablemente inferiores a los obtenidos con las otras representaciones. Aunque con esta metodología hemos obtenido malos resultados cuando se hicieron unas pruebas iniciales con este modelo se obtuvieron un porcentaje de acierto superior al 70\%. Por lo tanto, es posible que si se probara a modificar parámetros como el $lr$ nos permitirían obtener un mejor modelo. Sin embargo, no se han realizado más pruebas debido a la cantidad de recursos que consume haciendo que el aprendizaje sea muy lento y también se tenía limitado el $bs$ al superarse la memoria disponible por la GPU. Por todo esto, consideramos que esta representación tal cual no es especialmente interesante de abordar, aunque, si es interesante pensar formas alternativas de abordar el problema como estructuras de datos que mantengan la estructura matricial pero no guarde información de los espacios vacíos, estas estructuras de datos se conocen como matrices dispersas (\textit{sparse matrix}). En la literatura se han abordado estos problemas de distintas formas: En \cite{3d_1} se han probado a hacer uso de las arquitecturas del estado del arte y extenderlas a imágenes 3D de manera eficiente, en \cite{3d_sparse} se hace uso de las matrices dispersas en redes convolucionales y en \cite{sparse_neutrino} se aplican estas matrices para la detección de los distintos eventos que tienen lugar dentro del detector que estamos usando nosotros.
+
+Aunque, vemos que hay muchos estudios abordan los problemas que hemos observado con las imágenes tridimensionales, no vamos a entrar en ellos y lo dejamos como un posible área de estudio futuro.
+
+Por último, podemos ver como en los modelos EfficientNet al aumentar la complejidad los resultados empeoran. Esto puede deberse simplemente a que a mayor complejidad peores resultados pero también puede ser que al estar usando en los 4 casos el mismo clasificador las características más complejas no se estén clasificando correctamente. También puede deberse a que también tenemos hemos fijado a 10 el número de capas a reentrenar y puede que al tener modelos más complejos sea necesario reentrenar un número mayor de capas. Para los otros dos modelos observamos que obtenemos mejores resultados, aunque vemos que para ResNet tenemos mucho sobre ajuste. Por esto es interesante probar distintas configuraciones de hiperparámetros con idea de mejorar los resultados o reducir el sobre ajuste.  
+
+\subsection{Selección de la resolución}
+
+Ahora vamos a repetir el estudio anterior pero variando la resolución en vez de la representación. Recordemos que la resolución es el número de píxeles con el que se describe el volumen completo del detector. En esta sección al referirnos a la resolución estamos haciendo mención al número de píxeles con el que se describe el eje $x$ del detector, las resoluciones para los otros ejes están relacionadas por \ref{eq:resolucion}. Al igual que para el estudio anterior, mostramos los resultados obtenidos en la Tabla \ref{tab:estudio_res} y en el Anexo se pueden consultar en detalle los hiperparámetros del modelo. En la Fig. \ref{fig:estudio_res} se muestra gráficamente esta tabla pero añadiéndole color que nos permite ver de manera inmediata algunos patrones.
+
+Por un lado, se observa que para los modelos EfficientNet si aumentamos la resolución se tiene una mejora de los resultados obteniendo los mejores resultados con el modelo B0, que es el más simple. Sin embargo, por el mismo motivo que se comentó en la discusión anterior, no podemos descartar que los modelos más complejos presenten mejores resultados al modificar los hiperparámetros ya que estamos escalando la complejidad del modelo sin modificar el resto de elementos como puede ser el clasificador. Lo que si parece muy claro es que si aumentamos la resolución, obtenemos mejores resultados. Esto es muy interesante porque al aumentarla lo que hacemos es por un lado tener una mayor definición en la trayectoria pero además se reduce la cantidad de cascada que hay en la imagen al mantener fijo el tamaño de la imagen. De esta forma al aumentar la resolución lo que hacemos es centrarnos más en el origen de la cascada ignorando la parte final.
+
+Por otro lado, Para LeNet se observa que una vez se supera la resolución de 1000 px los resultados son similares. Vemos que para para resoluciones menores tenemos resultados ligeramente inferiores y que para el modelo simple con la máxima resolución si se observa que el modelo no es capaz de superar el 50\%. El motivo de esto puede ser a los hiperparámetros del modelo, aunque hemos hecho un par de pruebas más y no se han mejorado. Otra opción es que hemos aumentado tanto las imágenes que se pierde mucha cascada como para que el modelo sea capaz de aprender. Sin embargo, viendo que los resultados del modelo simple y complejo son similares para el resto de resoluciones y que en esta resolución el modelo complejo si obtiene buenos resultados es posible que se deba a la primera cuestión mencionada.
+
+Es importante notar que la información que se muestra en los modelos LeNet no es comparable a la información dada a los modelos preentrenados para una misma resolución. Esto se debe a que el tamaño de las imágenes es distinto. En la Fig. \ref{fig:varias_resoluciones} se mostraba el mismo evento para distintas resoluciones viendo que a medida que se aumentaba la resolución se perdía también información. Estas imágenes tenían un tamaño de $128\times128$ px y nosotros estamos usando imágenes $62\times128$ px y $224\times224$ px para los modelos LeNet y preentrenados respectivamente. Esto quiere decir que si tenemos una resolución de 1000 px y un tamaño $128\times128$ px la cantidad de cascada que se recoge es más o menos la misma que se recoge en una imagen con resolución 2000 px pero de tamaño $224\times224$ px\footnote{No es exactamente la misma por el factor 1.25 que hay cuando se obtiene el $c_z$ dado el $c_x$ que es el parámetro de resolución del que hemos hablado en toda la discusión}. Por lo que no debemos de pensar que a una misma resolución la información que están recibiendo los modelos es la misma.
+
+En resumen vemos que para los modelos LeNet observamos como el resultado satura en una resolución de 1000 px. Vemos que los resultados de las resoluciones de 1000 px y de 1500 px son muy similares por lo que vamos a usar la de 1500 px ya que define mejor el origen de la cascada y nuestro objetivo con estos modelos era obtener la máxima información de este origen. En los modelos EfficientNet no obtenemos un máximo y la resolución con la que se tienen mejores resultados es la más alta que hemos probado. No vamos a probar resoluciones mayores para mantener la máxima información posible ya que con estos modelos no queremos limitarnos al origen y aprender la información contenida en el extremo de la cascada.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+  \hline
+  Resolución (px) & 250   & 500   & 1000  & 1500  & 2000  & 2250   & 2500   & 3000    \\ \hline\hline % & 3500 
+  % Simple          & 0.828 & 0.808 & 0.864 & 0.861 & 0.502 & ---    & ---    & ---     \\ \hline       % & ---   
+  % Complejo        & 0.730 & 0.815 & 0.871 & 0.876 & 0.874 & ---    & ---    & ---     \\ \hline       % & ---   
+  Simple          & 0.834 & 0.855 & 0.885 & 0.881 & 0.502 & ---    & ---    & ---     \\ \hline       % & ---   
+  Complejo        & 0.516 & 0.838 & 0.879 & 0.872 & 0.8864 & ---    & ---    & ---     \\ \hline       % & ---   
+  EfficientNet B0 & 0.611 & 0.655 & 0.768 & 0.782 & 0.803 & 0.821  & 0.826  & 0.842   \\ \hline       % & 0.837 
+  EfficientNet B2 & 0.599 & 0.592 & 0.665 & 0.683 & 0.717 & 0.720  & 0.746  & 0.760   \\ \hline       % & 0.779 
+  EfficientNet B5 & 0.582 & 0.579 & 0.623 & 0.666 & 0.693 & 0.719  & 0.716  & 0.738   \\ \hline       % & 0.744 
+  \end{tabular}
+  \caption{Porcentaje de acierto para distintos modelos y distintas resoluciones (píxeles usados para describir el eje $x$ del detector).}
+  \label{tab:estudio_res}
+\end{table}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.85]{tab_res.pdf}
+  \caption{Porcentajes de acierto en para distintos modelos y distintas resoluciones (píxeles usados para describir el eje $x$ del detector) representado por un mapa de color.}
+  \label{fig:estudio_res}
+\end{figure}
+
+\subsection{Ajuste de hiperparámetros}
+
+Con todos los resultados observados surgen algunos aspectos importantes. Vemos que los modelos LeNet obtienen resultados superiores usando imágenes más pequeñas ($62\times 128$) mientras que para los modelos EfficientNet se obtienen siempre peores resultados incluso cuando se usa una resolución mayor.
+
+Esto nos hace pensar que los modelos preentrenados deberían ser capaces de superar estos modelos simples, ya que tienen mayor información, resolución y son modelos más complejos por lo que deberían de ser capaces de extraer patrones más complejo. Además, al haber sido entrenados con muchas imágenes, el entrenamiento tiene que ser más simple. Los modelos LeNet se diseñaron con la idea de centrarse únicamente en el origen de la cascada al ser el punto donde teóricamente hay más diferencias y vemos que se obtienen muy buenos resultados. Teniendo todo esto en cuenta es posible que para los modelos LeNet estemos muy cerca del máximo que se puede conseguir teniendo en cuenta que estamos usando una representación desprecia una dimensión completa y que se pierde mucha información en las imágenes debido al tamaño y resolución que estamos usando.
+
+Por todo esto, ahora vamos a ajustar los hiperparámetros de los distintos modelos centrándonos en los modelos preentrenados donde si es esperable una gran mejora ya que al menos deben de ser capaces de igualar los modelos LeNet. Para los modelos LeNet lo que haremos es ajustar algunos hiperparámetros pero no esperamos que se consigan mejoras significativas.
+
+% Por un lado vamos a hacer modificaciones sobre los modelos LeNet modificando parámetros como el tamaño de los filtros y su desplazamiento. Además haremos pruebas para distintos ritmos de aprendizaje. Por otro lado haremos pruebas sobre los modelos preentrenados modificando el número de capas a reentrenar así como el el clasificador empleado para clasificar en función de las características aprendidas.
+
+\subsubsection*{LeNet}
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|cc||cc|cc|cc|cc|}
+  \hline
+  \multicolumn{2}{|c||}{\multirow{2}{*}{}}    & \multicolumn{1}{c|}{ks}         & kd        & \multicolumn{1}{c|}{ks}         & kd        & \multicolumn{1}{c|}{ks}         & kd        & \multicolumn{1}{c|}{ks}         & kd        \\ \cline{3-10} 
+  \multicolumn{2}{|c||}{}                     & \multicolumn{1}{c|}{3}          & 1         & \multicolumn{1}{c|}{5}          & 1         & \multicolumn{1}{c|}{3}          & 2         & \multicolumn{1}{c|}{5}          & 2         \\ \hline\hline
+  \multicolumn{1}{|c|}{lr}       & 10$^{-3}$ & \multicolumn{2}{c|}{\multirow{2}{*}{0.883}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.891}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.771}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.718}} \\ \cline{1-2}
+  \multicolumn{1}{|c|}{$\gamma$} & 1.0       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       \\ \hline
+  \multicolumn{1}{|c|}{lr}       & 10$^{-3}$ & \multicolumn{2}{c|}{\multirow{2}{*}{0.884}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.892}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.768}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.727}} \\ \cline{1-2}
+  \multicolumn{1}{|c|}{$\gamma$} & 0.8       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       \\ \hline
+  \multicolumn{1}{|c|}{lr}       & 10$^{-3}$ & \multicolumn{2}{c|}{\multirow{2}{*}{0.881}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.887}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.763}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.728}} \\ \cline{1-2}
+  \multicolumn{1}{|c|}{$\gamma$} & 0.7       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       \\ \hline
+  \multicolumn{1}{|c|}{lr}       & 10$^{-3}$ & \multicolumn{2}{c|}{\multirow{2}{*}{0.875}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.886}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.762}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.718}} \\ \cline{1-2}
+  \multicolumn{1}{|c|}{$\gamma$} & 0.5       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       \\ \hline
+  \multicolumn{1}{|c|}{lr}       & 10$^{-4}$ & \multicolumn{2}{c|}{\multirow{2}{*}{0.818}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.862}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.627}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.593}} \\ \cline{1-2}
+  \multicolumn{1}{|c|}{$\gamma$} & 1.0       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       \\ \hline
+  \multicolumn{1}{|c|}{lr}       & 10$^{-4}$ & \multicolumn{2}{c|}{\multirow{2}{*}{0.758}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.836}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.597}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.573}} \\ \cline{1-2}
+  \multicolumn{1}{|c|}{$\gamma$} & 0.8       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       \\ \hline
+  \multicolumn{1}{|c|}{lr}       & 10$^{-4}$ & \multicolumn{2}{c|}{\multirow{2}{*}{0.713}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.803}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.612}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.584}} \\ \cline{1-2}
+  \multicolumn{1}{|c|}{$\gamma$} & 0.7       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       \\ \hline
+  \multicolumn{1}{|c|}{lr}       & 10$^{-4}$ & \multicolumn{2}{c|}{\multirow{2}{*}{0.657}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.764}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.609}} & \multicolumn{2}{c|}{\multirow{2}{*}{0.578}} \\ \cline{1-2}
+  \multicolumn{1}{|c|}{$\gamma$} & 0.5       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       & \multicolumn{2}{c|}{}                       \\ \hline
+  \end{tabular}
+  \caption{Resultados de la búsqueda de rejilla realizada sobre el modelo LeNet simple. Se han modificado el ritmo de aprendizaje $lr$, la cantidad que se modifica el $lr$, el tamaño de los filtros $ks$ y su desplazamiento $ks$.}
+  \label{tab:resultados_kernel_simple}
+\end{table}
+
+Como ya hemos puesto en manifiesto en varias ocasiones, tenemos una gran cantidad de parámetros y no nos podemos permitir hacer una búsqueda sobre todos ellos. Por todo esto vamos a probar a modificar 4 parámetros: el ritmo de aprendizaje ($lr$), lo que se modifica el ritmo de aprendizaje ($\gamma$), el tamaño de los filtros ($ks$) y el desplazamiento ($kd$). Las pruebas las vamos a realizar para ambos modelos y en las Tablas \ref{tab:resultados_kernel_simple} y \ref{tab:resultados_kernel_complejo} se recogen los resultados. En el Anexo se muestran los hiperparámetros en detalle.
+
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|cc||cc|cc|cc|cc|}
+  \hline
+  \multicolumn{2}{|c||}{\multirow{2}{*}{}} & \multicolumn{1}{c|}{ks} & kd & \multicolumn{1}{c|}{ks} & kd & \multicolumn{1}{c|}{ks} & kd & \multicolumn{1}{c|}{ks} & kd \\ \cline{3-10} 
+  \multicolumn{2}{|c||}{}                  & \multicolumn{1}{c|}{3}  & 1  & \multicolumn{1}{c|}{5}  & 1  & \multicolumn{1}{c|}{3}  & 2  & \multicolumn{1}{c|}{5}  & 2  \\ \hline\hline
+  \multicolumn{1}{|c|}{$\gamma$}   & 1.0  & \multicolumn{2}{c|}{0.875}   & \multicolumn{2}{c|}{0.857}   & \multicolumn{2}{c|}{0.516}   & \multicolumn{2}{c|}{0.858}   \\ \hline
+  \multicolumn{1}{|c|}{$\gamma$}   & 0.8  & \multicolumn{2}{c|}{0.879}   & \multicolumn{2}{c|}{0.857}   & \multicolumn{2}{c|}{0.516}   & \multicolumn{2}{c|}{0.526}   \\ \hline
+  \multicolumn{1}{|c|}{$\gamma$}   & 0.5  & \multicolumn{2}{c|}{0.870}   & \multicolumn{2}{c|}{0.767}   & \multicolumn{2}{c|}{0.516}   & \multicolumn{2}{c|}{0.484}   \\ \hline
+  \end{tabular}
+  \caption{Resultados de la búsqueda de rejilla realizada sobre el modelo  LeNet complejo. Se han modificado la cantidad que se modifica el $lr$, el tamaño de los filtros $ks$ y su desplazamiento $ks$. \red{En el anexo mostrar más detalles de los parámetros.}}
+  \label{tab:resultados_kernel_complejo}
   \end{table}
+
+La rejilla usada es muy simple donde hemos probado solo un par de valores para cada parámetro y aun así el número de pruebas realizadas al final de entorno a 50 ya que se ha realizado algunas más y descartados otras. En concreto hemos hecho 32 pruebas para el modelo simple y 15 para el complejo y la rejilla consiste en:
+\begin{itemize}
+  \item \inline{optim_lr} $\in \left[0.0001, 0.001\right]$.
+  \item \inline{scheduler_gamma} $\in \left[0.5, 0.7, 0.8, 1\right]$.
+  \item \inline{kernel_stride} $\in \left[1, 2\right]$.
+  \item \inline{kernel_size} $\in \left[3, 5\right]$.
+\end{itemize}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.65, center]{studio_kernel_simple.PNG}
+  \caption{Gráfica obtenida de MLFlow con los resultados de la búsqueda de rejilla aplicada sobre el modelo simple con una resolución de 1500 px.}
+  \label{fig:estudio_kernel}
+\end{figure}
+
+
+Para estudiar los resultados hemos usado MLFlow que nos permite comparar experimentos y hacer gráficas mostrando los distintos hiperparámetros y los resultados de esos experimentos en la Fig. \ref{fig:estudio_kernel} muestro un ejemplo de la gráfica obtenida y además no permite seleccionar rango de los parámetros para ver que ``hilos'' estamos viendo. Las conclusiones que podemos llegar de los resultados del modelo simple son:
+\begin{itemize}
+  \item Siempre se observa que los resultados son peores cunado se usa un desplazamiento de los filtros de 2 px frente a usar un $kd = 1$ px.
+  \item De igual manera se observa con el $lr$, donde el $lr = 0.0001$ siempre da peores resultados frente a usar $lr = 0.001$. El resto de conclusiones las vamos a limitar estos casos.
+  \item También vemos que en general a medida que disminuimos el gamma del cambio de \textit{lr} dinámico vemos que los resultados empeoran pero el máximo se encuentra en 0.8 siendo ligeramente peor cuando el gamma es 1.0.
+  \item Siempre se observan mejores resultados con los filtros 5 px de tamaño. 
+  \item El mejor resultado se tiene con un 0.892 para $lr = 0.001$, $\gamma = 0.8$, $ks = 5$ px y $kd = 1$ px.
+\end{itemize}
+
+Para el modelo complejo:
+\begin{itemize}
+  \item Para este caso hemos quitado un valor de $\gamma$ y vimos que cuando se tenía $lr = 0.001$ el modelo no aprendía por lo que no hicimos todas las pruebas y no se muestran. Además hemos tenido que introducir modificar las imágenes introduciendo lo que se denomina \textit{padding} para que al aplicar los filtros no se reduzca mucho la imagen.
+    \item Siempre se obtienen mejores resultados cuando el desplazamiento es de 1 px.
+  \item Con respecto al $\gamma$ vemos que los mejores resultados se tienen con $\gamma = 0.8$ y parece que lo mejor es cuando es 0.8 ó 1.0.
+  \item A diferencia que lo que se observaba con el modelo simple, se obtiene mejores resultados con el $ks = 3$ px
+  \item El mejor resultado se tiene con un 0.879 para $lr = 0.0001$, gamma = 0.7, $ks = 3$ px y $kd = 1$ px.
+\end{itemize}
+
+En resumen, vemos que hemos tras el ajuste hemos obtenido mejores resultados con el modelo simple, usando filtros algo mayores de los que estábamos usando. El resto de parámetros es prácticamente el mismo. La mejora obtenida es de un 1\% que es considerablemente bajo teniendo en cuenta que hemos hecho más de 50 pruebas para llegar a este valor.
+
+Por otro lado, aunque es posible que se mejoren aun más los resultados si buscamos en otros parámetros, pero para esto serían necesario realizar muchas pruebas. Previamente a este trabajo, el \red{no se que poner aquí} han abordado el mismo problema pero sin hacer uso de imágenes, usando los datos tabulares codificados de manera que se mantiene toda la información. Con este ajuste ya hemos conseguido superar el mejor resultado que se obtenía en este estudio que se obtenía con un Random Forest.
+
+\subsubsection*{Modelos preentrenados}
+
+Lo primero que vamos a hacer es tratar de establecer un valor de $\gamma$ y \textit{lr}. Como no podemos hacer esto para todos los modelos lo que vamos a hacer es establecer un prueba inicial con un clasificador complejo, un modelo intermedio como puede ser el EfficientNet B2 y usaremos un \textit{dropout} de 0.2. El clasificador usado consiste en una única capa oculta con 256 neuronas, se han descongelado 50 capas y se han probado 3 valores de $\gamma$ $\left[1.0, 0.8, 0.5\right]$ y con 3 valores de \textit{lr}: $\left[[0.0001, 0.001, 0.01]\right]$. Los mejores resultados se han obtenido con el $\gamma$ más bajo y el \textit{lr} más alto. Estos resultados se muestran en la Fig. \ref{fig:studio_optim} y se pueden consultar detenidamente en el Anexo.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.65, center]{studio_optim_pre.png}
+  \caption{Gráfica obtenida de MLFlow con los resultados de la búsqueda inicial del $lr$ y de $\gamma$.}
+  \label{fig:studio_optim}
+\end{figure}
+
+
+Con estos valores de $\gamma$ y \textit{lr} definimos una rejilla donde se modifica el clasificador y el número de capas descongeladas del extractor de características. Los clasificadores tienen una única capa oculta con 256 y 128 neuronas ($n_n$) y el número de capas a descongelar ($n_u$) probados son $\left[5, 50, 100, 300, 1000 \right]$. Hemos fijado el \textit{dropout} ($dr$) a 0.3 ya que en general hemos visto que se tiene sobre ajuste con estos modelos. Por otro lado, en algunas ocasiones las pruebas de $n_u = 1000$ no se han realizado por no tener memoria suficiente ya que los modelos que estamos usando llegan a tener muchas capas y parámetros. Hemos introducido $n_u=1000$ como caso en el que se descongelan todas las capas.  
+
+Estas pruebas se hicieron en primer lugar usando únicamente los modelos EfficientNet B0, B2 y B5 para ver si de esta forma podíamos reducir el número de pruebas. En la Tabla \ref{tab:res_ajuste_pre} se recogen estos resultados junto con el resto de pruebas realizadas. En el Anexo se pueden consultar los detalles de los hiperparámetros.
+
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c||cc|cc|cc|c|c|}
+  \hline
+  \multirow{2}{*}{} & \multicolumn{2}{c|}{B0}            & \multicolumn{2}{c|}{B2}            & \multicolumn{2}{c|}{B5}             & ResNet & GoogleNet \\ \cline{2-9} 
+                    & \multicolumn{1}{c|}{256}   & 128   & \multicolumn{1}{c|}{256}   & 128   & \multicolumn{1}{c|}{256}    & 128   & 256    & 256       \\ \hline\hline
+  5                 & \multicolumn{1}{c|}{0.737} & 0.838 & \multicolumn{1}{c|}{0.749} & 0.756 & \multicolumn{1}{c|}{0.729}  & 0.728 & 0.779  & 0.837     \\ \hline
+  50                & \multicolumn{1}{c|}{0.884} & 0.878 & \multicolumn{1}{c|}{0.826} & 0.819 & \multicolumn{1}{c|}{0.808}  & 0.811 & 0.878  & 0.869     \\ \hline
+  100               & \multicolumn{1}{c|}{0.889} & 0.516 & \multicolumn{1}{c|}{0.872} & 0.870 & \multicolumn{1}{c|}{0.516}  & 0.516 & 0.516  & 0.880     \\ \hline
+  300               & \multicolumn{1}{c|}{0.898} & 0.839 & \multicolumn{1}{c|}{\textbf{0.913}} & 0.904 & \multicolumn{1}{c|}{0.859*} & 0.859 & 0.569  & 0.516     \\ \hline
+  1000              & \multicolumn{1}{c|}{0.898} & 0.839 & \multicolumn{1}{c|}{0.854} & 0.516 & \multicolumn{1}{c|}{---}    & ---   & 0.569  & 0.516     \\ \hline
+  \end{tabular}
+  \caption{Resultados de hacer una búsqueda de rejilla donde se ha modificado el número de capas a reentrenar y el clasificador para distintos modelos. La primera columna hacer referencia al número de capas descongeladas $n_u$, la primera fila al modelo y la segunda al número de neuronas del clasificador $n_n$. El asterisco significa que se ha entrenado con 15 épocas.}
+  \label{tab:res_ajuste_pre}
+\end{table}
+
+Lo primero que vemos es que los resultados son muy superiores a los obtenidos sin realizar la modificación de los parámetros. Por otro lado, el mejor resultado se obtiene con el modelo B2 con $n_u = 300$ y con $n_n = 256$ obteniendo un 91.3\% de acierto en validación que es una mejora considerable a los resultados obtenidos con los los modelos LeNet.
+
+En estos resultados vemos que para los modelos EfficientNet en general se tienen mejores resultados cuando se usa $n_n = 256$ por lo que para los otro modelos vamos a usar solo este valor. Con respecto a $n_u$ no se observa ningún patrón a simple vista. Lo que si observamos es que los resultados mejoran al aumentar este parámetros hasta que se alcanza un máximo y lo resultados empeoran. Lo que puede estar ocurriendo es que al descongelar muchas se tangan muchos parámetros de manera que el optimizador no es capaz de encontrar un mínimo. 
+
+Por otro lado, vemos que los resultados obtenidos con los modelos B5, ResNet y GoogleNet los resultados son ligeramente inferiores a los obtenidos con otros modelos pero esto puede deberse únicamente al espacio de búsqueda establecido.
+
+Sobre estos modelos hemos hecho algunas pruebas adicionales para ver si se conseguían mejorar un poco más los resultados, sobre todo para aquellos en los que se tiene malos resultados.
+
+\begin{itemize}
+  \item ResNet 50: Hemos probado a usar $dr = 0.4$ para $n_u = 50, 100$ obteniendo 0.883, 0.891 respectivamente. Obteniendo una mejora considerable y similar a los mejores resultados obtenidos con el resto de modelos.
+  \item GoogleNet: También hemos probado a usar el $dr = 0.4$ para $n_u = 100, 300$ obteniendo 0.892 y 0.516. Donde vemos que para $n_u = 100$ hemos mejorado el porcentaje de acierto llegando también a igualar al resto de modelos. Para $n_n=256$ hemos probado a usar $n_n = 128$ obteniendo 0.808. Aunque hemos conseguido mejorar los estamos lejos del resto de valores.
+  \item B5: Hemos usado $n_n = 512$ para el caso que peores resultados tenía obteniendo 0.819.
+  \item B0: Hemos probado a introducir $dr = 0.4$ para los mejores resultados pero se han empeorado los resultados.
+\end{itemize}
+
+A modo de conclusión de las pruebas que hemos realizado, vemos que la mayoría de  modelos llegan a superar el 0.89, de hecho, solo el B5 no lo ha conseguido. Por otro lado vemos que el B0 y B2 son los que mejores resultados han dado sobre todo el B2 que supera en un 2-3\% al resto de modelos. En general vemos que las diferencias entre los modelos no es muy alta por lo que puede que realmente la diferencia se encuentre en los parámetros siendo todos los modelos más o menos similar. Esto es algo coherente con las imágenes que estamos usando, donde puede ser complejo determinar el origen de la cascada pero los patrones que los diferencian no son complejos.
+
+Como ya hemos repetido varias veces, no podemos afirmar que este sea el mejor modelo ya que no hemos hecho suficientes pruebas y puede que ajustar más algunos parámetros no hagan que los otros modelo lo igualen o incluso lo superen. Sin embargo, el número de necesario para esto es muy alto y con estas pocas pruebas hemos conseguido conseguido unos resultados muy buenos. En este punto es más interesante modificar las arquitecturas con la idea de tratar de recoger la información que estamos perdiendo al realizar la proyección o al fijar la ventana que seguir con la búsqueda de hiperparámetros. Para estas modificaciones haremos uso del modelo B2 al ser el que mejores resultados nos ha dado y en caso de tener problemas por la complejidad del modelo usaremos el modelo LeNet simple.
+
+\subsection{Breve estudio del modelo B2 WIP}
+
+Antes de hacer las modificaciones sobre la arquitectura vamos tratar hacer un breve estudio de el modelo obtenido. Recordemos que estos modelos son cajas negras cuya interpretabilidad es nula. En esta sección vamos a ver algunas métricas que nos digan como de bueno es el modelo, veremos las imágenes en las que el modelo se esta equivocando y probaremos a usar una técnica que nos permita visualizar las regiones de la imagen que más influyen en la decisión. Además obtendremos la eficiencia y pureza del modelo en función de la energía y veremos como se re modifican los resultados si quitamos \textit{hits} de la imagen.
+
+\subsection{Concatenación de redes, 3 proyecciones WIP}
+
+Hasta ahora hemos usado únicamente una de las proyecciones para realizar la clasificación. En esta sección vamos a tratar de mejorar los resultados juntando las tres redes usando ensembles y
+
+% \subsection{Concatenación de redes, varias regiones.}
+
+% Al igual que estamos perdiendo información al realizar la proyección, se pierde información al establecer la ventana perdiendo información del final de la cascada. Nuestro objetivo es probar a entrenar un modelo con la parte inicial y otro con la final y agregar esta información para tratar de mejora los resultados.
+
+% \subsection{Visual Transformers WIP}
+
+% A lo largo del trabajo hemos hecho mención de los Tranformers y que han mostrado buenos resultados para distintos problemas. En esta sección queremos hacer una prueba de concepto del funcionamiento de este modelo sobre las imágenes para ver si obtienen mejores resultados.
+
 \section{Conclusiones y trabajos futuros}
 
-% \begin{figure}[h!]
-%   \centering
-%   \includegraphics[scale=0.85]{boxk3.pdf}
-%   \caption{Diagrama de cajas de las distintas variables de los datos del tercer cluster separados por dos nuevos clusters, obtenidos de hacer aplicar clustering de forma recursiva.}
-%   \label{fig:boxclass3}
-% \end{figure}
+TODO
+\begin{itemize}
+  \item estudio modelo
+  % \item ViT
+  \item Concatenación proyecciones
+  % \item Concatenación de regiones
+  \item Anexo de código
+  \item Anexo hiperparámetros
+  \item Abstract
+  \item Conclusiones
+  \item Arreglar una cosa de MLFlow
+\end{itemize}
 
 \newpage
 

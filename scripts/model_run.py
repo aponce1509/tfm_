@@ -32,7 +32,7 @@ def fix_seed(params: dict, pytorch_alg=True):
 def objective(trial: optuna.Trial, params: dict, opt_id=None,
               experiment_name="Defalut"):
     hyperparameter_suggest(trial, params)
-    fix_seed(params)
+    # fix_seed(params)
     error = basic_pipeline(params, is_optuna=True, optuna_step=trial.number,
                            verbose=False, trial_params=trial.params,
                            opt_id=opt_id, experiment_name=experiment_name,
@@ -62,6 +62,7 @@ def optuna_pipeline(params: dict, experiment_name: str, n_trials: int=5):
 def basic_pipeline(params: dict, is_optuna=False, optuna_step=None,
                    verbose=True, trial_params=None, experiment_name="Default",
                    opt_id=None, trial=None):
+    fix_seed(params)
     mlflow.set_tracking_uri(MODEL_PATH)
     mlflow.set_experiment(experiment_name)
     with mlflow.start_run(nested=True):
