@@ -6,6 +6,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.optim.lr_scheduler import StepLR
 from torch import optim
+
+from scripts.utils_study_res import get_model
 torch.use_deterministic_algorithms(True)
 
 def get_criterion(model_params):
@@ -468,6 +470,80 @@ class ConvNetConcat(nn.Module):
 
     def forward(self, x, y, z) -> torch.Tensor:
         r = self.convolutions(x, y, z)
+        r = self.classifier(r)
+        return r
+
+class ConcatEffModels(nn.Module):
+
+    def __init__(self, params: dict, runs_id: tuple) -> None:
+        super(ConvNetConcat, self).__init__()
+        self.bn = params['bn']
+        
+        self.base_models = [get_model(run_id)[1] for run_id in runs_id]
+        for model in self.base_models:
+            model.classifier = nn.Identity
+
+        clf_block = self.make_clf_block(params)
+        self.classifier = nn.Sequential(*clf_block)
+
+    def make_clf_block(self, params: dict):
+        clf_neurons = params['clf_neurons']
+        input_shape = params["input_shape"]
+        n_layers = len(clf_neurons)
+        # obtenemos la forma de la capa aplanada para obtener el nº de inputs 
+        # para la primera capa del clasificador
+        n_models = len(self.base_models)
+        x = [torch.rand(((1, 3) + (224, 224))) for i in range(n_models)]
+
+        pre_cls_shape = self.convolutions(*x).data.shape[1]
+        layers_in = (pre_cls_shape, *clf_neurons[:-1])
+        layers_out = clf_neurons
+        # creamos una tupla (len = número de capas) con el dropout tq el todos 
+        # son iguales (dado por params) menos el último que lo hacemos 0
+        # dropout_ratios = (0, ) + (params['dropout'], ) * (n_layers - 2) + (0, )  
+        dropout_ratios = (params['dropout'], ) * (n_layers - 1) + (0, )  
+        no_linear_fun = params["clf_no_linear_fun"]
+        no_linear_funs = (no_linear_fun, ) * (n_layers - 1) + ("log_softmax", )
+        clf_params = (layers_in, layers_out, dropout_ratios, no_linear_funs)
+        clf_block = []
+        
+        for layer_in, layer_out, d_r, nl_fun in zip(*clf_params):
+            block = self.get_layer_clf(layer_in, layer_out, d_r, nl_fun)
+            clf_block.extend(block)
+        return tuple(clf_block)
+
+    def get_layer_clf(self, layers_in, layers_out, dropout_ratio,
+                      no_linear_fun="relu"):
+        layer = nn.Linear(layers_in, layers_out)
+        dropout_ = nn.Dropout(dropout_ratio)
+        # seleccion de no lineal
+        if no_linear_fun == "relu":
+            no_linear = nn.ReLU(inplace=True)
+        elif no_linear_fun == "sigmoid":
+            no_linear = nn.Sigmoid()
+        elif no_linear_fun == "log_softmax":
+            no_linear = nn.LogSoftmax(1)
+        elif no_linear_fun == "none":
+            no_linear = nn.Identity()
+        else:
+            raise Exception("Not valid no_linear_fun")
+        if self.bn and no_linear_fun != "log_softmax" :
+            bn = nn.BatchNorm1d(layers_out)
+            fc = dropout_, layer, no_linear, bn
+        else:
+            fc = dropout_, layer, no_linear
+        return fc        
+
+    def convolutions(self, *args):
+        if not len(args) == len(self.base_models):
+            raise Exception('El nº de modelos tiene que ser igual al nº de img') 
+        
+        all_features = [model(x) for x, model in zip(args, self.base_models)]
+        all_features = torch.cat(all_features, dim=1)
+        return all_features
+
+    def forward(self, *args) -> torch.Tensor:
+        r = self.convolutions(*args)
         r = self.classifier(r)
         return r
 
