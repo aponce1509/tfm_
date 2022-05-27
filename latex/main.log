@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2021.11.21)  23 MAY 2022 11:28
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2021.11.21)  23 MAY 2022 19:08
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -1214,11 +1214,14 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [19] [20]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [21] [22]
+ [21]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [22]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [23] [24] [25]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 1466) has occurred while \output is active []
 
  [26] [27]
 <./img//3d_3.pdf, id=427, 1156.32pt x 794.97pt>
@@ -1238,38 +1241,45 @@ Package pdftex.def Info: ./img//vistas_3.pdf  used on input line 391.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[28] [29 <./img//3d_3.pdf>] [30 <./img//vistas_3.pdf>]
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [31]
+ [28] [29 <./img//3d_3.pdf>] [30 <./img//vistas_3.pdf>] [31]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [32]
-Underfull \vbox (badness 1112) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [33]
-<./img//flujo_tem.PNG, id=527, 757.6305pt x 226.446pt>
+<./img//flujo_tem.PNG, id=526, 757.6305pt x 226.446pt>
 File: ./img//flujo_tem.PNG Graphic file (type png)
 <use ./img//flujo_tem.PNG>
 Package pdftex.def Info: ./img//flujo_tem.PNG  used on input line 470.
 (pdftex.def)             Requested size: 371.24219pt x 110.9595pt.
- [34 <./img//flujo_tem.PNG>] [35] [36]
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[34]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [35 <./img//flujo_tem.PNG>] [36]
 <./img//hist_en.pdf, id=543, 433.62pt x 289.08pt>
 File: ./img//hist_en.pdf Graphic file (type pdf)
 <use ./img//hist_en.pdf>
-Package pdftex.def Info: ./img//hist_en.pdf  used on input line 497.
+Package pdftex.def Info: ./img//hist_en.pdf  used on input line 498.
 (pdftex.def)             Requested size: 368.57874pt x 245.71915pt.
  [37 <./img//hist_en.pdf>]
 <./img//hist_rango.pdf, id=568, 433.62pt x 289.08pt>
 File: ./img//hist_rango.pdf Graphic file (type pdf)
 <use ./img//hist_rango.pdf>
-Package pdftex.def Info: ./img//hist_rango.pdf  used on input line 506.
+Package pdftex.def Info: ./img//hist_rango.pdf  used on input line 507.
 (pdftex.def)             Requested size: 368.57874pt x 245.71915pt.
  [38 <./img//hist_rango.pdf>]
 <./img//varias_resoluciones.pdf, id=587, 864.22874pt x 175.40532pt>
 File: ./img//varias_resoluciones.pdf Graphic file (type pdf)
 <use ./img//varias_resoluciones.pdf>
-Package pdftex.def Info: ./img//varias_resoluciones.pdf  used on input line 532.
+Package pdftex.def Info: ./img//varias_resoluciones.pdf  used on input line 533.
 (pdftex.def)             Requested size: 561.74202pt x 114.01208pt.
 
 
@@ -1282,30 +1292,30 @@ Underfull \vbox (badness 4846) has occurred while \output is active []
 <./img//scatter_n_e.pdf, id=595, 433.62pt x 289.08pt>
 File: ./img//scatter_n_e.pdf Graphic file (type pdf)
 <use ./img//scatter_n_e.pdf>
-Package pdftex.def Info: ./img//scatter_n_e.pdf  used on input line 542.
+Package pdftex.def Info: ./img//scatter_n_e.pdf  used on input line 543.
 (pdftex.def)             Requested size: 368.57874pt x 245.71915pt.
  [40 <./img//varias_resoluciones.pdf> <./img//scatter_n_e.pdf>]
 <./img//hist_charge.pdf, id=658, 433.62pt x 289.08pt>
 File: ./img//hist_charge.pdf Graphic file (type pdf)
 <use ./img//hist_charge.pdf>
-Package pdftex.def Info: ./img//hist_charge.pdf  used on input line 552.
+Package pdftex.def Info: ./img//hist_charge.pdf  used on input line 553.
 (pdftex.def)             Requested size: 368.57874pt x 245.71915pt.
  [41 <./img//hist_charge.pdf>]
 <./img//hist_charge_time.pdf, id=689, 505.89pt x 289.08pt>
 File: ./img//hist_charge_time.pdf Graphic file (type pdf)
 <use ./img//hist_charge_time.pdf>
-Package pdftex.def Info: ./img//hist_charge_time.pdf  used on input line 564.
+Package pdftex.def Info: ./img//hist_charge_time.pdf  used on input line 565.
 (pdftex.def)             Requested size: 430.00851pt x 245.71915pt.
  [42 <./img//hist_charge_time.pdf>] [43]
 <./img//ambas_pro.pdf, id=721, 578.16pt x 289.08pt>
 File: ./img//ambas_pro.pdf Graphic file (type pdf)
 <use ./img//ambas_pro.pdf>
-Package pdftex.def Info: ./img//ambas_pro.pdf  used on input line 591.
+Package pdftex.def Info: ./img//ambas_pro.pdf  used on input line 592.
 (pdftex.def)             Requested size: 491.43832pt x 245.71915pt.
 <./img//varias_proyecciones.pdf, id=722, 682.86612pt x 352.81418pt>
 File: ./img//varias_proyecciones.pdf Graphic file (type pdf)
 <use ./img//varias_proyecciones.pdf>
-Package pdftex.def Info: ./img//varias_proyecciones.pdf  used on input line 598.
+Package pdftex.def Info: ./img//varias_proyecciones.pdf  used on input line 599.
 (pdftex.def)             Requested size: 512.14833pt x 264.60997pt.
 
 
@@ -1315,7 +1325,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 <./img//h-colours.png, id=740, 552.0625pt x 451.6875pt>
 File: ./img//h-colours.png Graphic file (type png)
 <use ./img//h-colours.png>
-Package pdftex.def Info: ./img//h-colours.png  used on input line 611.
+Package pdftex.def Info: ./img//h-colours.png  used on input line 612.
 (pdftex.def)             Requested size: 248.42583pt x 203.25749pt.
 
 
@@ -1331,7 +1341,7 @@ Underfull \vbox (badness 6173) has occurred while \output is active []
 <./img//proyeccion_color.pdf, id=810, 250.38426pt x 256.0748pt>
 File: ./img//proyeccion_color.pdf Graphic file (type pdf)
 <use ./img//proyeccion_color.pdf>
-Package pdftex.def Info: ./img//proyeccion_color.pdf  used on input line 634.
+Package pdftex.def Info: ./img//proyeccion_color.pdf  used on input line 635.
 (pdftex.def)             Requested size: 212.8276pt x 217.6646pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1340,13 +1350,13 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 <./img//lenet.PNG, id=845, 588.39825pt x 243.309pt>
 File: ./img//lenet.PNG Graphic file (type png)
 <use ./img//lenet.PNG>
-Package pdftex.def Info: ./img//lenet.PNG  used on input line 665.
+Package pdftex.def Info: ./img//lenet.PNG  used on input line 666.
 (pdftex.def)             Requested size: 500.14088pt x 206.81363pt.
  [50 <./img//lenet.PNG>]
 <./img//resnet50.png, id=860, 498.86375pt x 230.8625pt>
 File: ./img//resnet50.png Graphic file (type png)
 <use ./img//resnet50.png>
-Package pdftex.def Info: ./img//resnet50.png  used on input line 687.
+Package pdftex.def Info: ./img//resnet50.png  used on input line 688.
 (pdftex.def)             Requested size: 498.86253pt x 230.86192pt.
 
 
@@ -1437,30 +1447,27 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [59] [60] [61] [62]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [63]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [64]
-<./img//tab_res.pdf, id=959, 433.62pt x 289.08pt>
-File: ./img//tab_res.pdf Graphic file (type pdf)
-<use ./img//tab_res.pdf>
-Package pdftex.def Info: ./img//tab_res.pdf  used on input line 911.
-(pdftex.def)             Requested size: 368.57874pt x 245.71915pt.
-
+ [63] [64]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 7576) has occurred while \output is active []
 
  [65]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [66 <./img//tab_res.pdf>]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[67]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [66]
+Underfull \vbox (badness 2961) has occurred while \output is active []
+
+ [67]
 \openout4 = `main.pyg'.
 
  (./_minted-main/AD2E6D3C269596EDB325456D4D3B87A65BD9CFCE54A68914ACB2DCF71641ADB0.pygtex)
@@ -1473,23 +1480,29 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 \openout4 = `main.pyg'.
 
  (./_minted-main/AC235D068574A3293D5526B75E002A985BD9CFCE54A68914ACB2DCF71641ADB0.pygtex)
-<./img//studio_kernel_simple.PNG, id=992, 806.41275pt x 334.851pt>
+<./img//studio_kernel_simple.PNG, id=978, 806.41275pt x 334.851pt>
 File: ./img//studio_kernel_simple.PNG Graphic file (type png)
 <use ./img//studio_kernel_simple.PNG>
-Package pdftex.def Info: ./img//studio_kernel_simple.PNG  used on input line 987.
+Package pdftex.def Info: ./img//studio_kernel_simple.PNG  used on input line 1002.
 (pdftex.def)             Requested size: 524.16208pt x 217.65056pt.
  [68 <./img//studio_kernel_simple.PNG>] [69]
-<./img//studio_optim_pre.png, id=1005, 802.79926pt x 330.63525pt>
+<./img//studio_optim_pre.png, id=990, 802.79926pt x 330.63525pt>
 File: ./img//studio_optim_pre.png Graphic file (type png)
 <use ./img//studio_optim_pre.png>
-Package pdftex.def Info: ./img//studio_optim_pre.png  used on input line 1021.
+Package pdftex.def Info: ./img//studio_optim_pre.png  used on input line 1036.
 (pdftex.def)             Requested size: 521.81334pt x 214.91037pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[70] [71 <./img//studio_optim_pre.png>] [72] [73] [74] [75]
-Overfull \hbox (2.7987pt too wide) in paragraph at lines 1100--1100
+
+Underfull \vbox (badness 2538) has occurred while \output is active []
+
+ [70] [71 <./img//studio_optim_pre.png>] [72]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [73] [74] [75]
+Overfull \hbox (2.7987pt too wide) in paragraph at lines 1113--1113
 []\T1/cmr/m/it/12 Machine Lear-ning Ope-ra-tions (MLOps)\T1/cmr/m/n/12 . Jul. de 2021. \T1/cmr/m/sc/12 url\T1/cmr/m/n/12 : []$\T1/cmtt/m/n/12 https : / / nealanalytics .
  []
 
@@ -1510,10 +1523,10 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 41141 strings out of 478371
- 825565 string characters out of 5852527
- 1526660 words of memory out of 5000000
- 58278 multiletter control sequences out of 15000+600000
+ 41131 strings out of 478371
+ 825334 string characters out of 5852527
+ 1527461 words of memory out of 5000000
+ 58270 multiletter control sequences out of 15000+600000
  428779 words of font info for 96 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,14n,131p,2455b,2613s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1538,10 +1551,10 @@ pdfTeX warning (dest): name{Hfootnote.2} has been referenced but does not exist,
 pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist, replaced by a fixed one
 
 {c:/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}{c:/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<c:/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfbx1728.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfbx2074.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfcc1200.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1440.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfti1200.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb>
-Output written on main.pdf (78 pages, 2649012 bytes).
+Output written on main.pdf (78 pages, 2642603 bytes).
 PDF statistics:
- 1236 PDF objects out of 1440 (max. 8388607)
- 963 compressed objects within 10 object streams
- 226 named destinations out of 1000 (max. 500000)
- 352 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1221 PDF objects out of 1440 (max. 8388607)
+ 950 compressed objects within 10 object streams
+ 225 named destinations out of 1000 (max. 500000)
+ 347 words of extra memory for PDF output out of 10000 (max. 10000000)
 
