@@ -117,7 +117,7 @@ def get_gradient_elements(model_params: dict):
     else:
         raise Exception("That model doesn't exist")
     # obtenemos device y cargamos el modelo al device
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
     model = model.to(device)
     # optimizador
     if model_params["optim_name"] == "adam":
@@ -520,7 +520,7 @@ class ConcatEffModels(nn.Module):
     def __init__(self, params: dict) -> None:
         super(ConcatEffModels, self).__init__()
         self.bn = params['bn']
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
         self.base_models = [get_model_(run_id)[1] for run_id in params['runs_id']]
         for base_model in self.base_models:
             base_model.classifier = nn.Identity
@@ -1226,7 +1226,7 @@ if __name__ == "__main__":
     from exp_p_y.params import params
     params['input_shape'] = ((62, 128), (128, 128), (62, 128))
     model = ConvNetConcat(params)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
     model.to(device)
     summary(model, [(1, 62, 128), (1, 128, 128), (1, 62, 128)])
 # %%
@@ -1236,7 +1236,7 @@ if __name__ == "__main__":
     # model = models.vit_b_16(pretrained=True)
     params['unfreeze_layers'] = 10
     model = EffNetB2(params)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
     model.to(device)
     summary(model, (3, 224,  224))
     
@@ -1247,7 +1247,7 @@ if __name__ == "__main__":
     # params['unfreeze_layers'] = 7
     # model = ResNet50(params)
     # # model = EffNetB0(params)
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
     # model.to(device)
     # summary(model, (3, 224,  224))
     # models.vit_b_16(True)

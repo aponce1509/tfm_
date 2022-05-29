@@ -8,7 +8,7 @@ import pickle
 import torch.nn.functional as F
 import os
 import pandas as pd
-from paths import MODEL_PATH, TORCH_PATH
+from paths import MODEL_PATH, TORCH_PATH, cuda_device
 from ensemble import get_models, get_data_list
 from utils_study_res import predict, get_model, metrics_calculation, efficiency_purity_energy
 import matplotlib.pyplot as plt
@@ -28,7 +28,7 @@ def models_evaluation_ensemble(loaders: dict, models: list):
     test_en_list = []
     # zip con las listas de los dataloader y modeles
     zipped_data_loader = zip(loaders["all_train"], loaders["test"], models)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
     # hacemos la predicción para cada modelo con sus correspondietentes imágenes
     # notar que ahora el conjunto de validación es train y el de test es el 
     # conjunto de test

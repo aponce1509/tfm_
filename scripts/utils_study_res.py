@@ -13,7 +13,7 @@ import torch.nn.functional as F
 import torchvision.transforms as T
 import os
 import pandas as pd
-from paths import MODEL_PATH, TORCH_PATH
+from paths import MODEL_PATH, TORCH_PATH, cuda_device
 from model_run import get_final_data, fix_seed, get_data_validation
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
@@ -53,7 +53,7 @@ def get_model(run_id, is_enesemble=False):
         with open(local_path, "rb") as file:
             params = pickle.load(file)
         model_log = f"runs:/{run_id}/{params['model_name']}_{params['_id']}"
-        model = mlflow.pytorch.load_model(model_log)
+        model = mlflow.pytorch.load_model(model_log, map_location=cuda_device)
         return params, model
 
 def get_data(params: dict, transform=None):
@@ -91,7 +91,7 @@ def predict(model: nn.Module, predict_loader: DataLoader):
     labels: etiquetas reales de los eventos 
     energy: vector con las energías de los eventos
     """
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
     model.to(device)
     model.eval()
     val_size = len(predict_loader.dataset)
@@ -120,7 +120,7 @@ def get_some_data(seed, n, params, e_min, e_max):
     fix_seed(aux)
     dataset, _ = get_final_data(params)
     loader = DataLoader(dataset, 1, shuffle=True)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
     img_final = torch.Tensor().to(device)
     energy_final = torch.Tensor().to(device)
     labels_final = torch.Tensor().to(device)

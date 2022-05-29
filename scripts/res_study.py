@@ -10,7 +10,7 @@ def main_study(run_id, case_of_study, transform=None, save=False,
 
 if __name__ == "__main__":
     import torchvision.transforms as T
-    run_id = "842c19b7ea1c4fc2b44a6c6412365d15"
+    run_id = "1f7b43573e0a4556945381b2e4933c07"
     case_of_study = "test"
     is_ensemble = False
     transform = T.Compose([

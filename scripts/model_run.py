@@ -11,7 +11,7 @@ from torch.utils.tensorboard import SummaryWriter
 import torch
 import torchvision
 from torch import optim
-from paths import MODEL_PATH, TORCH_PATH
+from paths import MODEL_PATH, TORCH_PATH, cuda_device
 import torch.nn as nn
 from torch.utils.data import DataLoader
 
@@ -143,7 +143,7 @@ def test_model(run_id, model_log):
         print(f'Train set has {len(test_data)} instances')
         # cargamos el modelo preentrenado
         loaded_model = mlflow.pytorch.load_model(model_log)
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
         loaded_model.to(device)
         # hacemos la validación con los datos de test
         test_metrics = validation(
