@@ -14,8 +14,7 @@ import torchvision.transforms as T
 import os
 import pandas as pd
 from paths import MODEL_PATH, TORCH_PATH
-from model_run import get_data_validation
-from model_run import get_final_data, fix_seed
+from model_run import get_final_data, fix_seed, get_data_validation
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import seaborn as sns

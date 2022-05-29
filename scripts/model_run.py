@@ -14,10 +14,8 @@ from torch import optim
 from paths import MODEL_PATH, TORCH_PATH
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from scripts.utils_win_cube_copy import CascadasMultiEff
 
-
-from utils_win_cube_copy import Cascadas, CascadasFast, CascadasMulti
+from utils_win_cube_copy import Cascadas, CascadasFast, CascadasMulti, CascadasMultiEff
 from _models import get_gradient_elements, get_criterion
 # from parameters import params_test
 

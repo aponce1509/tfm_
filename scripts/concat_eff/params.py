@@ -14,8 +14,9 @@ model_params = {
     "criterion_name": "nllloss",
     'avg_layer': "identity",
     'avg_layer_size': None,  # (14, 30)
-    "batch_size": 48,  # 48
+    "batch_size": 16,  # 48
     "n_epochs": 10,
+    'is_def': False
 }
 params = {
     "seed_": 19,

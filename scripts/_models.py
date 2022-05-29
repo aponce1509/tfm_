@@ -5,10 +5,50 @@ from torchvision import models
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.optim.lr_scheduler import StepLR
+import mlflow
+import pickle
+from paths import *
+import os
+
 from torch import optim
 
-from scripts.utils_study_res import get_model
 torch.use_deterministic_algorithms(True)
+
+def get_model_(run_id, is_enesemble=False):
+    """
+    Función que dado el id de la run a estudiar nos devuelve el modelo y los
+    parámetros de dicho modelo
+    Parameters
+    ----------
+    Return
+    ----------
+    params: dicicionario con los parámetros del modelo
+    model: modelo listo para entrenar en nuevos datos
+    """
+    client = mlflow.tracking.MlflowClient(MODEL_PATH)
+    # cargamos los parámetros
+    local_dir = "temp/downloads"  # carpeta donde dejar el artifact
+    if not os.path.exists(local_dir):
+        os.mkdir(local_dir)
+
+    mlflow.set_tracking_uri(MODEL_PATH)
+    # obtenemos el modelo
+    if is_enesemble:
+        # cargamos el artifact
+        local_path = client.download_artifacts(run_id, "runs_id", local_dir)
+        with open(local_path, "rb") as file:
+            runs_id = pickle.load(file)
+        model_log = f"runs:/{run_id}/model"
+        model = mlflow.sklearn.load_model(model_log)
+        return runs_id, model
+    else:
+        # cargamos el artifact
+        local_path = client.download_artifacts(run_id, "params", local_dir)
+        with open(local_path, "rb") as file:
+            params = pickle.load(file)
+        model_log = f"runs:/{run_id}/{params['model_name']}_{params['_id']}"
+        model = mlflow.pytorch.load_model(model_log)
+        return params, model
 
 def get_criterion(model_params):
     """
@@ -478,12 +518,15 @@ class ConvNetConcat(nn.Module):
 class ConcatEffModels(nn.Module):
 
     def __init__(self, params: dict) -> None:
-        super(ConvNetConcat, self).__init__()
+        super(ConcatEffModels, self).__init__()
         self.bn = params['bn']
-        
-        self.base_models = [get_model(run_id)[1] for run_id in params['runs_id']]
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.base_models = [get_model_(run_id)[1] for run_id in params['runs_id']]
         for base_model in self.base_models:
             base_model.classifier = nn.Identity
+            for index, param in enumerate(base_model.parameters()):
+                param.require_grad = False
+
 
         clf_block = self.make_clf_block(params)
         self.classifier = nn.Sequential(*clf_block)
@@ -495,6 +538,7 @@ class ConcatEffModels(nn.Module):
         # para la primera capa del clasificador
         n_models = len(self.base_models)
         x = [torch.rand(((1, 3) + (224, 224))) for i in range(n_models)]
+        x = [i.to(self.device) for i in x]
 
         pre_cls_shape = self.convolutions(*x).data.shape[1]
         layers_in = (pre_cls_shape, *clf_neurons[:-1])

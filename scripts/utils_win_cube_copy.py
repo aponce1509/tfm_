@@ -1104,7 +1104,7 @@ class CascadasMultiEff(Dataset):
     torch para que funcione con los dataloader.
     """
     def __init__(
-        self, params: list[dict], seed_=123, train: bool=True,
+        self, params: list, seed_=123, train: bool=True,
         validation: bool=True, transform=None) -> None:
         """
         Clase que...
@@ -1161,21 +1161,17 @@ class CascadasMultiEff(Dataset):
         energy = self.ids[0].iloc[idx, 2]
         # cargamos la imagen de disco
         imgs = []
-        for param in self.params:
-            img, new_label = self.get_img(event, label, param['projection'])
+        for dir in self.dir_paths:
+            img, new_label = self.get_img(event, label, dir)
             imgs.append(img)
         # apply transformation
         if self.transform:
             imgs = [self.transform(img) for img in imgs]
         return imgs, new_label, energy
 
-    def get_img(self, event, label, projection):
-        if projection == 'x':
-            file_name = os.path.join(self.dir_path_x, f"{event}_{label}.pickle")
-        elif projection == 'y':
-            file_name = os.path.join(self.dir_path_y, f"{event}_{label}.pickle")
-        elif projection == 'z':
-            file_name = os.path.join(self.dir_path_z, f"{event}_{label}.pickle")
+    def get_img(self, event, label, dir):
+
+        file_name = os.path.join(dir, f"{event}_{label}.pickle")
 
         with open(file_name, "rb") as file:
             img, new_label = pickle.load(file)
