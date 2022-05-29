@@ -14,6 +14,7 @@ from torch import optim
 from paths import MODEL_PATH, TORCH_PATH
 import torch.nn as nn
 from torch.utils.data import DataLoader
+from scripts.utils_win_cube_copy import CascadasMultiEff
 
 
 from utils_win_cube_copy import Cascadas, CascadasFast, CascadasMulti
@@ -59,19 +60,17 @@ def optuna_pipeline(params: dict, experiment_name: str, n_trials: int=5):
             )
         print_study_stats(study)
 
-def basic_pipeline(params: dict, is_optuna=False, optuna_step=None,
+def basic_pipeline(params, is_optuna=False, optuna_step=None,
                    verbose=True, trial_params=None, experiment_name="Default",
                    opt_id=None, trial=None):
     fix_seed(params)
     mlflow.set_tracking_uri(MODEL_PATH)
     mlflow.set_experiment(experiment_name)
     with mlflow.start_run(nested=True):
-        # TODO aquí iría el get_final_data if params["is_def"]
-        train_data, val_data = get_data_validation(params)
-        
         model, device, optimizer, scheduler, criterion = get_gradient_elements(
             params
         )
+        train_data, val_data = get_data_validation(params)
 
         val_loss, metrics, _id = train_loop(
             train_data=train_data,
@@ -163,80 +162,90 @@ def test_model(run_id, model_log):
     return test_metrics
 
 def get_data_validation(params: dict):
-    if params['model_name'][0:6] == 'concat':
-        train_dataset = CascadasMulti(
-            train=True,
-            validation=True,
-            seed_=params["seed_"],
-            cube_shape_x=params["cube_shape_x"],
-            win_shape=params["win_shape"],
-            cube_pool=params["cube_pool"],
-            projection_pool=params["projection_pool"],
-            transform=params["transform"],
-            log_trans=params['log_trans']
-        )
-        val_dataset = CascadasMulti(
-            train=False,
-            validation=True,
-            seed_=params["seed_"],
-            cube_shape_x=params["cube_shape_x"],
-            win_shape=params["win_shape"],
-            cube_pool=params["cube_pool"],
-            projection_pool=params["projection_pool"],
-            transform=params["transform"],
-            log_trans=params['log_trans']
-        )
-        return train_dataset, val_dataset
-    if not params["is_fast"]: 
-        train_dataset = Cascadas(
-            train=True,
-            validation=True,
-            seed_=params["seed_"],
-            cube_shape_x=params["cube_shape_x"],
-            win_shape=params["win_shape"],
-            projection=params["projection"],
-            cube_pool=params["cube_pool"],
-            projection_pool=params["projection_pool"],
-            transform=params["transform"],
-            log_trans=params['log_trans']
-        )
-        val_dataset = Cascadas(
-            train=False,
-            validation=True,
-            seed_=params["seed_"],
-            cube_shape_x=params["cube_shape_x"],
-            win_shape=params["win_shape"],
-            projection=params["projection"],
-            cube_pool=params["cube_pool"],
-            projection_pool=params["projection_pool"],
-            transform=params["transform"],
-            log_trans=params['log_trans']
-        )
+    if not 'params_multi' in params:
+        if params['model_name'][0:6] == 'concat':
+            train_dataset = CascadasMulti(
+                train=True,
+                validation=True,
+                seed_=params["seed_"],
+                cube_shape_x=params["cube_shape_x"],
+                win_shape=params["win_shape"],
+                cube_pool=params["cube_pool"],
+                projection_pool=params["projection_pool"],
+                transform=params["transform"],
+                log_trans=params['log_trans']
+            )
+            val_dataset = CascadasMulti(
+                train=False,
+                validation=True,
+                seed_=params["seed_"],
+                cube_shape_x=params["cube_shape_x"],
+                win_shape=params["win_shape"],
+                cube_pool=params["cube_pool"],
+                projection_pool=params["projection_pool"],
+                transform=params["transform"],
+                log_trans=params['log_trans']
+            )
+            return train_dataset, val_dataset
+        if not params["is_fast"]: 
+            train_dataset = Cascadas(
+                train=True,
+                validation=True,
+                seed_=params["seed_"],
+                cube_shape_x=params["cube_shape_x"],
+                win_shape=params["win_shape"],
+                projection=params["projection"],
+                cube_pool=params["cube_pool"],
+                projection_pool=params["projection_pool"],
+                transform=params["transform"],
+                log_trans=params['log_trans']
+            )
+            val_dataset = Cascadas(
+                train=False,
+                validation=True,
+                seed_=params["seed_"],
+                cube_shape_x=params["cube_shape_x"],
+                win_shape=params["win_shape"],
+                projection=params["projection"],
+                cube_pool=params["cube_pool"],
+                projection_pool=params["projection_pool"],
+                transform=params["transform"],
+                log_trans=params['log_trans']
+            )
+        else:
+            train_dataset = CascadasFast(
+                train=True,
+                validation=True,
+                seed_=params["seed_"],
+                cube_shape_x=params["cube_shape_x"],
+                win_shape=params["win_shape"],
+                projection=params["projection"],
+                cube_pool=params["cube_pool"],
+                projection_pool=params["projection_pool"],
+                transform=params["transform"],
+                log_trans=params['log_trans']
+            )
+            val_dataset = CascadasFast(
+                train=False,
+                validation=True,
+                seed_=params["seed_"],
+                cube_shape_x=params["cube_shape_x"],
+                win_shape=params["win_shape"],
+                projection=params["projection"],
+                cube_pool=params["cube_pool"],
+                projection_pool=params["projection_pool"],
+                transform=params["transform"],
+                log_trans=params['log_trans']
+            )
     else:
-        train_dataset = CascadasFast(
-            train=True,
-            validation=True,
-            seed_=params["seed_"],
-            cube_shape_x=params["cube_shape_x"],
-            win_shape=params["win_shape"],
-            projection=params["projection"],
-            cube_pool=params["cube_pool"],
-            projection_pool=params["projection_pool"],
-            transform=params["transform"],
-            log_trans=params['log_trans']
-        )
-        val_dataset = CascadasFast(
-            train=False,
-            validation=True,
-            seed_=params["seed_"],
-            cube_shape_x=params["cube_shape_x"],
-            win_shape=params["win_shape"],
-            projection=params["projection"],
-            cube_pool=params["cube_pool"],
-            projection_pool=params["projection_pool"],
-            transform=params["transform"],
-            log_trans=params['log_trans']
-        )
+        seed = params['seed_']
+        transform = params['transform_multi']
+        params_multi = params['params_multi']
+        train_dataset = CascadasMultiEff(params_multi, seed, True, False,
+                                         transform)
+        val_dataset = CascadasMultiEff(params_multi, seed, True, True,
+                                       transform)
+
     return train_dataset, val_dataset
 
 def get_data_test(params: dict):
@@ -282,82 +291,91 @@ def get_data_test(params: dict):
     return test_data
 
 def get_final_data(params: dict):
-    if params['model_name'][0:6] == 'concat':
-        train_dataset = CascadasMulti(
-            train=True,
-            validation=False,
-            seed_=params["seed_"],
-            cube_shape_x=params["cube_shape_x"],
-            win_shape=params["win_shape"],
-            projection=params["projection"],
-            cube_pool=params["cube_pool"],
-            projection_pool=params["projection_pool"],
-            transform=params["transform"],
-            log_trans=params['log_trans']
-        )
-        test_dataset = CascadasMulti(
-            train=False,
-            validation=False,
-            seed_=params["seed_"],
-            cube_shape_x=params["cube_shape_x"],
-            win_shape=params["win_shape"],
-            projection=params["projection"],
-            cube_pool=params["cube_pool"],
-            projection_pool=params["projection_pool"],
-            transform=params["transform"],
-            log_trans=params['log_trans']
-        )
-        return train_dataset, test_dataset
-    if not params["is_fast"]:
-        train_dataset = Cascadas(
-            train=True,
-            validation=False,
-            seed_=params["seed_"],
-            cube_shape_x=params["cube_shape_x"],
-            win_shape=params["win_shape"],
-            projection=params["projection"],
-            cube_pool=params["cube_pool"],
-            projection_pool=params["projection_pool"],
-            transform=params["transform"],
-            log_trans=params['log_trans']
-        )
-        test_dataset = Cascadas(
-            train=False,
-            validation=False,
-            seed_=params["seed_"],
-            cube_shape_x=params["cube_shape_x"],
-            win_shape=params["win_shape"],
-            projection=params["projection"],
-            cube_pool=params["cube_pool"],
-            projection_pool=params["projection_pool"],
-            transform=params["transform"],
-            log_trans=params['log_trans']
-        )
+    if not 'params_multi' in params:
+        if params['model_name'][0:6] == 'concat':
+            train_dataset = CascadasMulti(
+                train=True,
+                validation=False,
+                seed_=params["seed_"],
+                cube_shape_x=params["cube_shape_x"],
+                win_shape=params["win_shape"],
+                projection=params["projection"],
+                cube_pool=params["cube_pool"],
+                projection_pool=params["projection_pool"],
+                transform=params["transform"],
+                log_trans=params['log_trans']
+            )
+            test_dataset = CascadasMulti(
+                train=False,
+                validation=False,
+                seed_=params["seed_"],
+                cube_shape_x=params["cube_shape_x"],
+                win_shape=params["win_shape"],
+                projection=params["projection"],
+                cube_pool=params["cube_pool"],
+                projection_pool=params["projection_pool"],
+                transform=params["transform"],
+                log_trans=params['log_trans']
+            )
+            return train_dataset, test_dataset
+        if not params["is_fast"]:
+            train_dataset = Cascadas(
+                train=True,
+                validation=False,
+                seed_=params["seed_"],
+                cube_shape_x=params["cube_shape_x"],
+                win_shape=params["win_shape"],
+                projection=params["projection"],
+                cube_pool=params["cube_pool"],
+                projection_pool=params["projection_pool"],
+                transform=params["transform"],
+                log_trans=params['log_trans']
+            )
+            test_dataset = Cascadas(
+                train=False,
+                validation=False,
+                seed_=params["seed_"],
+                cube_shape_x=params["cube_shape_x"],
+                win_shape=params["win_shape"],
+                projection=params["projection"],
+                cube_pool=params["cube_pool"],
+                projection_pool=params["projection_pool"],
+                transform=params["transform"],
+                log_trans=params['log_trans']
+            )
+        else:
+            train_dataset = CascadasFast(
+                train=True,
+                validation=False,
+                seed_=params["seed_"],
+                cube_shape_x=params["cube_shape_x"],
+                win_shape=params["win_shape"],
+                projection=params["projection"],
+                cube_pool=params["cube_pool"],
+                projection_pool=params["projection_pool"],
+                transform=params["transform"],
+                log_trans=params['log_trans']
+            )
+            test_dataset = CascadasFast(
+                train=False,
+                validation=False,
+                seed_=params["seed_"],
+                cube_shape_x=params["cube_shape_x"],
+                win_shape=params["win_shape"],
+                projection=params["projection"],
+                cube_pool=params["cube_pool"],
+                projection_pool=params["projection_pool"],
+                transform=params["transform"],
+                log_trans=params['log_trans']
+            )
     else:
-        train_dataset = CascadasFast(
-            train=True,
-            validation=False,
-            seed_=params["seed_"],
-            cube_shape_x=params["cube_shape_x"],
-            win_shape=params["win_shape"],
-            projection=params["projection"],
-            cube_pool=params["cube_pool"],
-            projection_pool=params["projection_pool"],
-            transform=params["transform"],
-            log_trans=params['log_trans']
-        )
-        test_dataset = CascadasFast(
-            train=False,
-            validation=False,
-            seed_=params["seed_"],
-            cube_shape_x=params["cube_shape_x"],
-            win_shape=params["win_shape"],
-            projection=params["projection"],
-            cube_pool=params["cube_pool"],
-            projection_pool=params["projection_pool"],
-            transform=params["transform"],
-            log_trans=params['log_trans']
-        )
+        seed = params['seed_']
+        transform = params['transform_multi']
+        params_multi = params['params_multi']
+        train_dataset = CascadasMultiEff(params_multi, seed, True, False,
+                                         transform)
+        test_dataset = CascadasMultiEff(params_multi, seed, False, False,
+                                       transform)
     return train_dataset, test_dataset
 
 def train(model: nn.Module, optimizer: optim.Optimizer, device: str, 
@@ -587,7 +605,7 @@ def mlflow_log(params: dict, is_optuna, metrics, _id):
     params["_id"] = _id
     # lista con las claves que no queremos registrar
     no_log_keys = ["model", "optimizer", "criterion", "scheduler", "grid", 
-                   'transform']
+                   'transform', 'transform_multi', 'params_multi']
     # los eliminamos de una copia
     params_aux = params.copy()
     # iteramos por las claves y quitamos si está dicha clave
