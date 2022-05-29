@@ -72,6 +72,8 @@ def get_gradient_elements(model_params: dict):
         model = GoogleNet(model_params)
     elif model_params['model_name'] == 'concat':
         model = ConvNetConcat(model_params)
+    elif model_params['model_name'] == 'concat_eff':
+        model = ConcatEffModels(model_params)
     else:
         raise Exception("That model doesn't exist")
     # obtenemos device y cargamos el modelo al device
@@ -475,20 +477,19 @@ class ConvNetConcat(nn.Module):
 
 class ConcatEffModels(nn.Module):
 
-    def __init__(self, params: dict, runs_id: tuple) -> None:
+    def __init__(self, params: dict) -> None:
         super(ConvNetConcat, self).__init__()
         self.bn = params['bn']
         
-        self.base_models = [get_model(run_id)[1] for run_id in runs_id]
-        for model in self.base_models:
-            model.classifier = nn.Identity
+        self.base_models = [get_model(run_id)[1] for run_id in params['runs_id']]
+        for base_model in self.base_models:
+            base_model.classifier = nn.Identity
 
         clf_block = self.make_clf_block(params)
         self.classifier = nn.Sequential(*clf_block)
 
     def make_clf_block(self, params: dict):
         clf_neurons = params['clf_neurons']
-        input_shape = params["input_shape"]
         n_layers = len(clf_neurons)
         # obtenemos la forma de la capa aplanada para obtener el nº de inputs 
         # para la primera capa del clasificador
