@@ -1097,6 +1097,121 @@ class CascadasMulti(Dataset):
                 c=z,
                 cmap=cmap
     )
+
+class CascadasMultiEff(Dataset):
+    """
+    Clase con los datos de nuestro problema que hereda de la clase Dataset de 
+    torch para que funcione con los dataloader.
+    """
+    def __init__(
+        self, params: list[dict], seed_=123, train: bool=True,
+        validation: bool=True, transform=None) -> None:
+        """
+        Clase que...
+        """
+        super().__init__()
+        self.seed = seed_
+        self.params = params
+        # obtenemos del valor de cube_shape_x el valor en los otros ejes para
+        # que todos tengan las mismas dimensiones. Eje x e y 400 eje z 500.
+        self.train = train
+        self.transform = transform  # TODO restringido a una transdormación
+        # usamos la clase Data que nos proporciona el diretorio de las imágenes
+        # los ids y en caso de necesitarlo descarga las imágenes
+        datas = []
+        for param in params:
+            data = DataFast(
+                seed_=param['seed_'],
+                cube_shape_x=param['cube_shape_x'],
+                win_shape=param['win_shape'],
+                projection=param['projection'],
+                cube_pool=param['cube_pool'],
+                projection_pool=param['projection_pool'],
+                log_trans=param['log_trans']
+
+            )
+            datas.append(data)
+        self.dir_paths = [data.dir_path for data in datas]
+
+        if validation:
+            if train:
+                self.ids = [data.ids_train for data in datas]
+            else:
+                self.ids = [data.ids_val for data in datas]
+        else:
+            if train:
+                self.ids = [data.ids_all_train for data in datas]
+            else:
+                self.dir_paths = [data.dir_path_test for data in datas]
+                self.ids = [data.ids_test for data in datas]
+        
+    def __len__(self):
+        """
+        Longitud del objeto como el nº de imagenes en el conjunto de datos.
+        """
+        return self.ids[0].shape[0]
+    
+    def __getitem__(self, idx):
+        """
+        Se devuelve una tupla con la imagen y su etiqueta
+        """
+        # TODO comprobar que para las tres vistas este saliendo lo mismo
+        event = self.ids[0].iloc[idx, 0]
+        label = self.ids[0].iloc[idx, 1]
+        energy = self.ids[0].iloc[idx, 2]
+        # cargamos la imagen de disco
+        imgs = []
+        for param in self.params:
+            img, new_label = self.get_img(event, label, param['projection'])
+            imgs.append(img)
+        # apply transformation
+        if self.transform:
+            imgs = [self.transform(img) for img in imgs]
+        return imgs, new_label, energy
+
+    def get_img(self, event, label, projection):
+        if projection == 'x':
+            file_name = os.path.join(self.dir_path_x, f"{event}_{label}.pickle")
+        elif projection == 'y':
+            file_name = os.path.join(self.dir_path_y, f"{event}_{label}.pickle")
+        elif projection == 'z':
+            file_name = os.path.join(self.dir_path_z, f"{event}_{label}.pickle")
+
+        with open(file_name, "rb") as file:
+            img, new_label = pickle.load(file)
+        img = torch.tensor(img)
+        return img, new_label
+
+    def plot_simple(self, idx):
+        """
+        plot of the image given by the idx
+        """
+        img, _, _ = self[idx]
+        print(self.ids.iloc[idx, 0], self.ids.iloc[idx, 1], self.ids.iloc[idx, 2])
+        if self.projection == "color":
+            img = img.numpy()
+            img = img.transpose((1, 2, 0))
+            plt.figure()
+            plt.imshow(img)
+            plt.show()
+        elif not self.projection == "3d":
+            plt.figure()
+            plt.imshow(img[0, :, :], cmap="gray")
+            plt.show()
+        else:
+            fig = plt.figure(figsize=(16,11))
+            ax = fig.add_subplot(111, projection='3d')
+            cmap = ListedColormap(sns.color_palette("flare").as_hex())
+            z, x, y = img.nonzero()
+            sc = ax.scatter(
+                xs=x,
+                ys=y,
+                zs=z,
+                alpha=0.8,
+                c=z,
+                cmap=cmap
+    )
+
 # %%
 if __name__ == "__main__":
     # cascada = CascadasFast(cube_shape_x=1000)
