@@ -20,7 +20,7 @@ import matplotlib.gridspec as gridspec
 import seaborn as sns
 from grad_cam import get_cam
 
-def get_model(run_id, is_enesemble=False):
+def get_model(run_id, transform=None, is_enesemble=False):
     """
     Función que dado el id de la run a estudiar nos devuelve el modelo y los
     parámetros de dicho modelo
@@ -54,15 +54,15 @@ def get_model(run_id, is_enesemble=False):
             params = pickle.load(file)
         model_log = f"runs:/{run_id}/{params['model_name']}_{params['_id']}"
         model = mlflow.pytorch.load_model(model_log, map_location=cuda_device)
+        params['transform'] = transform
         return params, model
 
-def get_data(params: dict, transform=None):
+def get_data(params: dict):
     """
     Función para obtener los data loader de train validación y de test dado 
     los parámetros del modelo que estamos estudiando
     """
     params_aux = params.copy()
-    params_aux['transform'] = transform
     train_dataset, val_dataset = get_data_validation(params_aux)
     train_all_dataset, test_dataset = get_final_data(params_aux)
     train_loader = DataLoader(train_dataset, params_aux["batch_size"], shuffle=True)
@@ -137,14 +137,14 @@ def get_some_data(seed, n, params, e_min, e_max):
                 energy_final = energy_final.to("cpu").numpy()
                 return img_final, labels_final, energy_final
 
-def predict_some_data(inputs, model):
+def predict_some_data(inputs, model):  # TODO
     outputs = model(inputs)
     probs = torch.exp(outputs)
     imgs = inputs.to("cpu").numpy()
     probs = probs.to("cpu").detach().numpy()
     return imgs, probs
 
-def mult_plot(img, y_true, energy, probs, model, n_cols=3):
+def mult_plot(img, y_true, energy, probs, model, n_cols=1):
     fig = plt.figure(figsize=(10, 10))
     img_e, y_true_e, probs_e, y_pred_e, energy_e = class_filter(img, y_true,
                                                                 energy, probs,
@@ -330,7 +330,7 @@ def efficiency_purity(con_mat):
     return efficiency, purity
 
 def efficiency_purity_energy(probs, y_true, energy, case_of_study,
-                             n_bins=50, save: bool=False):
+                             n_bins=20, save: bool=False):
     """
     Plotea la eficiencia y pureza en función de la energía usando diagramas 
     de baras.
@@ -389,8 +389,8 @@ def get_metrics(save: bool, model, train_loader, case_of_study):
                                  save=save)
 
 def metric_study(run_id, transform=None, case_of_study="train", save=False):
-    params, model = get_model(run_id)
-    train_loader, val_loader, _, test_loader = get_data(params, transform)
+    params, model = get_model(run_id, transform)
+    train_loader, val_loader, _, test_loader = get_data(params)
     if case_of_study == "train":
         get_metrics(save, model, train_loader, case_of_study)
     elif case_of_study == "val":
@@ -400,9 +400,11 @@ def metric_study(run_id, transform=None, case_of_study="train", save=False):
     else:
         raise Exception(f"Not valid case_of_study: {case_of_study}")
 
-def study_foto(run_id, seed, e_min=0, e_max=1000):
-    params, model = get_model(run_id)
-    img_final, labels_final, energy_final = get_some_data(seed, 200, params, e_min, e_max)
+def study_foto(run_id, seed, e_min=0, e_max=1000, transform=None):
+    params, model = get_model(run_id, transform)
+    img_final, labels_final, energy_final = get_some_data(seed, 15, params,
+                                                          e_min, e_max,
+                                                          transform)
     imgs, probs = predict_some_data(img_final, model)
     mult_plot(imgs, labels_final, energy_final, probs, model)
 
