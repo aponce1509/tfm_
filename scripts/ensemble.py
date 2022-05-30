@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import mlflow
 from torch.utils.data import DataLoader
+import torchvision.transforms as T
 import pickle
 import torch
 import os
@@ -130,18 +131,21 @@ def metalearner(train_probs, test_probs, train_labels, test_labels, model: str,
         }
         # la definimos aquí para tener reproducibilidad
         clf = RandomForestClassifier()
-        cv_grid_search(X_train, y_train, X_test, y_test, kf, param_grid, clf, model)
+        cv_grid_search(X_train, y_train, X_test, y_test, kf, param_grid,
+                       clf, model)
     elif model == "lr":
         clf = LogisticRegression()
         param_grid = {
             "penalty": ["l1", "l2"],
             "C": [0.01, 0.1, 1, 10]
         }
-        cv_grid_search(X_train, y_train, X_test, y_test, kf, param_grid, clf, model)
+        cv_grid_search(X_train, y_train, X_test, y_test, kf, param_grid,
+                       clf, model)
     else:
         raise Exception("model not defined")
 
-def cv_grid_search(X_train, y_train, X_test, y_test, kf, param_grid, clf, model):
+def cv_grid_search(X_train, y_train, X_test, y_test, kf, param_grid,
+                   clf, model):
     """
     Función que lo que hace es hacer el grid search sobre el grid dado y el 
     clasificador dado. También se tienen que dar las particiones de 
@@ -178,12 +182,13 @@ def cv_grid_search(X_train, y_train, X_test, y_test, kf, param_grid, clf, model)
     mlflow.log_params(best_params)
     mlflow.sklearn.log_model(clf, "model")
 
-def ensemble_pipeline(runs_id: list, experiment_name: str, model="RandomForest"):
+def ensemble_pipeline(runs_id: list, experiment_name: str, transform=None,
+                      model="RandomForest"):
     mlflow.set_tracking_uri(MODEL_PATH)
     mlflow.set_experiment(experiment_name)
     with mlflow.start_run():
         model_list, params_list = get_models(runs_id)
-        loaders = get_data_list(params_list)
+        loaders = get_data_list(params_list, transform)
         train_probs, test_probs, train_labels, test_labels = models_evaluation(
             loaders, model_list
         )
@@ -204,8 +209,16 @@ def log_ids(runs_id):
     mlflow.log_artifact("temp" + "/runs_id")
 # %%
 if __name__ == "__main__":
-    exp_name = "Ensemble proyecciones"
-    runs_id = ["fc01bea6beed4ea3a207355aab74b5c5", "1797915b1f7947eba1ea80dac992b42b"]
-    ensemble_pipeline(runs_id, exp_name, "lr")
+    exp_name = "Ensemble Eff"
+    runs_id = [
+        'f26ea35d05f9452fb1061e2a89f85d1c',  # x
+        '1f7b43573e0a4556945381b2e4933c07',  # y
+        '0b49acce2a024bb09056b292126ad4d5',  # z
+    ]
+    transform = (T.Compose([
+        T.Lambda(lambda x: x.repeat(3, 1, 1)),
+        T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ]), ) * len(runs_id)
+    ensemble_pipeline(runs_id, exp_name, transform, "lr")
 
 # %%
