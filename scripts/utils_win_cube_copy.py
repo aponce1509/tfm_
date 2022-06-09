@@ -299,7 +299,7 @@ def set_window(df: pd.DataFrame, win_shape=(64, 64, 128), projection="3d",
             z = int(row["hitsZ"])
             image[x, y, z] = row["hitsCharge"]
 
-        image = image.reshape((1, win_shape[2], win_shape[1], win_shape[0]))
+        image = image.reshape((1, win_shape[0], win_shape[1], win_shape[1]))
         return df_win, image
     
     elif projection == "z":
