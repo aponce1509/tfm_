@@ -49,8 +49,9 @@ def get_data_list(params_list: list, transforms=None):
     test_loader_list = []
     if transforms:
         for params, transform in zip(params_list, transforms):
+            params['transform'] = transform
             train_loader, val_loader, train_all_loader, test_loader = get_data(
-                params, transform
+                params
             )
             train_loader_list.append(train_loader)
             val_loader_list.append(val_loader)
