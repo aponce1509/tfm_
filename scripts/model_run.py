@@ -615,6 +615,7 @@ def mlflow_log(params: dict, is_optuna, metrics, _id):
     mlflow.log_metrics(metrics)
     # creamos un archivo temporal con los parámetros para crear el artifact 
     # con los parámetros
+    params_aux['params_multi'] = params['params_multi']
     if not os.path.exists('temp'):
         os.mkdir('temp')
     with open("temp" + "/params", "wb") as file:

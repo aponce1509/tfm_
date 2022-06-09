@@ -55,6 +55,7 @@ def get_model(run_id, transform=None, is_enesemble=False):
         model_log = f"runs:/{run_id}/{params['model_name']}_{params['_id']}"
         model = mlflow.pytorch.load_model(model_log, map_location=cuda_device)
         params['transform'] = transform
+        params['transform_multi'] = transform
         return params, model
 
 def get_data(params: dict):
@@ -104,10 +105,14 @@ def predict(model: nn.Module, predict_loader: DataLoader):
     with torch.no_grad():
         # iteramos por batchs
         for batch_idx, (inputs, labels_batch, energy_batch) in enumerate(predict_loader):
-            inputs_batch = inputs.to(device, dtype=torch.float)
+            if type(inputs) == tuple or type(inputs) == list:
+                inputs = [input_.to(device, dtype=torch.float) for input_ in inputs]
+                outputs = model(*inputs)
+            else:
+                inputs = inputs.to(device, dtype=torch.float)
+                outputs = model(inputs)
             labels_batch = labels_batch.to(device)
             energy_batch = energy_batch.to(device)
-            outputs = model(inputs_batch)
             # TODO si no acaba con softmax no se muy bien como hacerlo
             prob_batch = torch.exp(outputs)
             probs[batch_size * batch_idx:batch_size * (batch_idx + 1), :] = prob_batch.cpu().numpy()

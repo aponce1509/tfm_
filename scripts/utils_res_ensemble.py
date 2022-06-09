@@ -82,8 +82,8 @@ def get_metrics_ensemble(save, model, X, y_true, energy, case_of_study, n_bins):
 
 def metric_study_ensemble(run_id: str, case_of_study, transforms=None,
                           save: bool=False, n_bins=50):
-    runs_id, model = get_model(run_id, True)
-    X_train, X_test, y_train, y_test, energy_train, energy_test = get_data_ensemble(runs_id)    
+    runs_id, model = get_model(run_id, is_enesemble=True)
+    X_train, X_test, y_train, y_test, energy_train, energy_test = get_data_ensemble(runs_id, transforms)    
     if case_of_study == "train":
         get_metrics_ensemble(save, model, X_train, y_train, energy_train,
                              case_of_study, n_bins)
