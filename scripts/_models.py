@@ -14,7 +14,7 @@ from torch import optim
 
 torch.use_deterministic_algorithms(True)
 
-def get_model_(run_id, is_enesemble=False):
+def get_model_(run_id, transform=None, is_enesemble=False):
     """
     Función que dado el id de la run a estudiar nos devuelve el modelo y los
     parámetros de dicho modelo
@@ -47,7 +47,9 @@ def get_model_(run_id, is_enesemble=False):
         with open(local_path, "rb") as file:
             params = pickle.load(file)
         model_log = f"runs:/{run_id}/{params['model_name']}_{params['_id']}"
-        model = mlflow.pytorch.load_model(model_log)
+        model = mlflow.pytorch.load_model(model_log, map_location=cuda_device)
+        params['transform'] = transform
+        params['transform_multi'] = transform
         return params, model
 
 def get_criterion(model_params):
@@ -515,29 +517,49 @@ class ConvNetConcat(nn.Module):
         r = self.classifier(r)
         return r
 
+activation = {}
+def get_activation(name):
+    def hook(model, input, output):
+        activation[name] = output.detach()
+    return hook
+
 class ConcatEffModels(nn.Module):
 
     def __init__(self, params: dict) -> None:
         super(ConcatEffModels, self).__init__()
         self.bn = params['bn']
         self.device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
-        self.base_models = [get_model_(run_id)[1] for run_id in params['runs_id']]
-        for base_model in self.base_models:
-            base_model.classifier = nn.Identity
-            for index, param in enumerate(base_model.parameters()):
-                param.require_grad = False
+        # self.base_models = [get_model_(run_id)[1] for run_id in params['runs_id']]
 
+        self.base_model_x = get_model_(params['runs_id'][0])[1]
+        for param in self.base_model_x.parameters():
+            param.require_grad = False
 
-        clf_block = self.make_clf_block(params)
-        self.classifier = nn.Sequential(*clf_block)
+        self.base_model_y = get_model_(params['runs_id'][1])[1]
+        for param in self.base_model_y.parameters():
+            param.require_grad = False
+
+        self.base_model_z = get_model_(params['runs_id'][2])[1]
+        for param in self.base_model_z.parameters():
+            param.require_grad = False
+        # for base_model in self.base_models:
+        p = params['dropout']
+        self.classifier = nn.Sequential(
+            nn.Dropout(p),
+            nn.Linear(1280 + 1408 * 2, 128),
+            nn.ReLU(inplace=True),
+            nn.Dropout(p),
+            nn.Linear(128, 2),
+            nn.LogSoftmax(1)
+        )
 
     def make_clf_block(self, params: dict):
         clf_neurons = params['clf_neurons']
         n_layers = len(clf_neurons)
         # obtenemos la forma de la capa aplanada para obtener el nº de inputs 
         # para la primera capa del clasificador
-        n_models = len(self.base_models)
-        x = [torch.rand(((1, 3) + (224, 224))) for i in range(n_models)]
+        # n_models = len(self.base_models)
+        x = [torch.rand(((1, 3) + (224, 224))) for i in range(3)]
         x = [i.to(self.device) for i in x]
 
         pre_cls_shape = self.convolutions(*x).data.shape[1]
@@ -579,16 +601,32 @@ class ConcatEffModels(nn.Module):
             fc = dropout_, layer, no_linear
         return fc        
 
-    def convolutions(self, *args):
-        if not len(args) == len(self.base_models):
-            raise Exception('El nº de modelos tiene que ser igual al nº de img') 
+    def convolutions(self, x, y, z):
+        # if not len(args) == 3:
+            # raise Exception('El nº de modelos tiene que ser igual al nº de img') 
         
-        all_features = [model(x) for x, model in zip(args, self.base_models)]
-        all_features = torch.cat(all_features, dim=1)
-        return all_features
+        self.base_model_x.base_model \
+            .avgpool.register_forward_hook(get_activation('avgpool_x'))
+        output = self.base_model_x(x)
+        x = activation['avgpool_x']
+        x = x.view(x.size(0), -1)
+        self.base_model_y.base_model \
+            .avgpool.register_forward_hook(get_activation('avgpool_y'))
+        output = self.base_model_y(y)
+        y = activation['avgpool_y']
+        y = x.view(y.size(0), -1)
+        self.base_model_z.base_model \
+            .avgpool.register_forward_hook(get_activation('avgpool_z'))
+        output = self.base_model_z(z)
+        z = activation['avgpool_z']
+        z = z.view(z.size(0), -1)
+        # all_features = [model(x) for x, model in zip(args, self.base_models)]
+        # [print(all_feature.shape) for all_feature in all_features]
+        r = torch.cat((x, y, z), dim=1)
+        return r
 
-    def forward(self, *args) -> torch.Tensor:
-        r = self.convolutions(*args)
+    def forward(self, x, y, z) -> torch.Tensor:
+        r = self.convolutions(x, y, z)
         r = self.classifier(r)
         return r
 
@@ -1241,16 +1279,18 @@ if __name__ == "__main__":
     summary(model, (3, 224,  224))
     
 # %%
-    # from exp_p_resnet.params import params
-    # # model = ResNet(params)
-    # # model = models.resnet50(pretrained=True)
+if __name__ == "__main__":
+    from exp_p_resnet.params import params
+    model = EffNetB2(params)
     # params['unfreeze_layers'] = 7
     # model = ResNet50(params)
-    # # model = EffNetB0(params)
-    # device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
-    # model.to(device)
-    # summary(model, (3, 224,  224))
+    # model = EffNetB2(params)
+    device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
+    model.to(device)
+    summary(model, (3, 224,  224))
     # models.vit_b_16(True)
-    model = models.vit_b_16(pretrained=True)
-    for i, j in enumerate(model.parameters()):
-        print(i)
+    # model = models.vit_b_16(pretrained=True)
+    # for i, j in enumerate(model.parameters()):
+    #     print(i)
+    # %%
+    model.classifier

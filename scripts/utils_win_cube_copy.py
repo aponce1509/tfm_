@@ -16,6 +16,23 @@ from paths import IMG_PATH
 from graficas_pdf import vistas_detector
 from matplotlib.colors import ListedColormap
 
+def add_time(df: pd.DataFrame) -> pd.DataFrame:    
+    df_copy = df.copy()
+    # creamos una nueva col que tenga ordenados los hits
+    all_events_time = df_copy.reset_index()
+    all_events_time = all_events_time.rename(columns = {'index': 'time'})
+    # obtenemos el id mínimo por evento
+    min_times = all_events_time.groupby(['Event', 'PDGcode'])['time'].min()
+    # nueva columna con los minimos para hacer el cambio de var
+    all_events_time = all_events_time.join(
+        min_times, 
+        on=['Event', 'PDGcode'], rsuffix='_min'
+    )
+    all_events_time['time'] = all_events_time['time'] - \
+        all_events_time['time_min']
+    all_events_time.drop('time_min', axis=1, inplace=True)
+    return all_events_time
+
 def plot_vistas(df, win_shape: tuple=(64, 64, 128)) -> None:
     """
     Dibujo de las vistas de un evento. Pueden ser con las vistas 
@@ -197,7 +214,7 @@ def rescale_axis(data, mins_maxs, max_charge, cube_shape=(2000, 2000, 2500),
 
 def set_window(df: pd.DataFrame, win_shape=(64, 64, 128), projection="3d",
                cube_pool="mean", projection_pool="max", range_y_sumed=None,
-               range_hits_charge_sumed=None):
+               range_hits_charge_sumed=None, time=False):
     """
     Función que dado un evento (df) se queda solo con una ventana de todo 
     el evento fija en el incio del evento, al ser la parte más importante del 
@@ -249,22 +266,23 @@ def set_window(df: pd.DataFrame, win_shape=(64, 64, 128), projection="3d",
             reset_index()
     else:
         raise Exception("Cube pool name not valid")
+    hits_idx = [df.columns.get_loc(i) for i in names]
     new_x = df_win["hitsX"] - df["hitsX"].iloc[0]
     # "colocamos" la ventana modificando los indices
     if n_hits > 30:
         if x_dir == "positive":  # el hit incial se encuentra a la izquierda
-            df_win.iloc[:, hits_idx[0]] = new_x + 10
+            df_win.loc[:, 'hitsX'] = new_x + 10
         elif x_dir == "negative":  # el hit incial se encuentra a la derecha
-            df_win.iloc[:, hits_idx[0]] = new_x + win_shape[0] - 10
+            df_win.loc[:, 'hitsX'] = new_x + win_shape[0] - 10
     else:  # Si tenemos menos de 30 hits nos situamos en un punto medio
-        df_win.iloc[:, hits_idx[0]] = new_x + int(win_shape[0] / 2)
+        df_win.loc[:, 'hitsX'] = new_x + int(win_shape[0] / 2)
     if not projection == "color":
-        df_win.iloc[:, hits_idx[1]] = df_win["hitsY"] - df["hitsY"].iloc[1] + \
+        df_win.loc[:, 'hitsY'] = df_win["hitsY"] - df["hitsY"].iloc[1] + \
             int(win_shape[1] / 2)
     # Invertimos el eje y
     # df_win.iloc[:, hits_idx[1]] = win_shape[1] - df_win.iloc[:, hits_idx[1]] - 1
 
-    df_win.iloc[:, hits_idx[2]] = df_win["hitsZ"] - df["hitsZ"].iloc[0] + 5
+    df_win.loc[:, 'hitsZ'] = df_win["hitsZ"] - df["hitsZ"].iloc[0] + 5
     # Invertimos el eje z
     # df_win.iloc[:, hits_idx[2]] = win_shape[2] - df_win.iloc[:, hits_idx[2]] - 1
 
@@ -354,14 +372,17 @@ def set_window(df: pd.DataFrame, win_shape=(64, 64, 128), projection="3d",
             )
         ]
         # invertimos el z
-        df_win.iloc[:, hits_idx[1]] = win_shape[2] - \
-            df_win.iloc[:, hits_idx[1]] - 1
-        image = np.zeros((win_shape[2], win_shape[0]))
+        df_win.loc[:, 'hitsZ'] = win_shape[2] - \
+            df_win.loc[:, 'hitsZ'] - 1
+        image = np.zeros((1, win_shape[2], win_shape[0]))
+        if time:
+            image = np.zeros((2, win_shape[2], win_shape[0]))
         for index, row in df_win.iterrows():
             x = int(row["hitsX"])
             y = int(row["hitsZ"])
-            image[y, x] = row["hitsCharge"]
-        image = image.reshape((1, win_shape[2], win_shape[0]))
+            image[0, y, x] = row["hitsCharge"]
+            if time:
+                image[1, y, x] = row["time"]
         return df_win, image
     
     elif projection == "x":
@@ -703,7 +724,8 @@ class DataFast():
     """
     def __init__(
         self, seed_=123, cube_shape_x=1000, win_shape=(62, 62, 128),
-        projection="y", cube_pool="mean", projection_pool="max", log_trans=False
+        projection="y", cube_pool="mean", projection_pool="max",
+        log_trans=False, time=False
     ) -> None:
         
         # Definimos la forma de los ejes apartir del eje x
@@ -716,10 +738,16 @@ class DataFast():
         self.projection_pool = projection_pool
         self.seed = seed_
         self.log_trans = log_trans
+        self.time = time
         # Nombre del directorio, depende de los parámetros
         self.dir_path = IMG_PATH + f"{cube_shape_x}_{projection}" +\
                 f"_{cube_pool}_{projection_pool}_{win_shape[0]}" +\
                 f"_{win_shape[1]}_{win_shape[2]}_{log_trans}"
+        if time:
+            self.dir_path = IMG_PATH + f"{cube_shape_x}_{projection}" +\
+                f"_{cube_pool}_{projection_pool}_{win_shape[0]}" +\
+                f"_{win_shape[1]}_{win_shape[2]}_{log_trans}_time"
+                
         self.dir_path_test = os.path.join(self.dir_path, "test")
         
         self.is_new_data = not os.path.isdir(self.dir_path)
@@ -746,13 +774,19 @@ class DataFast():
         all_events_train = pd.concat(
             [pd.read_csv("data/photons_train.csv"),
             pd.read_csv("data/electrons_train.csv")],
-            axis=0
+            axis=0,
+            ignore_index=True
         )
+        all_events_train = add_time(all_events_train)
+
         all_events_test = pd.concat(
             [pd.read_csv("data/photons_test.csv"),
             pd.read_csv("data/electrons_test.csv")],
-            axis=0
+            axis=0,
+            ignore_index=True
         )
+        all_events_test = add_time(all_events_test)
+        
         # juntamos los datos
         all_events = pd.concat(
             [all_events_train, all_events_test],
@@ -819,7 +853,8 @@ class DataFast():
                 cube_pool=self.cube_pool,
                 projection_pool=self.projection_pool,
                 range_hits_charge_sumed=range_charge,
-                range_y_sumed=range_y
+                range_y_sumed=range_y,
+                time=self.time
             )
             # cambiamos los códigos de manera que el electrón sea 0 y el foton 1
             if row['PDGcode'] == 11:
@@ -844,7 +879,8 @@ class CascadasFast(Dataset):
     def __init__(
         self, seed_=123, train: bool=True, validation: bool=True,
         transform=None, cube_shape_x: int=1000, win_shape=(62, 62, 128),
-        projection="y", cube_pool="mean", projection_pool="max", log_trans=False
+        projection="y", cube_pool="mean", projection_pool="max", 
+        log_trans=False, time=False
     ) -> None:
         """
         Clase que...
@@ -862,6 +898,7 @@ class CascadasFast(Dataset):
         self.projection_pool = projection_pool
         self.transform = transform
         self.log_trans = log_trans
+        self.time = time
         # usamos la clase Data que nos proporciona el diretorio de las imágenes
         # los ids y en caso de necesitarlo descarga las imágenes
         data = DataFast(
@@ -871,7 +908,8 @@ class CascadasFast(Dataset):
             projection=self.projection,
             cube_pool=self.cube_pool,
             projection_pool=self.projection_pool,
-            log_trans=self.log_trans
+            log_trans=self.log_trans,
+            time=time
 
         )
         self.dir_path = data.dir_path
@@ -908,10 +946,11 @@ class CascadasFast(Dataset):
         file_name = os.path.join(self.dir_path, f"{event}_{label}.pickle")
         with open(file_name, "rb") as file:
             img, label = pickle.load(file)
-        img = torch.tensor(img)
+        img = torch.tensor(img)            
         # apply transformation
         if self.transform:
             img = self.transform(img)
+
         return img, label, energy
 
     def plot_simple(self, idx):
@@ -1121,7 +1160,7 @@ class CascadasMultiEff(Dataset):
         datas = []
         for param in params:
             data = DataFast(
-                seed_=param['seed_'],
+                seed_=seed_,
                 cube_shape_x=param['cube_shape_x'],
                 win_shape=param['win_shape'],
                 projection=param['projection'],

@@ -221,7 +221,8 @@ def get_data_validation(params: dict):
                 cube_pool=params["cube_pool"],
                 projection_pool=params["projection_pool"],
                 transform=params["transform"],
-                log_trans=params['log_trans']
+                log_trans=params['log_trans'],
+                time=False
             )
             val_dataset = CascadasFast(
                 train=False,
@@ -233,16 +234,17 @@ def get_data_validation(params: dict):
                 cube_pool=params["cube_pool"],
                 projection_pool=params["projection_pool"],
                 transform=params["transform"],
-                log_trans=params['log_trans']
+                log_trans=params['log_trans'],
+                time=False
             )
     else:
         seed = params['seed_']
         transform = params['transform_multi']
         params_multi = params['params_multi']
-        train_dataset = CascadasMultiEff(params_multi, seed, True, False,
-                                         transform)
-        val_dataset = CascadasMultiEff(params_multi, seed, True, True,
-                                       transform)
+        train_dataset = CascadasMultiEff(params_multi, seed, train=True,
+                                         validation=True, transform=transform)
+        val_dataset = CascadasMultiEff(params_multi, seed, train=False,
+                                       validation=True, transform=transform)
 
     return train_dataset, val_dataset
 
@@ -316,7 +318,7 @@ def get_final_data(params: dict):
                 log_trans=params['log_trans']
             )
             return train_dataset, test_dataset
-        if not params["is_fast"]:
+        elif not params["is_fast"]:
             train_dataset = Cascadas(
                 train=True,
                 validation=False,
@@ -352,7 +354,8 @@ def get_final_data(params: dict):
                 cube_pool=params["cube_pool"],
                 projection_pool=params["projection_pool"],
                 transform=params["transform"],
-                log_trans=params['log_trans']
+                log_trans=params['log_trans'],
+                time=False
             )
             test_dataset = CascadasFast(
                 train=False,
@@ -364,16 +367,17 @@ def get_final_data(params: dict):
                 cube_pool=params["cube_pool"],
                 projection_pool=params["projection_pool"],
                 transform=params["transform"],
-                log_trans=params['log_trans']
+                log_trans=params['log_trans'],
+                time=False
             )
     else:
         seed = params['seed_']
         transform = params['transform_multi']
         params_multi = params['params_multi']
-        train_dataset = CascadasMultiEff(params_multi, seed, True, False,
-                                         transform)
-        test_dataset = CascadasMultiEff(params_multi, seed, False, False,
-                                       transform)
+        train_dataset = CascadasMultiEff(params_multi, seed, train=True,
+                                         validation=False, transform=transform)
+        test_dataset = CascadasMultiEff(params_multi, seed, train=False,
+                                         validation=False, transform=transform)
     return train_dataset, test_dataset
 
 def train(model: nn.Module, optimizer: optim.Optimizer, device: str, 
