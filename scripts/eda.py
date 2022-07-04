@@ -1,4 +1,6 @@
 #%%
+%load_ext autoreload
+%autoreload 2
 from itertools import count
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -36,7 +38,7 @@ plt.legend()
 plt.title('Distribución de los eventos en el rango')
 plt.xlabel('Rango (cm)')
 plt.ylabel('Frecuencia')
-plt.savefig('latex/img/hist_rango.pdf')
+# plt.savefig('latex/img/hist_rango.pdf')
 # %%
 all_events.describe()
 # %% Histográma de las energías
@@ -44,9 +46,9 @@ plt.hist(energy, alpha=0.5, bins=20)
 plt.title('Distribución de los eventos en energía')
 plt.xlabel('Energía, E (GeV)')
 plt.ylabel('Frecuencia')
-plt.savefig('latex/img/hist_en.pdf')
+# plt.savefig('latex/img/hist_en.pdf')
 # %%
-vistas_detector(all_events, 1, 11, False)
+vistas_detector(all_events, 50, 11, True)
 # %%
 # Busqueda de los eventos con pocos hits:
 counts = all_events.groupby(["Event", "PDGcode"]).size()
@@ -54,11 +56,15 @@ energy = all_events.groupby(["Event", "PDGcode"]).mean().Energy
 counts = pd.concat([counts, energy], axis=1).sort_values(0)
 
 # %%
+plt.figure(figsize=(7, 6))
 plt.plot(counts['Energy'], counts[0], 'bo', markersize=0.5)
 plt.title('Relación entre nº de hits y Energía')
 plt.xlabel('Energía, E (GeV)')
+plt.grid(b=True, which='major')
+plt.grid(b=True, which='minor', linestyle='-.', alpha=0.4)
+plt.minorticks_on()
 plt.ylabel('Nº de hits')
-plt.savefig('latex/img/scatter_n_e.pdf')
+# plt.savefig('latex/img/scatter_n_e.pdf')
 # %%
 all_events.describe()
 # %%
@@ -78,10 +84,14 @@ aux_2.hist(histtype='step', bins=20, label='normal')
 aux = np.log(all_events['hitsCharge']) / np.log(ch_max)
 aux.hist(histtype='step', bins=20, label='log')
 #%%
+plt.figure(figsize=(7, 6))
 _ = plt.hist(aux, alpha=0.5, bins=20, label='log')
 _ = plt.hist(aux_2, alpha=0.5, bins=20, label='Normal')
 plt.title('Distribución de la carga por hit')
 plt.xlabel('$Q / Q_{max}$')
+plt.grid(b=True, which='major')
+plt.grid(b=True, which='minor', linestyle='-.', alpha=0.4)
+plt.minorticks_on()
 plt.ylabel('Frecuencia')
 plt.legend()
 plt.savefig('latex/img/hist_charge.pdf')
@@ -129,12 +139,20 @@ aux['Time'] = aux['Time0'] / aux['Time']
 ch_max = aux['hitsCharge'].max() * 1.15
 aux['hitsCharge_t'] = np.log(aux['hitsCharge']) / np.log(ch_max)
 # %%
-plt.figure(figsize=(7, 4))
+import matplotlib.ticker as ticker
+plt.figure(figsize=(7, 6))
 _ = plt.hist2d(aux['Time'], aux['hitsCharge_t'], bins=30)
 plt.title('Distribución de la carga de los hits a lo largo del tiempo')
-plt.colorbar()
+def fmt(x, pos):
+    a, b = '{:.0e}'.format(x).split('e')
+    b = int(b)
+    return r'${} \times 10^{{{}}}$'.format(a, b)
+plt.colorbar(format=ticker.FuncFormatter(fmt))
 plt.xlabel('Tiempo / Tiempo$_{max}$')
-plt.ylabel('$\log(Q / Q_{max})$')
+plt.ylabel('$\log(Q) / \log(Q_{max})$')
+# plt.grid(b=True, which='major')
+# plt.grid(b=True, which='minor', linestyle='-.', alpha=0.4)
+# plt.minorticks_on()
 plt.savefig('latex/img/hist_charge_time.pdf')
 # %%
 # start with a square Figure
