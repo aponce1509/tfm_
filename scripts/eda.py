@@ -1,6 +1,4 @@
 #%%
-%load_ext autoreload
-%autoreload 2
 from itertools import count
 import matplotlib.pyplot as plt
 import pandas as pd
