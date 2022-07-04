@@ -1247,6 +1247,72 @@ class CascadasMultiEff(Dataset):
                 cmap=cmap
     )
 
+class MultiEff(Dataset):
+    """
+    Clase con los datos de los tres modelos concatenados
+    """
+    def __init__(
+        self, seed_=123, train: bool=True, validation: bool=True) -> None:
+        """
+        Clase que...
+        """
+        super().__init__()
+        self.seed = seed_
+        # que todos tengan las mismas dimensiones. Eje x e y 400 eje z 500.
+        self.train = train
+        
+        self.X = pd.read_csv(
+            'data/X_tr_concat_eff.csv',
+            sep=',',
+            index_col=0
+        ).values
+        self.y = pd.read_csv(
+            'data/y_tr_concat_eff.csv',
+            sep=',',
+            index_col=0
+        ).values.ravel()
+
+        if validation:
+            X_tr, X_val, y_tr, y_val = train_test_split(
+                self.X, self.y, test_size=0.1, random_state=self.seed
+            )
+            if train:
+                self.X = X_tr
+                self.y = y_tr
+            else:
+                self.X = X_val
+                self.y = y_val
+        else:
+            if train:
+                self.X = self.X
+                self.y = self.y
+            else:
+                self.X = pd.read_csv(
+                    'data/X_tst_concat_eff.csv',
+                    sep=',',
+                    index_col=0
+                ).values
+                self.y = pd.read_csv(
+                    'data/y_tst_concat_eff.csv',
+                    sep=',',
+                    index_col=0
+                ).values.ravel()
+        
+    def __len__(self):
+        """
+        Longitud del objeto como el nº de imagenes en el conjunto de datos.
+        """
+        return self.y.shape[0]
+    
+    def __getitem__(self, idx):
+        """
+        Se devuelve una tupla con la imagen y su etiqueta
+        """
+        label = self.y[idx]
+        # cargamos la imagen de disco
+        features = self.X[idx, :]
+        return features, label, 0
+
 # %%
 if __name__ == "__main__":
     # cascada = CascadasFast(cube_shape_x=1000)
@@ -1263,11 +1329,5 @@ if __name__ == "__main__":
     ])
     cascada = CascadasFast(cube_shape_x=1000, projection="color", 
                            win_shape=(62, 62, 128), transform=transform)
-    # cascada.plot_simple(469)
-    # cascada_2 = CascadasFast(cube_shape_x=1000, projection="color", 
-    #                        win_shape=(62, 62, 128))
-    # cascada_2.plot_simple(5)
-    # %%
     img, _, _ = cascada[469]
     img.max()
-# %%
