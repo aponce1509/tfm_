@@ -1,0 +1,5 @@
+[0] Config.pm:311> INFO - This is Biber 2.16
+[0] Config.pm:314> INFO - Logfile is 'transparencias.blg'
+[442] biber-MSWIN32:340> INFO - === 
+[730] Biber.pm:415> INFO - Reading 'transparencias.bcf'
+[1307] Utils.pm:395> WARN - No data sources defined!

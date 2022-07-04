@@ -1,0 +1,297 @@
+\documentclass[a4paper,12pt,twoside]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{fixltx2e}
+\usepackage{siunitx}
+\usepackage[shortlabels]{enumitem}
+\usepackage{graphicx}
+\usepackage{appendix} 
+\usepackage{longtable}
+%\usepackage[ddmmyyyy]{datetime}
+%author={Cohen-Tannoudji, Claude and Bernard Diu and Franck Laloë},
+
+\usepackage{float}
+\usepackage{minted}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{multirow}
+\usepackage{pdfpages}
+\usepackage{tabu}
+\usepackage{hyperref}
+\graphicspath{ {./img/} }
+\tolerance=1000
+\usepackage[spanish,es-tabla,es-nodecimaldot]{babel}
+\usepackage{a4wide}
+\usepackage{gensymb}
+\usepackage{wasysym}
+\usepackage{subcaption}
+\usepackage{braket}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage[backend=biber,sorting=none]{biblatex}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{circuitikz}
+\usepackage{vmargin}
+\usepackage{cancel}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+
+
+
+\addbibresource{texto.bib}
+\DeclareFieldFormat[article]{citetitle}{#1}
+\DeclareFieldFormat[article]{title}{#1}
+
+
+\setpapersize{A4}
+\setmargins{2.5cm}       % margen izquierdo
+{1.5cm}                        % margen superior
+{16.5cm}                      % anchura del texto
+{23.42cm}                    % altura del texto
+{10pt}                           % altura de los encabezados
+{1cm}                           % espacio entre el texto y los encabezados
+{0pt}                             % altura del pie de página
+{2cm}                           % espacio entre el texto y el pie de página
+
+\addto\captionsspanish{%
+  \renewcommand\appendixname{Anexo}
+  \renewcommand\appendixpagename{Anexos}
+}
+
+
+
+\newcommand{\rcor}{\right\rbrace}
+\newcommand{\lcor}{\left\lbrace }
+\newcommand{\comen}{\textbf{Comentarios:}}
+\author{Alejandro Ponce Miguela\\
+\\
+\normalsize{Grado en Física }\\
+}
+\date{}
+\date{}
+\title{}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Alejandro Ponce Miguela}}
+\newtheorem{teor}{Teorema}[section]
+\newtheorem{defi}{Definición}[section]
+\newtheorem{lema}{Lema}[section]
+\newtheorem{ejem}{Ejemplo}[section]
+
+\renewcommand\qedsymbol{$\blacksquare$}
+
+\begin{document}
+
+Buenos días, mi nombre es Alejandro Ponce vengo a presentar mi trabajo de fin de grado titulado Introducción a la Teoría de Grupos y aplicaciones a la física molecular. 
+
+CAMBIO DIAPOSITIVA (45s)
+
+Me gustaría empezar esta presentación con una anécdota histórica de como surge la teoría de grupos en la Mecánica cuántica. En la decada de 1920 Eugene Wigner, entre otros físicos, estudiaban sistemas con muchos electrones. Fue John von Neumann quien le dijo a Wigner que el problema con el que estaba podría resolverse mediante la Teoría Grupos. En este punto empiezan a salir una serie de artículos usando esta teoría, con matemáticas muy avanzadas e incomprensibles para muchos físicos. A esto se le conoce como la 'gruppenpest' y fue duramente criticada por físicos como Schrödinger. Creo que gran parte de esta crítica surge del desconocimiento de esta teoría y vemos que hoy día es una herramienta fundamental.
+
+CAMBIO DIAPOSITIVA (30s)
+
+Una vez hecha esta pequeña introducción histórica, veamos la estructura que vamos a seguir en esta presentación. En primer lugar mostraré los objetivos que se pretenden alcanzar con este trabajo. A continuación haremos una breve introducción a la teoría de grupos centrándome en explicar como la teoría de grupos nos permite entender la simetría y la degeneración. Luego, a modo de ejemplo sencillo, estudiaremos el oscilador armónico bidimensional. Finalmente usaremos esta teoría para modelar las moléculas diatómicas. 
+
+Acabaremos la presentación mostrando las conclusiones a las que podemos llegar con este trabajo
+
+CAMBIO DIAPOSITIVA (25s)
+
+Los objetivos principales de este trabajo es que, por un lado, sirva de introducción a la teoría de grupos y ver su gran útilidad. En la presentación me centraré unicamente en mostrar las ideas claves y veremos un ejemplo de como se puede usar en física. Por otro lado, aplicaremos esta teoría para el estudio de moléculas diatómicas. Además este trabajo me ha permitido aprender a desarrollar códigos para hacer estudios en física, ya que he hecho todos los códigos necesarios a lo largo del trabajo.
+
+Vayamos ahora con la introducción a la teoría de grupos.
+
+CAMBIO DIAPOSITIVA (40s)
+
+Intuitivamente entendemos que un sistema tiene simetría cuando no cambia al aplicar una serie de transformaciones. En la animación hemos visto como un copo de nieve es invariante ante una serie de rotaciones y reflexiones. El conjunto de todas las transformaciones que dejan invariante el copo junto con la operación composición constituyen un grupo. 
+
+Los grupos son una estructura algebráica que verifican una serie de propiedades. Verifican que hay un elemento neutro, que es la transformación que no hace nada, todo elemento tiene inversa es decir que la composición de estos dos elementos es igual al elemento neutro, que la composición de dos transformaciones es una transformación de simetría y que la composición es asociativa.
+
+CAMBIO DIAPOSITIVA (25s)
+
+En Mecánica Cuántica el sistema viene dado por el hamiltoniano y las transformaciones como operadores. Un sistema tiene simetría cuando tenemos un conjunto de transformaciones que dejan invariante el hamiltoniano, es decir que las operadores conmutan con el hamiltoniano. 
+
+En el ejemplo de antes se ha mostrado un grupo finito, en lo que sigue nos centraremos en grupos continuos que dependen de parámetros continuos y tienen un número infinito de elementos.
+
+
+CAMBIO DIAPOSITIVA (30s)
+
+La degeneración se define como autoestados linealmente independiente asociados al mismo autovalor. 
+
+La teoría de grupos nos aclara esto, pero para ello tenemos que presentar lo que se conoce como la teoría de representación. Que consiste en asociar matrices de dimension d a cada uno de los elementos del grupo, de forma que se mantenga la estructura multiplicativa del grupo, es decir que si multiplicamos las matrices que representan a dos elementos el resultado tiene que ser la matriz que representa a la composición de los dos elementos iniciales.
+
+CAMBIO DIAPOSITIVA (25s)
+
+
+Estas matrices actúan sobre un espacio vectorial d dimensional y se dice que este espacio construye la representación.
+
+Supongamos ahora que en este espacio vectorial hay un subespacio W tal que si aplicamos cualquier elemento de la representación, el vector resultante siempre se queda en W. Cuando tenemos esto se dice hay un subespacio invariante y que la representación es reducible. En caso contrario se dice que la representación es irreducible. 
+
+CAMBIO DIAPOSITIVA
+
+Cuando una representación es reducible, esta se puede descomponer como una suma directa representaciones irreducible. Es decir que las matrices de la representación son equivalentes a matrices diagonales por bloques, siendo estos bloques representaciones irreducibles.
+
+Tras estas definiciones vamos a hablar del lema de Schur que nos permite entender la degeneración. Este dice que si tenemos una representación irreducible de un grupo y una matriz que conmuta con todos los elementos de la representación, esta matriz es proporcional a la identidad. 
+
+
+CAMBIO DIAPOSITIVA
+
+Las consecuencias de este lema, es que como hemos visto, simetría implica que el hamiltoniano conmuta con el grupo.
+
+Por lo que si la representación es irreducible el hamiltoniano es proporcional a la identidad.
+
+En el caso que la representación sea reducible el hamiltoniano va a formado por bloques proporcionales a la identidad en una determinada base al ser la representación suma directa de representaciones irreducibles.
+
+Poniendo en manifiesto como simetría implica degeneración.
+
+4.30
+
+CAMBIO DIAPOSITIVA (60s)
+
+Por último, la teoría de grupos nos permite construir bases completamente caracterizadas. Para ello tenemos que introducir que es un álgebra de Lie. Nos vamos a centrar en los grupos conexos a la identidad, aquellos grupos continuos donde todo elemento esta conectado con la identidad.
+
+En mecánica cuántica construimos las transformaciones continuas a partir de transformaciones infinitesimales y lo que en física conocemos como generadores de las transformaciones, son los elementos que construyen el álgebra de Lie junto a la operación conmutación.
+
+La conmutación es la operación de esta nueva estructura algebraica y bajo esta operación el álgebra es cerrada y verifica esta expresiones donde estamos usando el convenio de suma de Einstein y las constantes $c_{ijk}$ se denominan constantes de estructura y definen el álgebra, dos álgebras con las mismas constantes son iguales.
+
+En el caso de los grupos conexos con la identidad, todo elemento del grupo se puede relacionar con el álgebra de Lie mediante una única exponencial.
+
+CAMBIO DE DIAPOSITIVA (45s)
+
+Ahora vamos a definir los invariantes de Casimir, que son matrices que conmutan con todos los elementos del álgebra.
+
+Con esto, como simetría implica que el hamiltoniano conmuta con todos los elementos del grupo y por tanto con todos los elementos del álgebra, tenemos que el hamiltoniano es una combinaciones lineal de invariantes de Casimir.
+
+Para construir una base podemos simplemente partir de la diagonalización del hamiltoniano. Para construir un conjunto completo de observables que conmutan podemos usar los invariantes de casimir de subálgebras ya que estos vienen dados en función de elementos del álgebra y por tanto conmuta con el hamiltoniano y podemos diagonalizarlos simultáneamente. Operamos sucesivamente hasta caracterizar completamente los estados.
+
+CAMBIO DE DIAPOSITIVA (20s)
+
+AQUI EL ESQUEMA
+
+CAMBIO DE DIAPOSITIVA (25 s)
+
+Estudiemos ahora  el oscilador armónico bidimensional, como ejemplo sencillo de la teoría que hemos presentando. El hamiltoniano de este sistema, en el sistema natural de unidades, lo mostramos en la transparencia, donde además estamos suponiendo que tanto la masa como la frecuencia del oscilados son igual a la unidad.
+
+El espectro de energías de este hamiltoniano esta dado por nx y ny, que son números enteros positivos y definimos N como la suma de ambos.
+
+Este ejemplo va a consistir en demostrar que hay dos bases bien caracterizadas y que la degeneración de cada nivel de energía es $N+1$.
+
+CAMBIO DE DIAPOSITIVA (30s ver que tiempo me lleva apuntar)
+
+Para probar esto tenemos que reescribir el hamiltoniano. Para ello definimos los operadores de destrucción y creación de dos tipos de bosones, s y t, que verifican las relaciones de conmutación típicas de los bosones. 
+
+De forma bastante simple se llega a que el hamiltoniano se puede expresar como suma de los operadores números de bosones s y t y definimos el operador número de bosones total $N$ como la suma de ambos operadores número.
+
+CAMBIO DE DIAPOSITIVA (25s)
+
+Para ver la simetría del hamiltoniano que estamos estudiando podemos definir unos nuevos operadores bilineales en s y t.
+Estos operadores verifican las relaciones de conmutación que definen el álgebra u(2). 
+
+Entonces el hamiltoniano queda como la suma de G uno uno y G dos dos, que puede verse que conmuta con todos los elementos del álgebra. Es decir que el grupo de simetría del oscilador armónico bidimensional viene dado por el grupo U(2). 
+
+En primer lugar vamos a estudiar la degeneración.
+
+CAMBIO DE DIAPOSITIVA (75s)
+
+Para que sea más fácil de ver, vamos a hacer un cambio de base en los elementos del álgebra de forma que van a cambiar las constantes de estructura y por tanto tenemos un nuevo álgebra. A esto se le llama buscar un isomorfismo y nos permite pasar a un álgebra que entendamos mejor, como puede ser el álgebra del momento angular que es su(2).
+
+El cambio de base realizado es el que muestro en la transparencia y se verifican las siguientes relaciones de conmutación. Por un lado las J verifican las relaciones de conmutación de un momento angular y estas ademas conmutan con N, que define el álgebra u1, de forma que se tiene lo que se conoce como suma directa de álgebras que en nuestro caso es su(2)+u(1). 
+
+En resumen, hemos hecho un isomorfismo de u(2) a su(2)+u(1) que lo indicamos con el símbolo de asintóticamente igual.
+
+Ahora podemos determinar la dimensión de las representaciones irreducibles ya que las del álgebra su(2) son conocidas y vienen determinadas por el autovalor del operador J cuadrado que denotamos como j(j+1) siendo la dimensión de las representación irreducibles 2j + 1
+
+Además se puede ver que J cuadrado y N están relacionados llegando a que j es igual a N medios de forma que por el lema de Schur la degeneración de un estado con N bosones tiene una degeneración de N + 1.
+
+9.10
+
+CAMBIO DE DIAPOSITIVA (45s)
+
+Por último vamos a determinar las bases del problema.
+
+Para ello tenemos dos cadenas de subálgebras posibles, por un lado tenemos que u(1) es un subálgebra de u(2) cuyo invariante de casimir podemos tomar el operador número de bosones t. Entonces la base final esta caracterizadas por N y por nt.
+
+Hay otra cadena posible, si partimos del isomorfismo de u(2), su(2)+u(1) el primer operador que diagonalizamos es J cuadrado que está relacionado con N. Y el subalgebra puede ser so(2) cuyo invariante de Casimir es Jz.
+
+Con esto acabamos con el ejemplo del oscilador armónico. Ahora vamos a ver que todo esto que acabamos de obtener nos permite estudiar un oscilador al que rompemos la simetría introduciendo interacción a dos cuerpos.
+
+CAMBIO DE DIAPOSITIVA
+
+El hamiltoniano más general que se puede construir que incluya interacción a dos cuerpos y que sea hermítico es el que mostramos en la diapositiva. Los términos a dos cuerpos son los que tienen dos operadores de creación y dos destrucción.
+
+Este hamiltoniano lo podemos reescribir en función de los operadores Jz y nt que son los que hemos usado para determinar las dos base.
+
+En este hamiltoniano podemos ver que si hacemos beta cero tenemos que el hamiltoniano tiene simetría con el grupo U(1) ya que conmuta con el operador N y si hacemos epsilon y alfa igual a cero tenemos simetría con el grupo SO(2) al conmutar con Jz
+A esto se le denominan simetrías dinámicas y en nuestro caso tenemos los límite U(1) y SO(2) 
+
+Por otro lado, es interesante obtener el espectro de autovalores de este hamiltoniano. En el caso de los límites de simetría, el hamiltoniano ya es diagonal, pero si no habría que diagonalizar el hamiltoniano para lo que habría que construir, para cada N una matriz a partir los distintos elementos de matriz y podríamos usar cualquiera de las dos bases 
+
+CAMBIO DIAPOSITIVA
+
+En el caso de la base Nnt tenemos que construir todos los elementos de matriz posibles y para ello necesitamos obtener la actuación de Jz cuadrado sobre N. Donde vemos que solo se conectan estados con igual nt o más menos dos nt es decir que la matriz es tridiagonal. 
+
+Para la diagonalización de esta matriz he desarrollado un código usando python donde en primer lugar obtengo la matriz en función de N y de los distintos parámetros y luego diagonalizarla para obtener las autofunciones y autovalores.
+
+De forma completamente análoga se puede realizar en la otra base y se deberían obtener los mismos niveles de energía.
+
+CAMBIO DIAPOSITIVA
+
+En esta gráfica mostramos los niveles de energía obtenidos con las dos bases para unos parámetros arbitrarios donde vemos que obtenemos el mismo espectro. 
+
+CAMBIO DIAPOSITIVA
+
+Finalmente vamos a estudiar las moléculas diatómicas usando la teoría de grupos. Estas moléculas se pueden describir bien mediante el potencial de morse. 
+
+En esta gráfica mostramos dicho potencial en función de la distancia de la posición de equilibrio junto con los niveles de energía. Este potencial surge de forma empírica y nos permite estudiar las moléculas diatómicas más allá de la aproximación armónica al describir las anarmonicidades observadas en el espectros así como la energía de disociación de las moléculas que está relacionado con D super M
+
+CAMBIO DIAPOSITIVA
+
+Las expresiones analíticas del potencial así como del espectro de energías se muestran en la transparencia. Donde el espectro es cuadrático en nu y nu toma valores desde cero hasta la parte entera de landa menos un medio y tanto lambda como omega son parámetros que definen completamente el potencial junto con las masas de los átomos que forman la molécula.
+
+CAMBIO DIAPOSITIVA
+
+En la memoria del trabajo se ha desarrollado detenidamente como el espectro hamiltoniano en el límite SO(2) reproduce el espectro del potencial de Morse dos veces y por eso nos quedamos solo con los valores de m positivos. Nosotros vamos a ajustar los parámetros de este hamiltoniano para obtener los espectros de moléculas diatómicas.
+
+Para poder comparar el espectro dado por nuestro modelo con el espectro de la expresión analítica tenemos que hacer el cambio nu = j - m donde nu toma valores desde 0 hasta j. 
+
+También es necesario relacionar los parámetros de nuestro ajuste con los parámetros que definen el potencial de Morse. Estas relaciones se muestran en la transparencia donde además hemos introducido x$_e$ que esta relacionado con lambda y es un parámetro más típico experimentalmente.
+
+Sin embargo, si nos fijamos en nuestro modelo lambda al venir dado por j toma valores discretos y esto no tiene sentido físico ya que lambda es un parámetro experimental que puede tomar cualquier valor al ser un potencial obtenido de forma empírica. Podemos arreglar esto añadiendo un parámetro nuevo d$_j$ que tome valores comprendidos entre 0 y 0.5. De esta forma se debe de poder describir de forma exacta el potencial de morse. 
+
+Para hacer el ajuste lo que hacemos es en primer lugar fijamos j en función de los niveles ligados ya que están relacionados siendo $N + 1$ el número de niveles y hacemos el ajuste. Este ajuste se a realizado mediante mínimos cuadrados usando python. 
+
+Nosotros vamos a estudiar la molécula de HCl y la de O2. Para el HCl vamos a obtener el espectro usando la expresión teórica del espectro con los valores de los parámetros de la bibliografía para ver que efectivamente nuestro modelo describe el potencial de Morse. Para la molécula de O2 si vamos a ajustar el espectro experimental y veremos que tal se describe.
+
+
+CAMBIO DIAPOSITIVA
+
+Veamos en primer lugar el HCl. En esta gráfica mostramos el espectro obtenido usando la expresión teórica así como el obtenido por el modelo tras el ajuste donde vemos que son idénticos.
+
+CAMBIO DIAPOSITIVA
+
+De hecho si hacemos el error relativo vemos que es del orden de 10 a la menos 13 viendo por tanto que las expresiones del espectro del potencial de morse y nuestro modelo son iguales ya que recordar que el espectro de esta molécula lo hemos obtenido usando la expresión analítica y no las experimentales.
+
+CAMBIO DIAPOSITIVA
+
+Sin embargo si ajustamos el espectro experimental de la molecula de O2 ahora tenemos un peor ajuste.
+
+CAMBIO DIAPOSITIVA
+
+Si miramos ahora el error relativo vemos que esta entre un 5\% y un 20\%.
+
+CAMBIO DIAPOSITIVA
+
+El motivo de esto se puede ver usando la representación de Birge-Sponer que representa la diferencia entre niveles de energía consecutivos. En el caso del potencial de morse esta representación debe ser un recta al ser cuadrático en nu como vemos que tenemos para el espectro de nuestro modelo sin embargo vemos que el espectro experimental no es una recta por lo que estamos viendo el potencial de morse tiene sus limitaciones sobretodo a medida que aumentamos la energía del sistema. Lo que si podríamos hacer es usar nuestro modelo para describir las vibraciones de bajas energías donde vemos que si tenemos una recta. De forma que ajustamos simplemente los primeros 20 niveles.
+
+CAMBIO DIAPOSITIVA
+
+Ahora vemos que el ajuste es bastante mejor siendo el error relativo del orden del 0.1\%. 
+
+\end{document}

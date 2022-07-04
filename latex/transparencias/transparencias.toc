@@ -1,0 +1,12 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\babel@toc {spanish}{}\relax 
+\defcounter {refsection}{0}\relax 
+\beamer@sectionintoc {1}{Objetivos}{4}{0}{1}
+\defcounter {refsection}{0}\relax 
+\beamer@sectionintoc {2}{Contextualización física}{5}{0}{2}
+\defcounter {refsection}{0}\relax 
+\beamer@sectionintoc {3}{Estudio de los datos: Representaciones propuestas}{9}{0}{3}
+\defcounter {refsection}{0}\relax 
+\beamer@sectionintoc {4}{Resultados}{16}{0}{4}
+\defcounter {refsection}{0}\relax 
+\beamer@sectionintoc {5}{Conclusiones}{20}{0}{5}

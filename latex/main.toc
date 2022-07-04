@@ -1,58 +1,92 @@
 \boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
 \babel@toc {spanish}{}\relax 
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1}Introducción y objetivos}{5}{section.1}%
+\contentsline {chapter}{\numberline {1}Introducción y objetivos}{1}{chapter.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.1}Objetivos}{6}{subsection.1.1}%
+\contentsline {section}{\numberline {1.1}Objetivos}{3}{section.1.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2}Fundamentación: estado del arte y conceptos}{7}{section.2}%
+\contentsline {chapter}{\numberline {2}Fundamentación: Conceptos y estado del arte}{4}{chapter.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.1}Motivación física}{7}{subsection.2.1}%
+\contentsline {section}{\numberline {2.1}Motivación física}{4}{section.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.2}Conceptos}{10}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.1.1}Cascada electromagnética}{8}{subsection.2.1.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.3}Deep Learning}{17}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.1.2}Detector LArTPC}{11}{subsection.2.1.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.4}Estado del arte}{25}{subsection.2.4}%
+\contentsline {section}{\numberline {2.2}Conceptos de computación}{14}{section.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3}Clasificación de cascadas electromagnética}{26}{section.3}%
+\contentsline {subsection}{\numberline {2.2.1}Deep Learning}{15}{subsection.2.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.1}Descripción del problema}{27}{subsection.3.1}%
+\contentsline {subsection}{\numberline {2.2.2}MLOps}{22}{subsection.2.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.2}Procesamiento de los datos}{29}{subsection.3.2}%
+\contentsline {section}{\numberline {2.3}Estado del arte}{24}{section.2.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3}Modelos propuestos}{34}{subsection.3.3}%
+\contentsline {chapter}{\numberline {3}Machine Learning aplicado a la clasificación de cascadas electromagnéticas}{26}{chapter.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4}Flujo de trabajo}{34}{subsection.3.4}%
+\contentsline {section}{\numberline {3.1}Descripción del problema}{27}{section.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4}Análisis de los datos}{37}{section.4}%
+\contentsline {section}{\numberline {3.2}Preprocesamiento de los datos}{31}{section.3.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5}Descripción de la solución}{42}{section.5}%
+\contentsline {subsection}{\numberline {3.2.1}Formas de representación}{31}{subsection.3.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.1}Representaciones de los datos}{43}{subsection.5.1}%
+\contentsline {subsection}{\numberline {3.2.2}Transformación de los datos a imágenes}{32}{subsection.3.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.2}Arquitecturas}{48}{subsection.5.2}%
+\contentsline {subsection}{\numberline {3.2.3}Comentarios finales}{35}{subsection.3.2.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.3}Métricas}{52}{subsection.5.3}%
+\contentsline {section}{\numberline {3.3}Modelos propuestos}{36}{section.3.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.4}Hiperparámetros}{54}{subsection.5.4}%
+\contentsline {section}{\numberline {3.4}Flujo de trabajo}{38}{section.3.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.5}Entorno de trabajo}{56}{subsection.5.5}%
+\contentsline {chapter}{\numberline {4}Análisis de los datos}{42}{chapter.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {6}Metodología}{57}{section.6}%
+\contentsline {chapter}{\numberline {5}Desarrollo de los modelos para la clasificación}{49}{chapter.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7}Resultados y discusión}{58}{section.7}%
+\contentsline {section}{\numberline {5.1}Representaciones de los datos}{49}{section.5.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {7.1}Pruebas iniciales}{58}{subsection.7.1}%
+\contentsline {section}{\numberline {5.2}Arquitecturas}{56}{section.5.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {7.2}Selección de una representación}{61}{subsection.7.2}%
+\contentsline {section}{\numberline {5.3}Métricas}{61}{section.5.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {7.3}Selección de la resolución}{64}{subsection.7.3}%
+\contentsline {section}{\numberline {5.4}Hiperparámetros}{62}{section.5.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {7.4}Ajuste de hiperparámetros}{66}{subsection.7.4}%
+\contentsline {section}{\numberline {5.5}Entorno de trabajo}{65}{section.5.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {7.5}Breve estudio del modelo B2 WIP}{73}{subsection.7.5}%
+\contentsline {chapter}{\numberline {6}Resultados y discusión}{67}{chapter.6}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {7.6}Concatenación de redes, 3 proyecciones WIP}{73}{subsection.7.6}%
+\contentsline {section}{\numberline {6.1}Metodología de experimentación}{67}{section.6.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {8}Conclusiones y trabajos futuros}{74}{section.8}%
+\contentsline {section}{\numberline {6.2}Pruebas iniciales}{68}{section.6.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.3}Selección de una representación}{71}{section.6.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.4}Selección de la resolución}{73}{section.6.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.5}Ajuste de hiperparámetros}{76}{section.6.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.6}Breve estudio del modelo B2}{83}{section.6.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.7}Concatenación de redes, 3 proyecciones}{88}{section.6.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {7}Conclusiones y perspectiva de futuro}{93}{chapter.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {A}Hiperparámetros de los estudios}{96}{appendix.alph1.Alph1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {A.1}Estudio de la capa de normalización por \textit {batch} y transformación logarítmica}{96}{section.alph1.Alph1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {A.2}Estudio de la representación}{96}{section.alph1.Alph1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {A.3}Estudio de la resolución}{98}{section.alph1.Alph1.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {A.4}Ajuste del modelo LeNet simple}{99}{section.alph1.Alph1.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {A.5}Ajuste del modelo LeNet complejo}{100}{section.alph1.Alph1.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {A.6}Ajuste modelos preentrenados: Optimización}{100}{section.alph1.Alph1.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {A.7}Ajuste modelos preentrenados}{101}{section.alph1.Alph1.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {B}Planificación y Presupuesto}{102}{appendix.alph1.Alph2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {B.1}Planificación}{102}{section.alph1.Alph2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {B.2}Presupuesto}{103}{section.alph1.Alph2.2}%

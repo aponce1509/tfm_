@@ -1,0 +1,39 @@
+\documentclass{beamer}
+\usepackage{movie15}
+\usepackage{graphicx}
+\mode<presentation>
+\usetheme{Madrid}
+\mode<presentation>
+\usecolortheme{default}
+
+
+\title{Relatividad General con Matlab}
+\author{Mario Misas Arcos}
+
+\institute[US] % (optional)
+{	Tutor: Alberto Tomás Pérez Izquierdo\\
+	Co-tutor: Carlos Soria del Hoyo
+\and
+Universidad de Sevilla}
+
+\date[Julio 2021] % (optional)
+{Julio de 2021}
+
+\logo{\includegraphics[height=1cm]{logo}}
+
+\begin{document}
+\maketitle
+
+\begin{frame}
+	\frametitle{Table of Contents}
+	\tableofcontents
+\end{frame}
+ 
+
+\begin{frame}
+\begin{block}{Una película}
+		\includemovie[autoplay,repeat]%
+		{4cm}{3cm}{pelicula.avi}
+	\end{block}
+\end{frame}
+\end{document}
