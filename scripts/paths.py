@@ -1,4 +1,4 @@
 IMG_PATH = "D:\\data/"
-MODEL_PATH = "\D:\\tfm_models/mlruns"
+MODEL_PATH = 'http://invidere.ugr.es:5000'
 TORCH_PATH = "D:/tfm_models"
-# MLFLOW_PATH = "file://mlruns"
+cuda_device = 'cuda'

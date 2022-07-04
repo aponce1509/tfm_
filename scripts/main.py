@@ -4,6 +4,7 @@ from ensemble import ensemble_pipeline
 # Cambiar carpeta desde donde se importan los parámetros y el nombre del 
 # experimento
 
+# distintos modelos y representaciones
 if sys.argv[1] == "Projection_y":
     from exp_p_y.params import params
     exp_name = "Projection_y"
