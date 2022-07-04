@@ -15,7 +15,7 @@ from paths import MODEL_PATH, TORCH_PATH, cuda_device
 import torch.nn as nn
 from torch.utils.data import DataLoader
 
-from utils_win_cube_copy import Cascadas, CascadasFast, CascadasMulti, CascadasMultiEff
+from utils_win_cube_copy import Cascadas, CascadasFast, CascadasMulti, CascadasMultiEff, MultiEff
 from _models import get_gradient_elements, get_criterion
 # from parameters import params_test
 
@@ -185,6 +185,13 @@ def get_data_validation(params: dict):
                 log_trans=params['log_trans']
             )
             return train_dataset, val_dataset
+        if params['model_name'] == 'fc_concat':
+            train_dataset = MultiEff(seed_=params['seed_'], train=True,
+                                     validation=True)
+            val_dataset = MultiEff(seed_=params['seed_'], train=False,
+                                   validation=True)
+            print('a')
+            return train_dataset, val_dataset
         if not params["is_fast"]: 
             train_dataset = Cascadas(
                 train=True,
@@ -318,7 +325,13 @@ def get_final_data(params: dict):
                 log_trans=params['log_trans']
             )
             return train_dataset, test_dataset
-        elif not params["is_fast"]:
+        elif params['model_name'] == 'fc_concat':
+            train_dataset = MultiEff(seed_=params['seed_'], train=True,
+                                     validation=False)
+            test_dataset = MultiEff(seed_=params['seed_'], train=False,
+                                   validation=False)
+            return train_dataset, test_dataset
+        if not params["is_fast"]:
             train_dataset = Cascadas(
                 train=True,
                 validation=False,
@@ -343,6 +356,8 @@ def get_final_data(params: dict):
                 transform=params["transform"],
                 log_trans=params['log_trans']
             )
+            return train_dataset, test_dataset
+
         else:
             train_dataset = CascadasFast(
                 train=True,
@@ -370,6 +385,7 @@ def get_final_data(params: dict):
                 log_trans=params['log_trans'],
                 time=False
             )
+            return train_dataset, test_dataset
     else:
         seed = params['seed_']
         transform = params['transform_multi']
@@ -397,6 +413,7 @@ def train(model: nn.Module, optimizer: optim.Optimizer, device: str,
             labels = labels.to(device)
             outputs = model(*inputs)
         else:
+            labels = labels.type(torch.LongTensor)
             inputs, labels = inputs.to(device, dtype=torch.float), labels.to(device)
             outputs = model(inputs)
         loss = criterion(outputs, labels)
@@ -456,6 +473,7 @@ def validation(model: nn.Module, device: str,
     with torch.no_grad():
         # iteramos por batchs
         for batch_idx, (inputs, labels, _) in enumerate(validation_loader):
+            labels = labels.type(torch.LongTensor)
             labels = labels.to(device)
             if type(inputs) == tuple or type(inputs) == list:
                 inputs = [input_.to(device, dtype=torch.float) for input_ in inputs]
@@ -619,7 +637,8 @@ def mlflow_log(params: dict, is_optuna, metrics, _id):
     mlflow.log_metrics(metrics)
     # creamos un archivo temporal con los parámetros para crear el artifact 
     # con los parámetros
-    params_aux['params_multi'] = params['params_multi']
+    if 'params_multi' in params:
+        params_aux['params_multi'] = params['params_multi']
     if not os.path.exists('temp'):
         os.mkdir('temp')
     with open("temp" + "/params", "wb") as file:

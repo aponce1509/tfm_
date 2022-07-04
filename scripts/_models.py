@@ -116,6 +116,8 @@ def get_gradient_elements(model_params: dict):
         model = ConvNetConcat(model_params)
     elif model_params['model_name'] == 'concat_eff':
         model = ConcatEffModels(model_params)
+    elif model_params['model_name'] == 'fc_concat':
+        model = ConcatEffModelsFC(model_params)
     else:
         raise Exception("That model doesn't exist")
     # obtenemos device y cargamos el modelo al device
@@ -629,6 +631,26 @@ class ConcatEffModels(nn.Module):
         r = self.convolutions(x, y, z)
         r = self.classifier(r)
         return r
+
+class ConcatEffModelsFC(nn.Module):
+
+    def __init__(self, params: dict) -> None:
+        super(ConcatEffModelsFC, self).__init__()
+        self.device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
+
+        p = params['dropout']
+        self.classifier = nn.Sequential(
+            nn.Dropout(p),
+            nn.Linear(4096, params['clf_neurons']),
+            nn.ReLU(inplace=True),
+            nn.Dropout(p),
+            nn.Linear(params['clf_neurons'], 2),
+            nn.LogSoftmax(1)
+        )
+
+    def forward(self, x) -> torch.Tensor:
+        x = self.classifier(x)
+        return x
 
 class ConvNet3D(nn.Module):
 
@@ -1269,14 +1291,14 @@ if __name__ == "__main__":
     summary(model, [(1, 62, 128), (1, 128, 128), (1, 62, 128)])
 # %%
     
-    from exp_p_resnet.params import params
+if __name__ == "__main__":
+    from concat_eff_fc.params import params
     # model = ResNet(params)
     # model = models.vit_b_16(pretrained=True)
-    params['unfreeze_layers'] = 10
-    model = EffNetB2(params)
+    model = ConcatEffModelsFC(params)
     device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
     model.to(device)
-    summary(model, (3, 224,  224))
+    summary(model, (4096, ))
     
 # %%
 if __name__ == "__main__":
@@ -1287,7 +1309,7 @@ if __name__ == "__main__":
     # model = EffNetB2(params)
     device = torch.device(cuda_device if torch.cuda.is_available() else "cpu")
     model.to(device)
-    summary(model, (3, 224,  224))
+    summary(model, (4096))
     # models.vit_b_16(True)
     # model = models.vit_b_16(pretrained=True)
     # for i, j in enumerate(model.parameters()):
